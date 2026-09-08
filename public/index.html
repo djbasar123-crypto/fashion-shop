@@ -364,7 +364,7 @@ function applyTheme(){document.documentElement.style.setProperty('--primary',set
 function socLinks(){const l=[];if(social.instagram)l.push({t:'IG',u:social.instagram});if(social.facebook)l.push({t:'FB',u:social.facebook});if(social.whatsapp)l.push({t:'WA',u:'https://wa.me/'+social.whatsapp});if(social.youtube)l.push({t:'▶',u:social.youtube});if(social.twitter)l.push({t:'X',u:social.twitter});return l;}
 function renderSocial(){const l=socLinks();let h='';l.forEach(x=>{h+=`<a href="${x.u}" target="_blank">${x.t}</a>`;});document.getElementById('headerSocials').innerHTML=h;document.getElementById('footerSocials').innerHTML=h;}
 function renderHeader(){
-  document.getElementById('siteLogo').innerHTML=`${settings.logo||'🛍️'} ${settings.siteName||'Fashion'}<span>Hub</span>`;
+  document.getElementById('siteLogo').innerHTML=`${settings.logo||'🛍️'} ${settings.siteName||'IBM COLLECTION'}`;
   document.getElementById('heroTitle').innerHTML=(settings.hero||'New Season').replace('New Style','<span>New Style</span>');
   document.getElementById('heroTagline').textContent=settings.tag||'';
   document.getElementById('footerName').textContent=settings.siteName||'Fashion Hub';
