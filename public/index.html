@@ -83,4 +83,469 @@ body{background:#f8f9fa;color:#222;}
 .close-m{position:absolute;top:10px;right:14px;background:none;border:none;font-size:26px;cursor:pointer;}
 .try-upload{border:2px dashed #bbb;border-radius:10px;padding:18px;margin-bottom:14px;cursor:pointer;background:#fafafa;}
 .try-upload input{display:none;}
-.try-stage{position:relative;width:100%;max-width:420px;height:
+.try-stage{position:relative;width:100%;max-width:420px;height:360px;margin:10px auto;background:#eee;border-radius:10px;overflow:hidden;border:1px solid #ddd;}
+.try-stage img.person{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.try-stage .ov{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;}
+.try-stage .ov img{max-width:100%;max-height:100%;object-fit:contain;}
+.try-controls{max-width:420px;margin:6px auto 0;background:#f8f9fa;border-radius:10px;padding:14px;text-align:left;}
+.try-controls label{display:flex;justify-content:space-between;font-size:13px;font-weight:bold;margin:8px 0 3px;}
+.try-controls input[type=range]{width:100%;}
+.admin-wrap{display:none;min-height:100vh;}
+.admin-wrap.show{display:flex;}
+.sidebar{width:230px;background:#111;color:#fff;padding:20px 0;min-height:100vh;}
+.sidebar h3{padding:0 20px 18px;font-size:19px;}
+.sidebar h3 span{color:var(--primary,#ffc107);}
+.sidebar button{display:block;width:100%;text-align:left;background:none;border:none;color:#ccc;padding:13px 20px;font-size:14px;cursor:pointer;}
+.sidebar button:hover,.sidebar button.active{background:#222;color:var(--primary,#ffc107);border-left:3px solid var(--primary,#ffc107);}
+.admin-main{flex:1;padding:25px;background:#f1f3f6;}
+.card{background:#fff;border-radius:10px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.07);margin-bottom:20px;}
+label{display:block;font-size:13px;color:#555;margin:12px 0 5px;font-weight:bold;}
+input[type=text],input[type=number],input[type=password],input[type=url],input[type=email],select,textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:7px;font-size:14px;}
+.save-btn{background:#28a745;color:#fff;border:none;padding:10px 22px;border-radius:7px;cursor:pointer;font-weight:bold;margin-top:15px;}
+.gray{background:#6c757d;}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;}
+th{background:#111;color:#fff;padding:10px;font-size:13px;text-align:left;}
+td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middle;}
+.edit-btn{background:#ffc107;border:none;color:#111;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px;}
+.del-btn{background:#dc3545;border:none;color:#fff;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px;}
+.ord-st{display:inline-block;padding:3px 9px;border-radius:15px;font-size:11px;font-weight:bold;}
+.ord-pending{background:#fff3cd;color:#856404;}
+.ord-confirmed{background:#d1ecf1;color:#0c5460;}
+.ord-delivered{background:#d4edda;color:#155724;}
+.notice{background:#fff3cd;border:1px solid #ffe69c;color:#856404;padding:12px;border-radius:7px;font-size:13px;margin-bottom:15px;}
+.success-msg{background:#d4edda;color:#155724;padding:10px;border-radius:7px;font-size:13px;text-align:center;margin-top:12px;display:none;}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:15px;}
+.stat{background:#fff;border-radius:10px;padding:20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.stat b{display:block;font-size:30px;color:var(--primary,#ffc107);}
+.hidden{display:none !important;}
+@media(max-width:700px){.admin-wrap{flex-direction:column}.sidebar{width:100%;min-height:auto;display:flex;overflow-x:auto}.sidebar button{white-space:nowrap;padding:12px 15px}.row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- STORE -->
+<div id="storeView">
+  <div class="header">
+    <div class="logo" id="siteLogo">🛍️ Fashion<span>Hub</span></div>
+    <div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;">
+      <div class="social-icons" id="headerSocials"></div>
+      <button class="cart-btn" onclick="openCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
+      <nav class="nav">
+        <a href="#home">Home</a><a href="#categories">Categories</a><a href="#products">Products</a><a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+  <div class="hero" id="home">
+    <h1 id="heroTitle">New Season, <span>New Style</span></h1>
+    <p id="heroTagline"></p>
+    <a href="#categories" class="btn">Shop Now 🛒</a>
+  </div>
+  <div class="section" id="categories">
+    <h2 class="section-title">Hamari Categories</h2>
+    <div class="categories" id="catGrid"></div>
+  </div>
+  <div class="section" id="products">
+    <h2 class="section-title">Products</h2>
+    <p id="current-category" style="text-align:center;color:#777;margin-bottom:10px;">Sabhi products dikhaye ja rahe hain</p>
+    <div class="products" id="productGrid"></div>
+  </div>
+  <div class="footer" id="contact">
+    <h3 id="footerName">Fashion Hub</h3>
+    <div class="fs" id="footerSocials"></div>
+    <p id="footerAddress"></p>
+    <p id="footerPhone"></p>
+    <p class="cp" id="footerDomain"></p>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="modal" id="loginModal">
+  <div class="login-box">
+    <h2>🔐 Admin Login</h2>
+    <input type="text" id="loginUser" placeholder="Username">
+    <input type="password" id="loginPass" placeholder="Password">
+    <p class="err" id="loginErr">Galat username ya password!</p>
+    <button onclick="doLogin()">Login</button>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head"><h3>🛒 Cart</h3><button class="close-cart" onclick="closeCart()">✕</button></div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-foot">
+    <div class="cart-total"><span>Total:</span><span id="cartTotal">₹0</span></div>
+    <button class="btn" style="width:100%;margin-top:0;padding:11px;" onclick="openCheckout()">Checkout →</button>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="modal" id="checkoutModal">
+  <div class="checkout-box">
+    <button class="close-m" style="color:#111;" onclick="closeCheckout()">✕</button>
+    <h2>📦 Order Details</h2>
+    <label>Pura Naam</label><input type="text" id="cName">
+    <label>Mobile Number</label><input type="text" id="cPhone">
+    <label>Address</label><textarea id="cAddress" rows="2"></textarea>
+    <div class="row2">
+      <div><label>City</label><input type="text" id="cCity"></div>
+      <div><label>Pincode</label><input type="text" id="cPin"></div>
+    </div>
+    <h3>🧾 Order Summary</h3>
+    <div class="order-summary" id="checkoutSummary"></div>
+    <h3>💳 Payment — UPI</h3>
+    <div class="pay-box" id="payBox"></div>
+    <div class="whatsapp-note" id="waNote"></div>
+    <button class="btn" style="width:100%;background:#25D366;color:#fff;" onclick="placeOrder()">✅ Order Confirm</button>
+  </div>
+</div>
+
+<!-- TRY-ON -->
+<div class="modal" id="tryonModal">
+  <div class="tryon-box">
+    <button class="close-m" style="color:#111;" onclick="closeTry()">✕</button>
+    <h2>👀 Try-On</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:12px;">Photo upload karo, zoom/position adjust karke dekho</p>
+    <div class="try-upload" onclick="document.getElementById('tryFile').click()">
+      <span id="tryUploadText">📷 Photo upload karo</span>
+      <input type="file" id="tryFile" accept="image/*" onchange="loadTryPhoto(this)">
+    </div>
+    <div class="try-stage">
+      <img class="person" id="tryPerson" src="">
+      <div class="ov" id="tryOverlay" style="top:50%;width:60%;"><span style="font-size:90px;" id="tryEmoji">👕</span></div>
+    </div>
+    <div class="try-controls">
+      <label><span>Zoom</span><span id="vZoom">60%</span></label>
+      <input type="range" id="tryZoom" min="20" max="150" value="60" oninput="setTryZoom()">
+      <label><span>Position</span><span id="vPos">50%</span></label>
+      <input type="range" id="tryPos" min="5" max="95" value="50" oninput="setTryPos()">
+      <label><span>Transparency</span><span id="vOp">70%</span></label>
+      <input type="range" id="tryOp" min="20" max="100" value="70" oninput="setTryOp()">
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminPanel">
+  <div class="sidebar">
+    <h3>🛍️ Admin</h3>
+    <button class="active" onclick="showTab('dash',this)">📊 Dashboard</button>
+    <button onclick="showTab('orders',this)">📋 Orders</button>
+    <button onclick="showTab('products',this)">👕 Products</button>
+    <button onclick="showTab('categories',this)">🏷️ Categories</button>
+    <button onclick="showTab('payment',this)">💳 Payment</button>
+    <button onclick="showTab('settings',this)">⚙️ Settings</button>
+    <button onclick="showTab('social',this)">🔗 Social</button>
+    <button onclick="showTab('security',this)">🔑 Security</button>
+    <button onclick="exitAdmin()">↩️ View Store</button>
+    <button onclick="logout()" style="color:#f88;">🚪 Logout</button>
+  </div>
+  <div class="admin-main">
+    <div id="tab-dash">
+      <h2>📊 Dashboard</h2>
+      <div class="stats">
+        <div class="stat"><b id="statProducts">0</b>Products</div>
+        <div class="stat"><b id="statCats">0</b>Categories</div>
+        <div class="stat"><b id="statOrders">0</b>Orders</div>
+      </div>
+      <div class="card" style="margin-top:20px;">
+        <h3>🕵️ Secret Admin Access</h3>
+        <p style="font-size:14px;color:#555;line-height:1.9;">Logo par 5 baar click karo, ya Ctrl+Shift+A, ya URL me #admin daalo.</p>
+      </div>
+    </div>
+    <div id="tab-orders" class="hidden">
+      <h2>📋 Orders</h2>
+      <div class="card"><table id="orderTable"></table></div>
+    </div>
+    <div id="tab-products" class="hidden">
+      <h2>👕 Products</h2>
+      <div class="card">
+        <h3 id="prodFormTitle">➕ Add Product</h3>
+        <input type="hidden" id="pId">
+        <label>Name</label><input type="text" id="pName">
+        <div class="row2">
+          <div><label>Price</label><input type="number" id="pPrice"></div>
+          <div><label>Old Price</label><input type="number" id="pOld"></div>
+        </div>
+        <label>Category</label><select id="pCat"></select>
+        <div class="row2">
+          <div><label>Emoji</label><input type="text" id="pIcon"></div>
+          <div><label>Photo URL</label><input type="text" id="pImg"></div>
+        </div>
+        <label>Photo Upload</label><input type="file" id="pImgFile" accept="image/*" onchange="readPImg(this)">
+        <div id="pImgPrev"><img id="pImgPrevImg" src="" style="max-width:90px;border:1px solid #ddd;border-radius:8px;display:none;"></div>
+        <label>Sizes (comma se)</label><input type="text" id="pSizes" placeholder="S, M, L, XL, XXL">
+        <button class="save-btn" onclick="saveProduct()">💾 Save</button>
+        <button class="save-btn gray" onclick="resetProductForm()">Clear</button>
+      </div>
+      <div class="card"><table id="prodTable"></table></div>
+    </div>
+    <div id="tab-categories" class="hidden">
+      <h2>🏷️ Categories</h2>
+      <div class="card">
+        <label>Category Name</label><input type="text" id="catName">
+        <label>Icon</label><input type="text" id="catIcon">
+        <button class="save-btn" onclick="addCategory()">➕ Add</button>
+      </div>
+      <div class="card"><table id="catTable"></table></div>
+    </div>
+    <div id="tab-payment" class="hidden">
+      <h2>💳 Payment (BharatPe UPI)</h2>
+      <div class="notice">Customer kisi bhi UPI app se paisa bhejega — seedha aapke account me.</div>
+      <div class="card">
+        <label>UPI ID</label><input type="text" id="upId">
+        <label>Account Name</label><input type="text" id="upName">
+        <label>QR Code Upload</label><input type="file" id="upQrFile" accept="image/*" onchange="readQrFile(this)">
+        <label>Ya QR URL</label><input type="text" id="upQrUrl">
+        <div><img id="qrPrevImg" src="" style="max-width:140px;border:1px solid #ddd;border-radius:8px;display:none;"></div>
+        <button class="save-btn" onclick="savePayment()">💾 Save</button>
+      </div>
+    </div>
+    <div id="tab-settings" class="hidden">
+      <h2>⚙️ Settings</h2>
+      <div class="card">
+        <label>Site Name</label><input type="text" id="sName">
+        <label>Logo</label><input type="text" id="sLogo">
+        <label>Hero Heading</label><input type="text" id="sHero">
+        <label>Tagline</label><input type="text" id="sTag">
+        <label>Color</label><input type="color" id="sColor" value="#ffc107" style="height:42px;">
+        <label>Address</label><input type="text" id="sAddress">
+        <label>Phone</label><input type="text" id="sPhone">
+        <label>Email</label><input type="email" id="sEmail">
+        <label>Domain</label><input type="text" id="sDomain">
+        <button class="save-btn" onclick="saveSettings()">💾 Save</button>
+      </div>
+    </div>
+    <div id="tab-social" class="hidden">
+      <h2>🔗 Social Links</h2>
+      <div class="card">
+        <label>Instagram</label><input type="url" id="soInsta">
+        <label>Facebook</label><input type="url" id="soFb">
+        <label>WhatsApp Number</label><input type="text" id="soWa">
+        <label>YouTube</label><input type="url" id="soYt">
+        <label>Twitter/X</label><input type="url" id="soTw">
+        <button class="save-btn" onclick="saveSocial()">💾 Save</button>
+      </div>
+    </div>
+    <div id="tab-security" class="hidden">
+      <h2>🔑 Security</h2>
+      <div class="card">
+        <label>New Username</label><input type="text" id="adUser">
+        <label>New Password</label><input type="password" id="adPass">
+        <button class="save-btn" onclick="saveSecurity()">💾 Save</button>
+      </div>
+    </div>
+    <p class="success-msg" id="saveMsg">✅ Saved!</p>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let settings={},social={},pay={},categories=[],products=[],orders=[],cart=[],currentCat='all',selectedSizes={};
+
+// ===== API HELPERS =====
+async function api(url, opt){
+  const r = await fetch(url, opt);
+  return await r.json();
+}
+async function loadStore(){
+  const d = await api('/api/store');
+  settings=d.settings; social=d.social; pay=d.pay; categories=d.categories; products=d.products;
+  applyTheme(); renderHeader(); renderSocial(); renderCategories(); renderProducts();
+}
+async function loadAdmin(){
+  orders = (await api('/api/admin/orders')).data;
+  loadAdminData();
+}
+
+// ===== RENDER =====
+function applyTheme(){document.documentElement.style.setProperty('--primary',settings.color||'#ffc107');}
+function socLinks(){const l=[];if(social.instagram)l.push({t:'IG',u:social.instagram});if(social.facebook)l.push({t:'FB',u:social.facebook});if(social.whatsapp)l.push({t:'WA',u:'https://wa.me/'+social.whatsapp});if(social.youtube)l.push({t:'▶',u:social.youtube});if(social.twitter)l.push({t:'X',u:social.twitter});return l;}
+function renderSocial(){const l=socLinks();let h='';l.forEach(x=>{h+=`<a href="${x.u}" target="_blank">${x.t}</a>`;});document.getElementById('headerSocials').innerHTML=h;document.getElementById('footerSocials').innerHTML=h;}
+function renderHeader(){
+  document.getElementById('siteLogo').innerHTML=`${settings.logo||'🛍️'} ${settings.siteName||'Fashion'}<span>Hub</span>`;
+  document.getElementById('heroTitle').innerHTML=(settings.hero||'New Season').replace('New Style','<span>New Style</span>');
+  document.getElementById('heroTagline').textContent=settings.tag||'';
+  document.getElementById('footerName').textContent=settings.siteName||'Fashion Hub';
+  document.getElementById('footerAddress').textContent=settings.address||'';
+  document.getElementById('footerPhone').innerHTML=(settings.phone||'')+' | ✉️ '+(settings.email||'');
+  document.getElementById('footerDomain').textContent=settings.domain?`© ${new Date().getFullYear()} ${settings.domain}`:`© ${new Date().getFullYear()} ${settings.siteName||'Store'}`;
+  document.title=(settings.siteName||'Store')+' - Online Store';
+}
+function slugify(n){return n.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function catName(s){const c=categories.find(x=>slugify(x.name)===s);return c?c.name:s;}
+function renderCategories(){const g=document.getElementById('catGrid');let h=`<div class="cat-card" onclick="filterProducts('all')"><span class="ci">🛍️</span><b>All</b></div>`;categories.forEach(c=>{h+=`<div class="cat-card" onclick="filterProducts('${slugify(c.name)}')"><span class="ci">${c.icon||'🏷️'}</span><b>${c.name}</b></div>`;});g.innerHTML=h;}
+function pImgHtml(p){return p.pimg?`<img src="${p.pimg}" onerror="this.style.display='none';">`:null;}
+function renderProducts(){
+  const g=document.getElementById('productGrid');
+  const list=currentCat==='all'?products:products.filter(p=>p.cat===currentCat);
+  document.getElementById('current-category').textContent=currentCat==='all'?'Sabhi products':catName(currentCat);
+  if(!list.length){g.innerHTML='<p style="text-align:center;color:#888;">Koi product nahi.</p>';return;}
+  g.innerHTML=list.map((p,i)=>{const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const idx=products.indexOf(p);const sel=selectedSizes[idx]||sizes[0];return `
+    <div class="product">
+      <div class="pimg">${pImgHtml(p)||(p.icon||'👕')}</div>
+      <div class="pinfo">
+        <h4>${p.name}</h4><span class="price">₹${p.price}</span>${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}<br>
+        <span class="tag">${catName(p.cat)}</span>
+        <div class="size-row"><label>Size:</label>
+          <select class="size-select" onchange="selectedSizes[${idx}]=this.value">
+            ${sizes.map(s=>`<option ${s===sel?'selected':''}>${s}</option>`).join('')}
+          </select></div>
+        <button class="try-btn" onclick="openTry(${idx})">👀 Try-On</button>
+        <button class="add-btn" onclick="addToCart(${idx})">🛒 Add to Cart</button>
+      </div>
+    </div>`;}).join('');
+}
+function filterProducts(c){currentCat=c;renderProducts();}
+
+// ===== CART =====
+function saveCart(){updateCartCount();renderCart();}
+function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0);}
+function addToCart(i){const p=products[i];const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const sz=selectedSizes[i]||sizes[0];const ex=cart.find(x=>x.name===p.name&&x.size===sz);if(ex)ex.qty++;else cart.push({name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',size:sz,qty:1});saveCart();}
+function renderCart(){const box=document.getElementById('cartItems');if(!cart.length){box.innerHTML='<div class="empty">Cart khaali hai</div>';}else{box.innerHTML=cart.map((x,i)=>`
+  <div class="citem"><div class="cimg">${x.pimg?`<img src="${x.pimg}">`:(x.icon||'👕')}</div>
+    <div class="cinfo"><b>${x.name}</b><br><small>₹${x.price} — ${x.size}</small><br>
+    <div class="qty"><button onclick="chg(${i},-1)">−</button> ${x.qty} <button onclick="chg(${i},1)">+</button></div></div>
+    <button class="rm" onclick="rmItem(${i})">✕</button></div>`).join('');}
+  document.getElementById('cartTotal').textContent='₹'+cart.reduce((a,x)=>a+x.price*x.qty,0);}
+function chg(i,d){cart[i].qty+=d;if(cart[i].qty<1)cart[i].qty=1;saveCart();}
+function rmItem(i){cart.splice(i,1);saveCart();}
+function openCart(){document.getElementById('cartDrawer').classList.add('open');document.getElementById('cartOverlay').classList.add('show');}
+function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('cartOverlay').classList.remove('show');}
+
+// ===== CHECKOUT =====
+function openCheckout(){
+  if(!cart.length){alert('Cart khaali hai');return;}
+  closeCart();
+  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p style="border-top:1px solid #ddd;"><b>Total</b><b>₹${total}</b></p>`;
+  const pb=document.getElementById('payBox');
+  if(pay.upiId){
+    const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId)}&pn=${encodeURIComponent(pay.upiName||'Store')}&am=${total}&cu=INR&tn=Order`;
+    pb.innerHTML=(pay.qrCode?`<img src="${pay.qrCode}">`:'<p style="color:#888;">QR abhi nahi hua</p>')+`<div class="upi-id">${pay.upiId}</div><br>
+      <a class="pay-link" href="${upi}">📲 Pay Karein</a>
+      <p style="font-size:12px;color:#555;">Kisi bhi UPI app se paisa seedha admin ke account me jayega</p>`;
+    document.getElementById('waNote').innerHTML='<b>✅ Payment ke baad UTR/Transaction ID niche likho</b>';
+  }else{
+    pb.innerHTML='<p style="color:red;">Payment abhi set nahi hua</p>';document.getElementById('waNote').innerHTML='';
+  }
+  document.getElementById('checkoutModal').classList.add('show');
+}
+function closeCheckout(){document.getElementById('checkoutModal').classList.remove('show');}
+async function placeOrder(){
+  const name=document.getElementById('cName').value.trim();
+  const phone=document.getElementById('cPhone').value.trim();
+  const addr=document.getElementById('cAddress').value.trim();
+  const city=document.getElementById('cCity').value.trim();
+  const pin=document.getElementById('cPin').value.trim();
+  if(!name||!phone||!addr||!pin){alert('Saari details bharein');return;}
+  const utr=prompt('UPI me mila Transaction ID/UTR likho:');
+  if(!utr){alert('UTR zaroori hai');return;}
+  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const items=cart.map(x=>`${x.name} (${x.size}×${x.qty}) ₹${x.price*x.qty}`).join(', ');
+  const order={name,phone,address:addr+', '+city+' - '+pin,items,total:Number(total),utr:utr.trim()};
+  const r=await api('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(order)});
+  if(r.ok){
+    const msg=`🛒 *NEW ORDER* ${r.id}%0A👤 ${name}%0A📞 ${phone}%0A📍 ${addr}%2C ${city} - ${pin}%0A🧾 ${items}%0A💰 ₹${total}%0A🔖 ${utr}`;
+    window.open(`https://wa.me/${social.whatsapp||'919876543210'}?text=${msg}`,'_blank');
+    cart=[];saveCart();closeCheckout();
+    alert('✅ Order confirm! WhatsApp par details bhej di gayi.');
+  }
+}
+
+// ===== TRY-ON =====
+function openTry(i){const p=products[i];const ov=document.getElementById('tryOverlay');ov.innerHTML=p.pimg?`<img src="${p.pimg}">`:`<span style="font-size:90px;">${p.icon||'👕'}</span>`;document.getElementById('tryPerson').src='';document.getElementById('tryFile').value='';document.getElementById('tryUploadText').textContent='📷 Photo upload karo';setTryZoom();setTryPos();setTryOp();document.getElementById('tryonModal').classList.add('show');}
+function closeTry(){document.getElementById('tryonModal').classList.remove('show');}
+function loadTryPhoto(i){const f=i.files[0];const r=new FileReader();r.onload=e=>{document.getElementById('tryPerson').src=e.target.result;document.getElementById('tryUploadText').textContent='✅ Photo load ho gayi!';};r.readAsDataURL(f);}
+function setTryZoom(){const z=document.getElementById('tryZoom').value;document.getElementById('vZoom').textContent=z+'%';document.getElementById('tryOverlay').style.width=z+'%';}
+function setTryPos(){const p=document.getElementById('tryPos').value;document.getElementById('vPos').textContent=p+'%';document.getElementById('tryOverlay').style.top=p+'%';}
+function setTryOp(){const o=document.getElementById('tryOp').value;document.getElementById('vOp').textContent=o+'%';document.getElementById('tryOverlay').style.opacity=o/100;}
+
+// ===== ADMIN ACCESS =====
+function showLogin(){document.getElementById('loginModal').classList.add('show');}
+function closeLogin(){document.getElementById('loginModal').classList.remove('show');}
+let lc=0,lt;document.getElementById('siteLogo').addEventListener('click',function(){lc++;clearTimeout(lt);lt=setTimeout(()=>{lc=0;},1200);if(lc>=5){lc=0;showLogin();}});
+document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.shiftKey&&(e.key==='A'||e.key==='a')){e.preventDefault();showLogin();}});
+if(window.location.hash==='#admin')showLogin();
+document.getElementById('loginModal').addEventListener('click',e=>{if(e.target.id==='loginModal')closeLogin();});
+async function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const r=await api('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});
+  if(r.ok){closeLogin();openAdmin();}else{document.getElementById('loginErr').style.display='block';}
+}
+async function openAdmin(){
+  document.getElementById('adminPanel').classList.add('show');
+  document.getElementById('storeView').style.display='none';
+  await loadAdmin();
+  showTab('dash',document.querySelector('.sidebar button'));
+}
+function exitAdmin(){document.getElementById('adminPanel').classList.remove('show');document.getElementById('storeView').style.display='block';loadStore();}
+function logout(){exitAdmin();}
+function showTab(t,btn){document.querySelectorAll('.admin-main>div').forEach(d=>d.classList.add('hidden'));document.getElementById('tab-'+t).classList.remove('hidden');document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
+function flash(){const m=document.getElementById('saveMsg');m.style.display='block';setTimeout(()=>m.style.display='none',2000);}
+
+// ===== ADMIN LOAD =====
+function loadAdminData(){
+  document.getElementById('statProducts').textContent=products.length;
+  document.getElementById('statCats').textContent=categories.length;
+  document.getElementById('statOrders').textContent=orders.length;
+  document.getElementById('prodTable').innerHTML='<tr><th>Photo</th><th>Product</th><th>Price</th><th>Sizes</th><th></th></tr>'+products.map((p,i)=>`<tr><td>${p.pimg?`<img src="${p.pimg}" style="width:40px;height:40px;object-fit:cover;">`:(p.icon||'👕')}</td><td>${p.name}</td><td>₹${p.price}</td><td><small>${(p.sizes||[]).join(', ')}</small></td><td><button class="edit-btn" onclick="editProduct(${i})">✏️</button> <button class="del-btn" onclick="delProduct(${i})">🗑️</button></td></tr>`).join('');
+  document.getElementById('pCat').innerHTML=categories.map(c=>`<option value="${slugify(c.name)}">${c.name}</option>`).join('');
+  document.getElementById('catTable').innerHTML='<tr><th>Icon</th><th>Category</th><th></th></tr>'+categories.map((c,i)=>`<tr><td>${c.icon||'🏷️'}</td><td>${c.name}</td><td><button class="del-btn" onclick="delCategory(${i})">🗑️</button></td></tr>`).join('');
+  document.getElementById('orderTable').innerHTML=orders.length?'<tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr>'+orders.map((o,i)=>`<tr><td><b>${o.id}</b><br><small>${o.date}</small></td><td><b>${o.name}</b><br><small>${o.phone}<br>${o.address}</small></td><td><small>${o.items}</small></td><td>₹${o.total}</td><td><span class="ord-st ord-${o.status}">${o.status.toUpperCase()}</span></td><td><button class="edit-btn" onclick="setOrd(${i},'confirmed')">✅</button> <button class="edit-btn" style="background:#17a2b8;color:#fff;" onclick="setOrd(${i},'delivered')">📦</button> <button class="del-btn" onclick="delOrd(${i})">🗑️</button></td></tr>`).join(''):'<tr><td style="text-align:center;padding:20px;">Koi order nahi</td></tr>';
+  document.getElementById('upId').value=pay.upiId||'';
+  document.getElementById('upName').value=pay.upiName||'';
+  document.getElementById('upQrUrl').value=(pay.qrCode&&pay.qrCode.startsWith('http')?pay.qrCode:'');
+  const pv=document.getElementById('qrPrevImg');if(pay.qrCode){pv.src=pay.qrCode;pv.style.display='inline-block';}else{pv.style.display='none';}
+  document.getElementById('sName').value=settings.siteName||'';
+  document.getElementById('sLogo').value=settings.logo||'';
+  document.getElementById('sHero').value=settings.hero||'';
+  document.getElementById('sTag').value=settings.tag||'';
+  document.getElementById('sColor').value=settings.color||'#ffc107';
+  document.getElementById('sAddress').value=(settings.address||'').replace(/^📍\s*/,'');
+  document.getElementById('sPhone').value=(settings.phone||'').replace(/^📞\s*/,'');
+  document.getElementById('sEmail').value=settings.email||'';
+  document.getElementById('sDomain').value=settings.domain||'';
+  document.getElementById('soInsta').value=social.instagram||'';
+  document.getElementById('soFb').value=social.facebook||'';
+  document.getElementById('soWa').value=social.whatsapp||'';
+  document.getElementById('soYt').value=social.youtube||'';
+  document.getElementById('soTw').value=social.twitter||'';
+}
+
+// ===== PRODUCT CRUD =====
+function readPImg(i){const f=i.files[0];const r=new FileReader();r.onload=e=>{document.getElementById('pImgPrevImg').src=e.target.result;document.getElementById('pImgPrevImg').style.display='inline-block';document.getElementById('pImg').dataset.data=e.target.result;};r.readAsDataURL(f);}
+async function saveProduct(){
+  const id=document.getElementById('pId').value;
+  const data={name:document.getElementById('pName').value.trim(),price:Number(document.getElementById('pPrice').value),oldPrice:Number(document.getElementById('pOld').value)||0,cat:document.getElementById('pCat').value,icon:document.getElementById('pIcon').value.trim(),pimg:document.getElementById('pImg').value.trim()||(document.getElementById('pImg').dataset.data||''),sizes:document.getElementById('pSizes').value.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean)};
+  if(!data.name||!data.price){alert('Naam aur price bharo');return;}
+  if(id==='')products.push(data);else products[Number(id)]=data;
+  await api('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(products)});
+  resetProductForm();loadAdminData();flash();
+}
+function editProduct(i){const p=products[i];document.getElementById('pId').value=i;document.getElementById('pName').value=p.name;document.getElementById('pPrice').value=p.price;document.getElementById('pOld').value=p.oldPrice||'';document.getElementById('pCat').value=p.cat;document.getElementById('pIcon').value=p.icon;document.getElementById('pImg').value=p.pimg||'';document.getElementById('pSizes').value=(p.sizes||[]).join(', ');document.getElementById('prodFormTitle').textContent='✏️ Edit';}
+async function delProduct(i){if(confirm('Delete?')){products.splice(i,1);await api('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(products)});loadAdminData();}}
+function resetProductForm(){['pId','pName','pPrice','pOld','pIcon','pImg'].forEach(id=>document.getElementById(id).value='');document.getElementById('pSizes').value='S, M, L, XL, XXL';document.getElementById('pImgPrevImg').style.display='none';document.getElementById('pImg').dataset.data='';document.getElementById('prodFormTitle').textContent='➕ Add Product';}
+
+// ===== CATEGORY CRUD =====
+async function addCategory(){const n=document.getElementById('catName').value.trim();const ic=document.getElementById('catIcon').value.trim();if(!n){alert('Naam bharo');return;}if(categories.some(c=>slugify(c.name)===slugify(n))){alert('Pehle se hai');return;}categories.push({name:n,icon:ic||'🏷️'});await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});document.getElementById('catName').value='';document.getElementById('catIcon').value='';loadAdminData();flash();}
+async function delCategory(i){if(confirm('Delete?')){categories.splice(i,1);await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});loadAdminData();}}
+
+// ===== ORDERS =====
+async function setOrd(i,st){orders[i].status=st;await api('/api/admin/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(orders)});loadAdminData();flash();}
+async function delOrd(i){if(confirm('Delete?')){orders.splice(i,1);await api('/api/admin/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(orders)});loadAdminData();}}
+
+// ===== SAVE SETTINGS =====
+async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();loadAdminData();flash();}
+async function saveSocial(){const d={instagram:document.getElementById('soInsta').value,facebook:document.getElementById('soFb').value,whatsapp:document.getElementById('soWa').value,youtube:document.getElementById('soYt').value,twitter:document.getElementById('soTw').value};await api('/api/admin/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});social={...social,...d};loadAdminData();flash();}
+async function savePayment(){const upiId=document.getElementById('upId').value.trim();if(!upiId){alert('UPI ID zaroori');return;}const d={upiId,upiName:document.getElementById('upName').value};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});pay={upiId,upiName:d.upiName,qrCode:d.qrCode||pay.qrCode};loadAdminData();flash();}
+function readQrFile(i){const f=i.files[0];const r=new FileReader();r.onload=async e=>{pay.qrCode=e.target.result;const pv=document.getElementById('qrPrevImg');pv.src=pay.qrCode;pv.style.display='inline-block';document.getElementById('upQrUrl').value='';await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upiId:pay.upiId,upiName:pay.upiName,qrCode:pay.qrCode})});};r.readAsDataURL(f);}
+async function saveSecurity(){const u=document.getElementById('adUser').value.trim();const p=document.getElementById('adPass').value.trim();if(!u||!p){alert('Bharo');return;}await api('/api/admin/security',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});alert('✅ Login details update ho gayi! Yaad rakhein.');flash();}
+
+// ===== INIT =====
+loadStore();
+</script>
+</body>
+</html>
