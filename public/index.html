@@ -30,8 +30,59 @@ body{background:#f8f9fa;color:#222;}
 .cat-card .ci{font-size:50px;display:block;margin-bottom:8px;}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;margin-top:35px;}
 .product{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.08);transition:.3s;display:flex;flex-direction:column;}
-.product .pimg{height:190px;background:#f0f0f0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:75px;}
-.product .pimg img{width:100%;height:100%;object-fit:cover;}
+.product .pimg{
+  height:420px;
+  background:#f5f5f5;
+  overflow:hidden;
+  position:relative;
+  touch-action:pan-y;
+  user-select:none;
+}
+
+.product .pimg-slider{
+  width:100%;
+  height:100%;
+  display:flex;
+  transition:transform .45s ease;
+}
+
+.product .pimg-slide{
+  min-width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.product .pimg-slide img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.pimg-dots{
+  position:absolute;
+  bottom:10px;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  z-index:5;
+}
+
+.pimg-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:rgba(0,0,0,.35);
+}
+
+.pimg-dot.active{
+  background:#ffc107;
+  transform:scale(1.25);
+}
 .pinfo{padding:16px;flex:1;display:flex;flex-direction:column;}
 .pinfo h4{font-size:16px;margin-bottom:6px;}
 .price{color:#e8502b;font-weight:bold;font-size:17px;}
@@ -270,11 +321,20 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
         </div>
         <label>Category</label><select id="pCat"></select>
         <div class="row2">
-          <div><label>Emoji</label><input type="text" id="pIcon"></div>
-          <div><label>Photo URL</label><input type="text" id="pImg"></div>
-        </div>
-        <label>Photo Upload</label><input type="file" id="pImgFile" accept="image/*" onchange="readPImg(this)">
-        <div id="pImgPrev"><img id="pImgPrevImg" src="" style="max-width:90px;border:1px solid #ddd;border-radius:8px;display:none;"></div>
+  <div>
+    <label>Emoji</label>
+    <input type="text" id="pIcon">
+  </div>
+</div>
+
+<label>Product Photos — Minimum 5</label>
+<input type="file" id="pImgFiles" accept="image/*" multiple onchange="readPImgs(this)">
+
+<p style="font-size:13px;color:#777;margin:6px 0;">
+  Minimum 5 photos required
+</p>
+
+<div id="pImgPrev"></div>
         <label>Sizes (comma se)</label><input type="text" id="pSizes" placeholder="S, M, L, XL, XXL">
         <button class="save-btn" onclick="saveProduct()">💾 Save</button>
         <button class="save-btn gray" onclick="resetProductForm()">Clear</button>
@@ -364,10 +424,10 @@ function applyTheme(){document.documentElement.style.setProperty('--primary',set
 function socLinks(){const l=[];if(social.instagram)l.push({t:'IG',u:social.instagram});if(social.facebook)l.push({t:'FB',u:social.facebook});if(social.whatsapp)l.push({t:'WA',u:'https://wa.me/'+social.whatsapp});if(social.youtube)l.push({t:'▶',u:social.youtube});if(social.twitter)l.push({t:'X',u:social.twitter});return l;}
 function renderSocial(){const l=socLinks();let h='';l.forEach(x=>{h+=`<a href="${x.u}" target="_blank">${x.t}</a>`;});document.getElementById('headerSocials').innerHTML=h;document.getElementById('footerSocials').innerHTML=h;}
 function renderHeader(){
-  document.getElementById('siteLogo').innerHTML=`${settings.logo||'🛍️'} ${settings.siteName||'IBM COLLECTION'}`;
+  document.getElementById('siteLogo').innerHTML=`<img src="IBM_COLLECTION_logo.png" alt="IBM COLLECTION" style="height:55px;width:55px;object-fit:contain;">`;
   document.getElementById('heroTitle').innerHTML=(settings.hero||'New Season').replace('New Style','<span>New Style</span>');
   document.getElementById('heroTagline').textContent=settings.tag||'';
-  document.getElementById('footerName').textContent=settings.siteName||'Fashion Hub';
+  document.getElementById('footerName').textContent=settings.siteName||'IBM COLLECTION';
   document.getElementById('footerAddress').textContent=settings.address||'';
   document.getElementById('footerPhone').innerHTML=(settings.phone||'')+' | ✉️ '+(settings.email||'');
   document.getElementById('footerDomain').textContent=settings.domain?`© ${new Date().getFullYear()} ${settings.domain}`:`© ${new Date().getFullYear()} ${settings.siteName||'Store'}`;
@@ -376,26 +436,173 @@ function renderHeader(){
 function slugify(n){return n.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 function catName(s){const c=categories.find(x=>slugify(x.name)===s);return c?c.name:s;}
 function renderCategories(){const g=document.getElementById('catGrid');let h=`<div class="cat-card" onclick="filterProducts('all')"><span class="ci">🛍️</span><b>All</b></div>`;categories.forEach(c=>{h+=`<div class="cat-card" onclick="filterProducts('${slugify(c.name)}')"><span class="ci">${c.icon||'🏷️'}</span><b>${c.name}</b></div>`;});g.innerHTML=h;}
-function pImgHtml(p){return p.pimg?`<img src="${p.pimg}" onerror="this.style.display='none';">`:null;}
-function renderProducts(){
+function pImgHtml(p,idx){
+
+  const imgs=Array.isArray(p.pimgs)
+    ?p.pimgs.filter(Boolean)
+    :(p.pimg?[p.pimg]:[]);
+
+  if(!imgs.length){
+    return `<div style="font-size:75px;width:100%;height:100%;display:flex;align-items:center;justify-content:center;">${p.icon||'👕'}</div>`;
+  }
+
+  return `
+    <div class="pimg-slider"
+      id="slider-${idx}"
+      data-index="0"
+      data-count="${imgs.length}"
+      ontouchstart="sliderTouchStart(event,${idx})"
+      ontouchend="sliderTouchEnd(event,${idx})">
+
+      ${imgs.map(src=>`
+        <div class="pimg-slide">
+          <img src="${src}" draggable="false">
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="pimg-dots" id="dots-${idx}">
+      ${imgs.map((_,i)=>`
+        <span class="pimg-dot ${i===0?'active':''}"></span>
+      `).join('')}
+    </div>
+  `;
+}
+
+
   const g=document.getElementById('productGrid');
-  const list=currentCat==='all'?products:products.filter(p=>p.cat===currentCat);
-  document.getElementById('current-category').textContent=currentCat==='all'?'Sabhi products':catName(currentCat);
-  if(!list.length){g.innerHTML='<p style="text-align:center;color:#888;">Koi product nahi.</p>';return;}
-  g.innerHTML=list.map((p,i)=>{const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const idx=products.indexOf(p);const sel=selectedSizes[idx]||sizes[0];return `
-    <div class="product">
-      <div class="pimg">${pImgHtml(p)||(p.icon||'👕')}</div>
-      <div class="pinfo">
-        <h4>${p.name}</h4><span class="price">₹${p.price}</span>${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}<br>
-        <span class="tag">${catName(p.cat)}</span>
-        <div class="size-row"><label>Size:</label>
-          <select class="size-select" onchange="selectedSizes[${idx}]=this.value">
-            ${sizes.map(s=>`<option ${s===sel?'selected':''}>${s}</option>`).join('')}
-          </select></div>
-        <button class="try-btn" onclick="openTry(${idx})">👀 Try-On</button>
-        <button class="add-btn" onclick="addToCart(${idx})">🛒 Add to Cart</button>
+
+  const list=currentCat==='all'
+    ?products
+    :products.filter(p=>p.cat===currentCat);
+
+  document.getElementById('current-category').textContent=
+    currentCat==='all'?'Sabhi products':catName(currentCat);
+
+  if(!list.length){
+    g.innerHTML='<p style="text-align:center;color:#888;">Koi product nahi.</p>';
+    return;
+  }
+
+  g.innerHTML=list.map((p,i)=>{
+
+    const sizes=p.sizes&&p.sizes.length
+      ?p.sizes:['S','M','L','XL','XXL'];
+
+    const idx=products.indexOf(p);
+    const sel=selectedSizes[idx]||sizes[0];
+
+    return `
+      <div class="product">
+
+        <div class="pimg">
+          ${pImgHtml(p,idx)}
+        </div>
+
+        <div class="pinfo">
+          <h4>${p.name}</h4>
+
+          <span class="price">₹${p.price}</span>
+
+          ${p.oldPrice
+            ?`<span class="old">₹${p.oldPrice}</span>`
+            :''
+          }
+
+          <br>
+
+          <span class="tag">${catName(p.cat)}</span>
+
+          <div class="size-row">
+            <label>Size:</label>
+
+            <select class="size-select"
+              onchange="selectedSizes[${idx}]=this.value">
+
+              ${sizes.map(s=>
+                `<option ${s===sel?'selected':''}>${s}</option>`
+              ).join('')}
+
+            </select>
+          </div>
+
+          <button class="try-btn" onclick="openTry(${idx})">
+            👀 Try-On
+          </button>
+
+          <button class="add-btn" onclick="addToCart(${idx})">
+            🛒 Add to Cart
+          </button>
+        </div>
+
       </div>
-    </div>`;}).join('');
+    `;
+
+  }).join('');
+
+  list.forEach((p)=>{
+    const idx=products.indexOf(p);
+    startAutoSlider(idx);
+  });
+}// Part 4 slider functions
+let sliderTimers = {};
+let sliderStarts = {};
+
+function updateSlider(id, index){
+  const track = document.getElementById(`track-${id}`);
+  const dots = document.getElementById(`dots-${id}`);
+  if(!track) return;
+
+  track.style.transform = `translateX(-${index * 100}%)`;
+
+  if(dots){
+    [...dots.children].forEach((d,i)=>{
+      d.classList.toggle('active', i===index);
+    });
+  }
+}
+
+function startAutoSlider(id, total){
+  if(total <= 1) return;
+
+  clearInterval(sliderTimers[id]);
+
+  let index = 0;
+
+  sliderTimers[id] = setInterval(()=>{
+    index = (index + 1) % total;
+    updateSlider(id,index);
+  },3000);
+}
+
+function sliderTouchStart(e,id){
+  sliderStarts[id] = e.touches[0].clientX;
+}
+
+function sliderTouchEnd(e,id,total){
+  if(sliderStarts[id] == null) return;
+
+  const end = e.changedTouches[0].clientX;
+  const diff = sliderStarts[id] - end;
+
+  if(Math.abs(diff) > 50){
+    const track = document.getElementById(`track-${id}`);
+    if(!track) return;
+
+    const current = Math.round(
+      Math.abs(parseFloat(track.dataset.index || 0))
+    );
+
+    let next = current;
+
+    if(diff > 0) next = (current + 1) % total;
+    else next = (current - 1 + total) % total;
+
+    track.dataset.index = next;
+    updateSlider(id,next);
+  }
+
+  sliderStarts[id] = null;
 }
 function filterProducts(c){currentCat=c;renderProducts();}
 
