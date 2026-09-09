@@ -8,6 +8,13 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif;}
 body{background:#f8f9fa;color:#222;}
 .header{background:#111;color:#fff;padding:14px 30px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:100;}
+.header-search{display:flex;justify-content:center;align-items:center;gap:6px;min-width:280px;max-width:520px;width:100%;margin:0 18px;}
+.header-search input{width:100%;padding:10px 14px;border:1px solid #444;border-radius:22px;background:#222;color:#fff;outline:none;font-size:14px;}
+.header-search input::placeholder{color:#aaa;}
+.header-search button{border:0;background:#ffc107;color:#111;padding:10px 16px;border-radius:22px;font-weight:bold;cursor:pointer;white-space:nowrap;}
+.header-search button:hover{filter:brightness(1.08);}
+@media(max-width:900px){.header{gap:10px}.header-search{order:3;max-width:none;margin:8px 0 0;flex-basis:100%;}.header>div:last-child{margin-left:auto;}}
+@media(max-width:700px){.header{padding:10px 14px}.header .logo img{height:45px !important}.header-search{min-width:0}.nav a{margin-left:8px;font-size:12px}}
 .header .logo{font-size:24px;font-weight:bold;cursor:pointer;user-select:none;}
 .header .logo span{color:var(--primary,#ffc107);}
 .nav a{color:#fff;text-decoration:none;margin-left:15px;font-size:14px;}
@@ -178,6 +185,10 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
 <div id="storeView">
   <div class="header">
     <div class="logo" id="siteLogo"><img src="IBM_COLLECTION_logo.png" alt="IBM COLLECTION" style="height:55px;width:auto;object-fit:contain;"></div>
+    <div class="header-search">
+      <input id="searchInput" type="search" placeholder="Search products..." onkeydown="if(event.key==='Enter')searchProducts()">
+      <button type="button" onclick="searchProducts()">🔍 Search</button>
+    </div>
     <div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;">
       <div class="social-icons" id="headerSocials"></div>
       <button class="cart-btn" onclick="openCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
@@ -437,7 +448,6 @@ function slugify(n){return n.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').rep
 function catName(s){const c=categories.find(x=>slugify(x.name)===s);return c?c.name:s;}
 function renderCategories(){const g=document.getElementById('catGrid');let h=`<div class="cat-card" onclick="filterProducts('all')"><span class="ci">🛍️</span><b>All</b></div>`;categories.forEach(c=>{h+=`<div class="cat-card" onclick="filterProducts('${slugify(c.name)}')"><span class="ci">${c.icon||'🏷️'}</span><b>${c.name}</b></div>`;});g.innerHTML=h;}
 function pImgHtml(p,idx){
-
   const imgs=Array.isArray(p.pimgs)
     ?p.pimgs.filter(Boolean)
     :(p.pimg?[p.pimg]:[]);
@@ -453,157 +463,138 @@ function pImgHtml(p,idx){
       data-count="${imgs.length}"
       ontouchstart="sliderTouchStart(event,${idx})"
       ontouchend="sliderTouchEnd(event,${idx})">
-
       ${imgs.map(src=>`
         <div class="pimg-slide">
-          <img src="${src}" draggable="false">
+          <img src="${src}" draggable="false" alt="${p.name||'Product'}">
         </div>
       `).join('')}
     </div>
-
-    <div class="pimg-dots" id="dots-${idx}">
-      ${imgs.map((_,i)=>`
-        <span class="pimg-dot ${i===0?'active':''}"></span>
-      `).join('')}
-    </div>
+    ${imgs.length>1?`<div class="pimg-dots" id="dots-${idx}">
+      ${imgs.map((_,i)=>`<span class="pimg-dot ${i===0?'active':''}"></span>`).join('')}
+    </div>`:''}
   `;
 }
 
-
+function renderProducts(){
   const g=document.getElementById('productGrid');
-
-  const list=currentCat==='all'
+  let list=currentCat==='all'
     ?products
     :products.filter(p=>p.cat===currentCat);
 
-  document.getElementById('current-category').textContent=
-    currentCat==='all'?'Sabhi products':catName(currentCat);
+  const q=(window.searchQuery||'').trim().toLowerCase();
+  if(q){
+    list=list.filter(p=>
+      String(p.name||'').toLowerCase().includes(q) ||
+      String(p.cat||'').toLowerCase().includes(q) ||
+      String(catName(p.cat)||'').toLowerCase().includes(q)
+    );
+  }
+
+  document.getElementById('current-category').textContent=q
+    ?`Search results for "${q}"`
+    :(currentCat==='all'?'Sabhi products':catName(currentCat));
 
   if(!list.length){
-    g.innerHTML='<p style="text-align:center;color:#888;">Koi product nahi.</p>';
+    g.innerHTML='<p style="text-align:center;color:#888;grid-column:1/-1;padding:30px;">Koi product nahi mila.</p>';
     return;
   }
 
   g.innerHTML=list.map((p,i)=>{
-
-    const sizes=p.sizes&&p.sizes.length
-      ?p.sizes:['S','M','L','XL','XXL'];
-
+    const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];
     const idx=products.indexOf(p);
     const sel=selectedSizes[idx]||sizes[0];
 
     return `
       <div class="product">
-
         <div class="pimg">
           ${pImgHtml(p,idx)}
         </div>
-
         <div class="pinfo">
           <h4>${p.name}</h4>
-
           <span class="price">₹${p.price}</span>
-
-          ${p.oldPrice
-            ?`<span class="old">₹${p.oldPrice}</span>`
-            :''
-          }
-
-          <br>
-
+          ${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}<br>
           <span class="tag">${catName(p.cat)}</span>
-
           <div class="size-row">
             <label>Size:</label>
-
-            <select class="size-select"
-              onchange="selectedSizes[${idx}]=this.value">
-
-              ${sizes.map(s=>
-                `<option ${s===sel?'selected':''}>${s}</option>`
-              ).join('')}
-
+            <select class="size-select" onchange="selectedSizes[${idx}]=this.value">
+              ${sizes.map(s=>`<option ${s===sel?'selected':''}>${s}</option>`).join('')}
             </select>
           </div>
-
-          <button class="try-btn" onclick="openTry(${idx})">
-            👀 Try-On
-          </button>
-
-          <button class="add-btn" onclick="addToCart(${idx})">
-            🛒 Add to Cart
-          </button>
+          <button class="try-btn" onclick="openTry(${idx})">👀 Try-On</button>
+          <button class="add-btn" onclick="addToCart(${idx})">🛒 Add to Cart</button>
         </div>
-
       </div>
     `;
-
   }).join('');
 
-  list.forEach((p)=>{
+  list.forEach(p=>{
     const idx=products.indexOf(p);
-    startAutoSlider(idx);
+    const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);
+    startAutoSlider(idx,imgs.length);
   });
-}// Part 4 slider functions
-let sliderTimers = {};
-let sliderStarts = {};
+}
 
-function updateSlider(id, index){
-  const track = document.getElementById(`track-${id}`);
-  const dots = document.getElementById(`dots-${id}`);
-  if(!track) return;
+let sliderTimers={};
+let sliderStarts={};
 
-  track.style.transform = `translateX(-${index * 100}%)`;
-
+function updateSlider(id,index){
+  const track=document.getElementById(`slider-${id}`);
+  const dots=document.getElementById(`dots-${id}`);
+  if(!track)return;
+  const total=Number(track.dataset.count||0);
+  if(!total)return;
+  index=(index+total)%total;
+  track.dataset.index=index;
+  track.style.transform=`translateX(-${index*100}%)`;
   if(dots){
-    [...dots.children].forEach((d,i)=>{
-      d.classList.toggle('active', i===index);
-    });
+    [...dots.children].forEach((d,i)=>d.classList.toggle('active',i===index));
   }
 }
 
-function startAutoSlider(id, total){
-  if(total <= 1) return;
-
+function startAutoSlider(id,total){
   clearInterval(sliderTimers[id]);
-
-  let index = 0;
-
-  sliderTimers[id] = setInterval(()=>{
-    index = (index + 1) % total;
-    updateSlider(id,index);
+  if(!total||total<=1)return;
+  sliderTimers[id]=setInterval(()=>{
+    const track=document.getElementById(`slider-${id}`);
+    if(!track)return;
+    const current=Number(track.dataset.index||0);
+    updateSlider(id,current+1);
   },3000);
 }
 
 function sliderTouchStart(e,id){
-  sliderStarts[id] = e.touches[0].clientX;
+  if(!e.touches||!e.touches.length)return;
+  sliderStarts[id]=e.touches[0].clientX;
 }
 
-function sliderTouchEnd(e,id,total){
-  if(sliderStarts[id] == null) return;
-
-  const end = e.changedTouches[0].clientX;
-  const diff = sliderStarts[id] - end;
-
-  if(Math.abs(diff) > 50){
-    const track = document.getElementById(`track-${id}`);
-    if(!track) return;
-
-    const current = Math.round(
-      Math.abs(parseFloat(track.dataset.index || 0))
-    );
-
-    let next = current;
-
-    if(diff > 0) next = (current + 1) % total;
-    else next = (current - 1 + total) % total;
-
-    track.dataset.index = next;
-    updateSlider(id,next);
+function sliderTouchEnd(e,id){
+  if(sliderStarts[id]==null)return;
+  const track=document.getElementById(`slider-${id}`);
+  if(!track){sliderStarts[id]=null;return;}
+  const total=Number(track.dataset.count||0);
+  const end=e.changedTouches&&e.changedTouches.length?e.changedTouches[0].clientX:sliderStarts[id];
+  const diff=sliderStarts[id]-end;
+  const current=Number(track.dataset.index||0);
+  if(total>1&&Math.abs(diff)>40){
+    updateSlider(id,diff>0?current+1:current-1);
+    startAutoSlider(id,total);
   }
-
-  sliderStarts[id] = null;
+  sliderStarts[id]=null;
 }
+
+function searchProducts(){
+  window.searchQuery=document.getElementById('searchInput').value||'';
+  renderProducts();
+  document.getElementById('products').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function clearSearch(){
+  window.searchQuery='';
+  const input=document.getElementById('searchInput');
+  if(input)input.value='';
+  renderProducts();
+}
+
 function filterProducts(c){currentCat=c;renderProducts();}
 
 // ===== CART =====
@@ -698,7 +689,7 @@ function loadAdminData(){
   document.getElementById('statProducts').textContent=products.length;
   document.getElementById('statCats').textContent=categories.length;
   document.getElementById('statOrders').textContent=orders.length;
-  document.getElementById('prodTable').innerHTML='<tr><th>Photo</th><th>Product</th><th>Price</th><th>Sizes</th><th></th></tr>'+products.map((p,i)=>`<tr><td>${p.pimg?`<img src="${p.pimg}" style="width:40px;height:40px;object-fit:cover;">`:(p.icon||'👕')}</td><td>${p.name}</td><td>₹${p.price}</td><td><small>${(p.sizes||[]).join(', ')}</small></td><td><button class="edit-btn" onclick="editProduct(${i})">✏️</button> <button class="del-btn" onclick="delProduct(${i})">🗑️</button></td></tr>`).join('');
+  document.getElementById('prodTable').innerHTML='<tr><th>Photo</th><th>Product</th><th>Price</th><th>Sizes</th><th></th></tr>'+products.map((p,i)=>`<tr><td>${(p.pimgs&&p.pimgs[0])||p.pimg?`<img src="${(p.pimgs&&p.pimgs[0])||p.pimg}" style="width:40px;height:40px;object-fit:cover;">`:(p.icon||'👕')}</td><td>${p.name}</td><td>₹${p.price}</td><td><small>${(p.sizes||[]).join(', ')}</small></td><td><button class="edit-btn" onclick="editProduct(${i})">✏️</button> <button class="del-btn" onclick="delProduct(${i})">🗑️</button></td></tr>`).join('');
   document.getElementById('pCat').innerHTML=categories.map(c=>`<option value="${slugify(c.name)}">${c.name}</option>`).join('');
   document.getElementById('catTable').innerHTML='<tr><th>Icon</th><th>Category</th><th></th></tr>'+categories.map((c,i)=>`<tr><td>${c.icon||'🏷️'}</td><td>${c.name}</td><td><button class="del-btn" onclick="delCategory(${i})">🗑️</button></td></tr>`).join('');
   document.getElementById('orderTable').innerHTML=orders.length?'<tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr>'+orders.map((o,i)=>`<tr><td><b>${o.id}</b><br><small>${o.date}</small></td><td><b>${o.name}</b><br><small>${o.phone}<br>${o.address}</small></td><td><small>${o.items}</small></td><td>₹${o.total}</td><td><span class="ord-st ord-${o.status}">${o.status.toUpperCase()}</span></td><td><button class="edit-btn" onclick="setOrd(${i},'confirmed')">✅</button> <button class="edit-btn" style="background:#17a2b8;color:#fff;" onclick="setOrd(${i},'delivered')">📦</button> <button class="del-btn" onclick="delOrd(${i})">🗑️</button></td></tr>`).join(''):'<tr><td style="text-align:center;padding:20px;">Koi order nahi</td></tr>';
@@ -723,18 +714,109 @@ function loadAdminData(){
 }
 
 // ===== PRODUCT CRUD =====
-function readPImg(i){const f=i.files[0];const r=new FileReader();r.onload=e=>{document.getElementById('pImgPrevImg').src=e.target.result;document.getElementById('pImgPrevImg').style.display='inline-block';document.getElementById('pImg').dataset.data=e.target.result;};r.readAsDataURL(f);}
+let productImages=[];
+
+function readPImgs(input){
+  const files=[...input.files];
+  if(files.length<5){
+    alert('Minimum 5 photos select karo');
+    input.value='';
+    productImages=[];
+    const prev=document.getElementById('pImgPrev');
+    if(prev)prev.innerHTML='';
+    return;
+  }
+
+  productImages=[];
+  const prev=document.getElementById('pImgPrev');
+  if(prev)prev.innerHTML='';
+
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      productImages.push(e.target.result);
+      if(prev){
+        const img=document.createElement('img');
+        img.src=e.target.result;
+        img.style.cssText='width:80px;height:80px;object-fit:cover;margin:5px;border:1px solid #ddd;border-radius:8px;';
+        prev.appendChild(img);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 async function saveProduct(){
   const id=document.getElementById('pId').value;
-  const data={name:document.getElementById('pName').value.trim(),price:Number(document.getElementById('pPrice').value),oldPrice:Number(document.getElementById('pOld').value)||0,cat:document.getElementById('pCat').value,icon:document.getElementById('pIcon').value.trim(),pimg:document.getElementById('pImg').value.trim()||(document.getElementById('pImg').dataset.data||''),sizes:document.getElementById('pSizes').value.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean)};
+  const oldProduct=id!==''?(products[Number(id)]||{}):{};
+  const imgs=productImages.length>=5?productImages:(Array.isArray(oldProduct.pimgs)?oldProduct.pimgs:[]);
+
+  const data={
+    name:document.getElementById('pName').value.trim(),
+    price:Number(document.getElementById('pPrice').value),
+    oldPrice:Number(document.getElementById('pOld').value)||0,
+    cat:document.getElementById('pCat').value,
+    icon:document.getElementById('pIcon').value.trim(),
+    pimg:imgs[0]||oldProduct.pimg||'',
+    pimgs:imgs,
+    sizes:document.getElementById('pSizes').value.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean)
+  };
+
   if(!data.name||!data.price){alert('Naam aur price bharo');return;}
-  if(id==='')products.push(data);else products[Number(id)]=data;
-  await api('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(products)});
-  resetProductForm();loadAdminData();flash();
+  if(data.pimgs.length<5){alert('Minimum 5 product photos required');return;}
+
+  if(id==='')products.push(data);
+  else products[Number(id)]=data;
+
+  const r=await api('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(products)});
+  if(!r.ok){alert('Product save nahi hua');return;}
+
+  resetProductForm();
+  loadAdminData();
+  renderProducts();
+  flash();
+  alert('✅ Product saved with 5 photos');
 }
-function editProduct(i){const p=products[i];document.getElementById('pId').value=i;document.getElementById('pName').value=p.name;document.getElementById('pPrice').value=p.price;document.getElementById('pOld').value=p.oldPrice||'';document.getElementById('pCat').value=p.cat;document.getElementById('pIcon').value=p.icon;document.getElementById('pImg').value=p.pimg||'';document.getElementById('pSizes').value=(p.sizes||[]).join(', ');document.getElementById('prodFormTitle').textContent='✏️ Edit';}
-async function delProduct(i){if(confirm('Delete?')){products.splice(i,1);await api('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(products)});loadAdminData();}}
-function resetProductForm(){['pId','pName','pPrice','pOld','pIcon','pImg'].forEach(id=>document.getElementById(id).value='');document.getElementById('pSizes').value='S, M, L, XL, XXL';document.getElementById('pImgPrevImg').style.display='none';document.getElementById('pImg').dataset.data='';document.getElementById('prodFormTitle').textContent='➕ Add Product';}
+
+function editProduct(i){
+  const p=products[i];
+  document.getElementById('pId').value=i;
+  document.getElementById('pName').value=p.name||'';
+  document.getElementById('pPrice').value=p.price||'';
+  document.getElementById('pOld').value=p.oldPrice||'';
+  document.getElementById('pCat').value=p.cat||'';
+  document.getElementById('pIcon').value=p.icon||'';
+  document.getElementById('pSizes').value=(p.sizes||[]).join(', ');
+  productImages=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);
+  const prev=document.getElementById('pImgPrev');
+  if(prev){
+    prev.innerHTML=productImages.map(src=>`<img src="${src}" style="width:80px;height:80px;object-fit:cover;margin:5px;border:1px solid #ddd;border-radius:8px;">`).join('');
+  }
+  document.getElementById('prodFormTitle').textContent='✏️ Edit';
+}
+
+async function delProduct(i){
+  if(confirm('Delete?')){
+    products.splice(i,1);
+    await api('/api/admin/products',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(products)});
+    loadAdminData();
+    renderProducts();
+  }
+}
+
+function resetProductForm(){
+  ['pId','pName','pPrice','pOld','pIcon'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.value='';
+  });
+  const files=document.getElementById('pImgFiles');
+  if(files)files.value='';
+  productImages=[];
+  const prev=document.getElementById('pImgPrev');
+  if(prev)prev.innerHTML='';
+  document.getElementById('pSizes').value='S, M, L, XL, XXL';
+  document.getElementById('prodFormTitle').textContent='➕ Add Product';
+}
 
 // ===== CATEGORY CRUD =====
 async function addCategory(){const n=document.getElementById('catName').value.trim();const ic=document.getElementById('catIcon').value.trim();if(!n){alert('Naam bharo');return;}if(categories.some(c=>slugify(c.name)===slugify(n))){alert('Pehle se hai');return;}categories.push({name:n,icon:ic||'🏷️'});await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});document.getElementById('catName').value='';document.getElementById('catIcon').value='';loadAdminData();flash();}
@@ -752,6 +834,7 @@ function readQrFile(i){const f=i.files[0];const r=new FileReader();r.onload=asyn
 async function saveSecurity(){const u=document.getElementById('adUser').value.trim();const p=document.getElementById('adPass').value.trim();if(!u||!p){alert('Bharo');return;}await api('/api/admin/security',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});alert('✅ Login details update ho gayi! Yaad rakhein.');flash();}
 
 // ===== INIT =====
+window.searchQuery=window.searchQuery||'';
 loadStore();
 </script>
 </body>
