@@ -17,7 +17,22 @@ body{background:#f8f9fa;color:#222;}
 @media(max-width:700px){.header{padding:10px 14px}.header .logo img{height:45px !important}.header-search{min-width:0}.nav a{margin-left:8px;font-size:12px}}
 .header .logo{font-size:24px;font-weight:bold;cursor:pointer;user-select:none;display:flex;align-items:center;gap:10px;}
 #pImgPrev{display:flex;flex-wrap:wrap;align-items:center;margin-top:6px;}
-.header .logo span{color:var(--primary,#ffc107);}
+.header .logo span{color:#fff;letter-spacing:.4px;text-shadow:0 0 12px rgba(255,193,7,.35);}
+.header .logo img{background:#111;border:2px solid #d4af37;border-radius:50%;padding:3px;box-shadow:0 0 0 2px rgba(212,175,55,.25),0 0 18px rgba(212,175,55,.35);filter:drop-shadow(0 0 6px rgba(255,193,7,.45));}
+.product{cursor:pointer}.product .pinfo button,.product .pinfo select{position:relative;z-index:3}
+.buy-btn{margin-top:8px;background:linear-gradient(135deg,#d4af37,#ffc107);color:#111;border:0;padding:10px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:800;width:100%;}
+.review-link{margin-top:7px;background:#fff;border:1px solid #ddd;color:#333;padding:8px;border-radius:7px;cursor:pointer;font-size:13px;width:100%;}
+.discount-badge{display:inline-block;background:#0b8f45;color:#fff;font-weight:800;font-size:12px;padding:4px 8px;border-radius:5px;margin-left:7px;}
+.product-detail{background:#fff;border-radius:18px;width:1050px;max-width:95%;max-height:94vh;overflow:auto;position:relative;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.product-detail-grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(300px,1fr);gap:28px;}
+.detail-gallery{background:#f7f7f7;border-radius:14px;overflow:hidden;position:relative;min-height:520px;touch-action:pan-y;}
+.detail-track{display:flex;width:100%;height:520px;transition:transform .45s ease;}
+.detail-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.detail-slide img{width:100%;height:100%;object-fit:contain;}
+.detail-arrows{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;padding:0 10px;pointer-events:none;}
+.detail-arrows button{pointer-events:auto;width:42px;height:42px;border:0;border-radius:50%;background:rgba(17,17,17,.78);color:#fff;cursor:pointer;font-size:22px;}
+.detail-info h1{font-size:30px;margin-bottom:8px}.detail-price{font-size:28px;font-weight:900;color:#e8502b}.detail-old{font-size:16px;color:#999;text-decoration:line-through;margin-left:10px}.detail-desc{margin-top:18px;line-height:1.7;color:#555;white-space:pre-line}.detail-buy{margin-top:18px;background:#111;color:#fff;border:0;padding:14px;border-radius:9px;width:100%;font-weight:800;font-size:16px;cursor:pointer}.detail-cart{margin-top:9px;background:#ffc107;color:#111;border:0;padding:13px;border-radius:9px;width:100%;font-weight:800;font-size:15px;cursor:pointer}.reviews{margin-top:24px;border-top:1px solid #eee;padding-top:18px}.review-form{display:grid;grid-template-columns:1fr 120px;gap:8px;margin-top:10px}.review-form textarea{grid-column:1/-1;min-height:90px}.review-form button{grid-column:1/-1}.review-item{padding:10px 0;border-bottom:1px solid #eee}.stars{color:#d4af37;letter-spacing:2px}.icon-img{width:58px;height:58px;object-fit:contain;display:block;margin:0 auto 10px;filter:drop-shadow(0 5px 8px rgba(0,0,0,.12));}
+@media(max-width:750px){.product-detail-grid{grid-template-columns:1fr}.detail-gallery,.detail-track{min-height:390px;height:390px}.detail-info h1{font-size:24px}.review-form{grid-template-columns:1fr}.review-form textarea,.review-form button{grid-column:auto}}
 .nav a{color:#fff;text-decoration:none;margin-left:15px;font-size:14px;}
 .social-icons{display:flex;gap:10px;align-items:center;}
 .social-icons a{font-size:12px;color:#fff;background:#333;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;text-decoration:none;font-weight:bold;}
@@ -205,14 +220,14 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
 <!-- STORE -->
 <div id="storeView">
   <div class="header">
-    <div class="logo" id="siteLogo"><img id="headerLogoImg" alt="IBM COLLECTION" style="height:55px;width:55px;object-fit:contain;"><span>IBM COLLECTION</span></div>
+    <div class="logo" id="siteLogo"><img id="headerLogoImg" src="/IBM_COLLECTION_logo.png" alt="IBM COLLECTION" style="height:55px;width:55px;object-fit:contain;"><span>IBM COLLECTION</span></div>
     <div class="header-search">
       <input id="searchInput" type="search" placeholder="Search products..." onkeydown="if(event.key==='Enter')searchProducts()">
-      <button type="button" onclick="searchProducts()">🔍 Search</button>
+      <button type="button" onclick="searchProducts()">Search</button>
     </div>
     <div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;">
       <div class="social-icons" id="headerSocials"></div>
-      <button class="cart-btn" onclick="openCart()">🛒 <span class="cart-count" id="cartCount">0</span></button>
+      <button class="cart-btn" onclick="openCart()">Cart <span class="cart-count" id="cartCount">0</span></button>
       <nav class="nav">
         <a href="#home">Home</a><a href="#categories">Categories</a><a href="#products">Products</a><a href="#contact">Contact</a>
       </nav>
@@ -260,7 +275,7 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
 <!-- CART -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
-  <div class="cart-head"><h3>🛒 Cart</h3><button class="close-cart" onclick="closeCart()">✕</button></div>
+  <div class="cart-head"><h3>Cart</h3><button class="close-cart" onclick="closeCart()">✕</button></div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-foot">
     <div class="cart-total"><span>Total:</span><span id="cartTotal">₹0</span></div>
@@ -272,7 +287,7 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
 <div class="modal" id="checkoutModal">
   <div class="checkout-box">
     <button class="close-m" style="color:#111;" onclick="closeCheckout()">✕</button>
-    <h2>📦 Order Details</h2>
+    <h2>Order Details</h2>
     <label>Pura Naam</label><input type="text" id="cName">
     <label>Mobile Number</label><input type="text" id="cPhone">
     <label>Address</label><textarea id="cAddress" rows="2"></textarea>
@@ -280,13 +295,21 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
       <div><label>City</label><input type="text" id="cCity"></div>
       <div><label>Pincode</label><input type="text" id="cPin"></div>
     </div>
-    <h3>🧾 Order Summary</h3>
+    <h3>Order Summary</h3>
     <div class="order-summary" id="checkoutSummary"></div>
     <h3>Payment Method</h3>
     <div class="payment-methods" id="paymentMethods"></div>
     <div class="pay-box" id="payBox"></div>
     <div class="whatsapp-note" id="waNote"></div>
     <button class="btn" style="width:100%;background:#25D366;color:#fff;" onclick="placeOrder()">Order Confirm</button>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL -->
+<div class="modal" id="productDetailModal">
+  <div class="product-detail">
+    <button class="close-m" style="color:#111;" onclick="closeProductDetail()">✕</button>
+    <div id="productDetailContent"></div>
   </div>
 </div>
 
@@ -366,6 +389,7 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
 </p>
 
 <div id="pImgPrev"></div>
+        <label>Description</label><textarea id="pDesc" rows="5" placeholder="Product ke features, fabric, fit, care instructions... "></textarea>
         <label>Sizes (comma se)</label><input type="text" id="pSizes" placeholder="S, M, L, XL, XXL">
         <button class="save-btn" onclick="saveProduct()">💾 Save</button>
         <button class="save-btn gray" onclick="resetProductForm()">Clear</button>
@@ -451,8 +475,11 @@ const DEFAULT_HERO_IMAGES=['data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2
 
 // ===== API HELPERS =====
 async function api(url, opt){
-  const r = await fetch(url, opt);
-  return await r.json();
+  const r=await fetch(url,opt);
+  let data={};
+  try{data=await r.json();}catch(e){data={ok:false,message:'Server ne valid response diya'};}
+  if(!r.ok && data.ok===undefined)data.ok=false;
+  return data;
 }
 async function loadStore(){
   const d = await api('/api/store');
@@ -470,7 +497,7 @@ function socLinks(){const l=[];if(social.instagram)l.push({t:'IG',u:social.insta
 function renderSocial(){const l=socLinks();let h='';l.forEach(x=>{h+=`<a href="${x.u}" target="_blank">${x.t}</a>`;});document.getElementById('headerSocials').innerHTML=h;document.getElementById('footerSocials').innerHTML=h;}
 function renderHeader(){
   const logo=document.getElementById('headerLogoImg');
-  if(logo)logo.src=DEFAULT_LOGO;
+  if(logo)logo.src='/IBM_COLLECTION_logo.png';
   document.getElementById('heroTitle').innerHTML=(settings.hero||'New Season, New Style').replace(/New Style/g,'<span>New Style</span>');
   document.getElementById('heroTagline').textContent=settings.tag||'Premium quality T-Shirts, Shirts, Jeans, Jackets aur Track Pants — sab ek jagah!';
   heroImages=(Array.isArray(settings.heroImages)&&settings.heroImages.length?settings.heroImages:DEFAULT_HERO_IMAGES).filter(Boolean).slice(0,5);
@@ -499,162 +526,51 @@ function showHeroSlide(i){
 
 function slugify(n){return n.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
 function catName(s){const c=categories.find(x=>slugify(x.name)===s);return c?c.name:s;}
-function categoryImage(name){const n=String(name||'').toLowerCase();if(n.includes('t-shirt')||n.includes('shirt'))return DEFAULT_PRODUCT_PLACEHOLDER;if(n.includes('jean')||n.includes('pant'))return DEFAULT_PRODUCT_PLACEHOLDER;if(n.includes('jacket'))return DEFAULT_PRODUCT_PLACEHOLDER;return DEFAULT_PRODUCT_PLACEHOLDER;}
-function renderCategories(){const g=document.getElementById('catGrid');let h=`<div class="cat-card" onclick="filterProducts('all')"><img class="cat-photo" src="${DEFAULT_PRODUCT_PLACEHOLDER}" alt="All products"><b>All</b></div>`;categories.forEach(c=>{h+=`<div class="cat-card" onclick="filterProducts('${slugify(c.name)}')"><img class="cat-photo" src="${categoryImage(c.name)}" alt="${c.name}"><b>${c.name}</b></div>`;});g.innerHTML=h;}
-function pImgHtml(p,idx){
-  const imgs=Array.isArray(p.pimgs)
-    ?p.pimgs.filter(Boolean)
-    :(p.pimg?[p.pimg]:[]);
-
-  if(!imgs.length){
-    return `<img class="single-placeholder" src="${DEFAULT_PRODUCT_PLACEHOLDER}" alt="${p.name||'Product'}">`;
-  }
-
-  return `
-    <div class="pimg-slider"
-      id="slider-${idx}"
-      data-index="0"
-      data-count="${imgs.length}"
-      ontouchstart="sliderTouchStart(event,${idx})"
-      ontouchend="sliderTouchEnd(event,${idx})">
-      ${imgs.map(src=>`
-        <div class="pimg-slide">
-          <img src="${src}" draggable="false" alt="${p.name||'Product'}">
-        </div>
-      `).join('')}
-    </div>
-    ${imgs.length>1?`<div class="pimg-dots" id="dots-${idx}">
-      ${imgs.map((_,i)=>`<span class="pimg-dot ${i===0?'active':''}"></span>`).join('')}
-    </div>`:''}
-  `;
-}
-
-function renderProducts(){
-  const g=document.getElementById('productGrid');
-  let list=currentCat==='all'
-    ?products
-    :products.filter(p=>p.cat===currentCat);
-
-  const q=(window.searchQuery||'').trim().toLowerCase();
-  if(q){
-    list=list.filter(p=>
-      String(p.name||'').toLowerCase().includes(q) ||
-      String(p.cat||'').toLowerCase().includes(q) ||
-      String(catName(p.cat)||'').toLowerCase().includes(q)
-    );
-  }
-
-  document.getElementById('current-category').textContent=q
-    ?`Search results for "${q}"`
-    :(currentCat==='all'?'Sabhi products':catName(currentCat));
-
-  if(!list.length){
-    g.innerHTML='<p style="text-align:center;color:#888;grid-column:1/-1;padding:30px;">Koi product nahi mila.</p>';
-    return;
-  }
-
-  g.innerHTML=list.map((p,i)=>{
-    const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];
-    const idx=products.indexOf(p);
-    const sel=selectedSizes[idx]||sizes[0];
-
-    return `
-      <div class="product">
-        <div class="pimg">
-          ${pImgHtml(p,idx)}
-        </div>
-        <div class="pinfo">
-          <h4>${p.name}</h4>
-          <span class="price">₹${p.price}</span>
-          ${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}<br>
-          <span class="tag">${catName(p.cat)}</span>
-          <div class="size-row">
-            <label>Size:</label>
-            <select class="size-select" onchange="selectedSizes[${idx}]=this.value">
-              ${sizes.map(s=>`<option ${s===sel?'selected':''}>${s}</option>`).join('')}
-            </select>
-          </div>
-          <button class="try-btn" onclick="openTry(${idx})">👀 Try-On</button>
-          <button class="add-btn" onclick="addToCart(${idx})">🛒 Add to Cart</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  list.forEach(p=>{
-    const idx=products.indexOf(p);
-    const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);
-    startAutoSlider(idx,imgs.length);
-  });
-}
-
-let sliderTimers={};
-let sliderStarts={};
-
-function updateSlider(id,index){
-  const track=document.getElementById(`slider-${id}`);
-  const dots=document.getElementById(`dots-${id}`);
-  if(!track)return;
-  const total=Number(track.dataset.count||0);
-  if(!total)return;
-  index=(index+total)%total;
-  track.dataset.index=index;
-  track.style.transform=`translateX(-${index*100}%)`;
-  if(dots){
-    [...dots.children].forEach((d,i)=>d.classList.toggle('active',i===index));
-  }
-}
-
-function startAutoSlider(id,total){
-  clearInterval(sliderTimers[id]);
-  if(!total||total<=1)return;
-  sliderTimers[id]=setInterval(()=>{
-    const track=document.getElementById(`slider-${id}`);
-    if(!track)return;
-    const current=Number(track.dataset.index||0);
-    updateSlider(id,current+1);
-  },3000);
-}
-
-function sliderTouchStart(e,id){
-  if(!e.touches||!e.touches.length)return;
-  sliderStarts[id]=e.touches[0].clientX;
-}
-
-function sliderTouchEnd(e,id){
-  if(sliderStarts[id]==null)return;
-  const track=document.getElementById(`slider-${id}`);
-  if(!track){sliderStarts[id]=null;return;}
-  const total=Number(track.dataset.count||0);
-  const end=e.changedTouches&&e.changedTouches.length?e.changedTouches[0].clientX:sliderStarts[id];
-  const diff=sliderStarts[id]-end;
-  const current=Number(track.dataset.index||0);
-  if(total>1&&Math.abs(diff)>40){
-    updateSlider(id,diff>0?current+1:current-1);
-    startAutoSlider(id,total);
-  }
-  sliderStarts[id]=null;
-}
-
-function searchProducts(){
-  window.searchQuery=document.getElementById('searchInput').value||'';
-  renderProducts();
-  document.getElementById('products').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function clearSearch(){
-  window.searchQuery='';
-  const input=document.getElementById('searchInput');
-  if(input)input.value='';
-  renderProducts();
-}
-
+const ICON_IMAGES={
+  all:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#111"/><stop offset="1" stop-color="#d4af37"/></linearGradient></defs><rect x="8" y="8" width="104" height="104" rx="24" fill="#111"/><path d="M34 42h52v46H34z" fill="url(#g)"/><path d="M44 42c0-13 32-13 32 0" fill="none" stroke="#fff" stroke-width="6"/><circle cx="46" cy="58" r="4" fill="#fff"/><circle cx="74" cy="58" r="4" fill="#fff"/></svg>`),
+  tshirt:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#111"/><path d="M34 34 50 24h20l16 10 14 12-12 16-10-8v40H42V54l-10 8-12-16z" fill="#d4af37"/><path d="M50 24c0 10 20 10 20 0" fill="none" stroke="#111" stroke-width="5"/></svg>`),
+  shirt:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#111"/><path d="M39 25h42l18 16-10 18-9-7v40H40V52l-9 7-10-18z" fill="#d4af37"/><path d="M60 26v66M45 29l15 17 15-17" stroke="#111" stroke-width="4" fill="none"/></svg>`),
+  jeans:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#111"/><path d="M40 24h40l5 31-12 41H60l-4-35-4 35H35L47 55z" fill="#d4af37"/><path d="M60 25v36" stroke="#111" stroke-width="4"/></svg>`),
+  jacket:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#111"/><path d="M40 23h40l18 19-12 17-8-8v38H42V51l-8 8-12-17z" fill="#d4af37"/><path d="M60 24v65M47 28l13 18 13-18" stroke="#111" stroke-width="4" fill="none"/></svg>`),
+  pant:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="24" fill="#111"/><path d="M37 24h46l6 70H69l-9-34-9 34H31z" fill="#d4af37"/></svg>`)
+};
+function categoryImage(name){const n=String(name||'').toLowerCase();if(n.includes('t-shirt'))return ICON_IMAGES.tshirt;if(n.includes('shirt'))return ICON_IMAGES.shirt;if(n.includes('jean'))return ICON_IMAGES.jeans;if(n.includes('jacket'))return ICON_IMAGES.jacket;if(n.includes('pant'))return ICON_IMAGES.pant;return ICON_IMAGES.all;}
+function renderCategories(){const g=document.getElementById('catGrid');let h=`<div class="cat-card" onclick="filterProducts('all')"><img class="icon-img" src="${ICON_IMAGES.all}" alt="All products"><b>All</b></div>`;categories.forEach(c=>{h+=`<div class="cat-card" onclick="filterProducts('${slugify(c.name)}')"><img class="icon-img" src="${categoryImage(c.name)}" alt="${c.name}"><b>${c.name}</b></div>`;});g.innerHTML=h;}
+function productImagesOf(p){return Array.isArray(p.pimgs)&&p.pimgs.filter(Boolean).length?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);}
+function pImgHtml(p,idx){const imgs=productImagesOf(p);if(!imgs.length)return `<img class="single-placeholder" src="${categoryImage(p.cat)}" alt="${p.name||'Product'}">`;return `<div class="pimg-slider" id="slider-${idx}" data-index="0" data-count="${imgs.length}" onpointerdown="sliderPointerStart(event,${idx})" onpointerup="sliderPointerEnd(event,${idx})" onpointercancel="sliderPointerEnd(event,${idx})" onclick="sliderClick(event,${idx})">${imgs.map(src=>`<div class="pimg-slide"><img src="${src}" draggable="false" alt="${p.name||'Product'}"></div>`).join('')}</div>${imgs.length>1?`<div class="pimg-dots" id="dots-${idx}">${imgs.map((_,i)=>`<span class="pimg-dot ${i===0?'active':''}"></span>`).join('')}</div>`:''}`;}
+function discountPercent(p){return p.oldPrice&&p.oldPrice>p.price?Math.round((1-p.price/p.oldPrice)*100):0;}
+function renderProducts(){const g=document.getElementById('productGrid');let list=currentCat==='all'?products:products.filter(p=>p.cat===currentCat);const q=(window.searchQuery||'').trim().toLowerCase();if(q)list=list.filter(p=>String(p.name||'').toLowerCase().includes(q)||String(p.cat||'').toLowerCase().includes(q)||String(catName(p.cat)||'').toLowerCase().includes(q));document.getElementById('current-category').textContent=q?`Search results for "${q}"`:(currentCat==='all'?'Sabhi products':catName(currentCat));if(!list.length){g.innerHTML='<p style="text-align:center;color:#888;grid-column:1/-1;padding:30px;">Koi product nahi mila.</p>';return;}g.innerHTML=list.map(p=>{const idx=products.indexOf(p),sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'],sel=selectedSizes[idx]||sizes[0],disc=discountPercent(p);return `<div class="product" onclick="openProductDetail(${idx})"><div class="pimg">${pImgHtml(p,idx)}</div><div class="pinfo"><h4>${p.name}</h4><div><span class="price">₹${p.price}</span>${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}${disc?`<span class="discount-badge">${disc}% OFF</span>`:''}</div><span class="tag">${catName(p.cat)}</span>${p.description?`<p style="font-size:12px;color:#777;margin-top:8px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.description)}</p>`:``}<div class="size-row" onclick="event.stopPropagation()"><label>Size:</label><select class="size-select" onchange="selectedSizes[${idx}]=this.value">${sizes.map(x=>`<option ${x===sel?'selected':''}>${x}</option>`).join('')}</select></div><button class="buy-btn" onclick="event.stopPropagation();buyNow(${idx})">Buy Now</button><button class="review-link" onclick="event.stopPropagation();openProductDetail(${idx},true)">★ Reviews</button><button class="add-btn" onclick="event.stopPropagation();addToCart(${idx})">Add to Cart</button></div></div>`;}).join('');list.forEach(p=>{const idx=products.indexOf(p);startAutoSlider(idx,productImagesOf(p).length);});}
+let sliderTimers={},sliderStarts={},sliderMoved={};
+function updateSlider(id,index){const track=document.getElementById(`slider-${id}`),dots=document.getElementById(`dots-${id}`);if(!track)return;const total=Number(track.dataset.count||0);if(!total)return;index=(index+total)%total;track.dataset.index=index;track.style.transform=`translateX(-${index*100}%)`;if(dots)[...dots.children].forEach((d,i)=>d.classList.toggle('active',i===index));}
+function startAutoSlider(id,total){clearInterval(sliderTimers[id]);if(!total||total<=1)return;sliderTimers[id]=setInterval(()=>{const t=document.getElementById(`slider-${id}`);if(t)updateSlider(id,Number(t.dataset.index||0)+1);},3000);}
+function sliderPointerStart(e,id){if(e.pointerType==='mouse'&&e.button!==0)return;sliderStarts[id]=e.clientX;sliderMoved[id]=false;const t=e.currentTarget;if(t.setPointerCapture)try{t.setPointerCapture(e.pointerId)}catch(_){}}
+function sliderPointerEnd(e,id){if(sliderStarts[id]==null)return;const start=sliderStarts[id],end=e.clientX,diff=start-end;sliderMoved[id]=Math.abs(diff)>25;const t=document.getElementById(`slider-${id}`),total=t?Number(t.dataset.count||0):0,current=t?Number(t.dataset.index||0):0;if(total>1&&Math.abs(diff)>35){updateSlider(id,diff>0?current+1:current-1);startAutoSlider(id,total);}sliderStarts[id]=null;}
+function sliderClick(e,id){if(sliderMoved[id]){sliderMoved[id]=false;return;}const t=document.getElementById(`slider-${id}`);if(!t)return;const total=Number(t.dataset.count||0);if(total>1){updateSlider(id,Number(t.dataset.index||0)+1);startAutoSlider(id,total);}}
+function searchProducts(){window.searchQuery=document.getElementById('searchInput').value||'';renderProducts();document.getElementById('products').scrollIntoView({behavior:'smooth',block:'start'});}
+function clearSearch(){window.searchQuery='';const input=document.getElementById('searchInput');if(input)input.value='';renderProducts();}
 function filterProducts(c){currentCat=c;renderProducts();}
+
+// ===== PRODUCT DETAIL / REVIEWS =====
+let detailIndex=-1,detailTimer=null,detailTouchStart=null;
+function reviewKey(i){return 'ibm_reviews_'+i;}
+function getReviews(i){try{return JSON.parse(localStorage.getItem(reviewKey(i))||'[]')}catch(e){return[]}}
+function renderReviews(i){const list=getReviews(i),box=document.getElementById('reviewList');if(!box)return;box.innerHTML=list.length?list.map(r=>`<div class="review-item"><b>${escapeHtml(r.name)}</b> <span class="stars">${'★'.repeat(Number(r.rating)||5)}${'☆'.repeat(5-(Number(r.rating)||5))}</span><p>${escapeHtml(r.text)}</p></div>`).join(''):'<p style="color:#888">Abhi koi review nahi. Pehla review aap dein.</p>';}
+function escapeHtml(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function openProductDetail(i,focusReviews=false){detailIndex=i;const p=products[i];if(!p)return;const imgs=productImagesOf(p);const gallery=imgs.length?imgs.map(src=>`<div class="detail-slide"><img src="${src}" alt="${escapeHtml(p.name)}"></div>`).join(''):`<div class="detail-slide"><img src="${categoryImage(p.cat)}" alt="${escapeHtml(p.name)}"></div>`;const disc=discountPercent(p);document.getElementById('productDetailContent').innerHTML=`<div class="product-detail-grid"><div class="detail-gallery" id="detailGallery" onpointerdown="detailTouchStartEvent(event)" onpointerup="detailTouchEndEvent(event)"><div class="detail-track" id="detailTrack">${gallery}</div><div class="detail-arrows"><button onclick="detailSlide(-1)">‹</button><button onclick="detailSlide(1)">›</button></div></div><div class="detail-info"><span class="tag">${catName(p.cat)}</span><h1>${escapeHtml(p.name)}</h1><div><span class="detail-price">₹${p.price}</span>${p.oldPrice?`<span class="detail-old">₹${p.oldPrice}</span>`:''}${disc?`<span class="discount-badge">${disc}% OFF</span>`:''}</div><p class="detail-desc">${escapeHtml(p.description||'Premium quality product. Product details and specifications can be added from Admin → Products.')}</p><div class="size-row"><label>Size:</label><select id="detailSize" class="size-select">${(p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL']).map(x=>`<option>${x}</option>`).join('')}</select></div><button class="detail-buy" onclick="buyNow(${i})">Buy Now</button><button class="detail-cart" onclick="addDetailToCart()">Add to Cart</button><div class="reviews" id="reviewsSection"><h3>Customer Reviews</h3><div id="reviewList"></div><div class="review-form"><input id="reviewName" type="text" placeholder="Your name"><select id="reviewRating"><option value="5">★★★★★ 5</option><option value="4">★★★★☆ 4</option><option value="3">★★★☆☆ 3</option><option value="2">★★☆☆☆ 2</option><option value="1">★☆☆☆☆ 1</option></select><textarea id="reviewText" placeholder="Write your review..."></textarea><button class="save-btn" onclick="submitReview()">Submit Review</button></div></div></div></div>`;updateDetailSlider(0);document.getElementById('productDetailModal').classList.add('show');renderReviews(i);if(focusReviews)setTimeout(()=>document.getElementById('reviewsSection')?.scrollIntoView({behavior:'smooth'}),80);clearInterval(detailTimer);if(imgs.length>1)detailTimer=setInterval(()=>detailSlide(1),3500);}
+function updateDetailSlider(i){const t=document.getElementById('detailTrack');if(!t)return;const total=t.children.length;let cur=Number(t.dataset.index||0);cur=(i+total)%total;t.dataset.index=cur;t.style.transform=`translateX(-${cur*100}%)`;}
+function detailSlide(d){const t=document.getElementById('detailTrack');if(!t)return;updateDetailSlider(Number(t.dataset.index||0)+d);clearInterval(detailTimer);if(t.children.length>1)detailTimer=setInterval(()=>detailSlide(1),3500);}
+function detailTouchStartEvent(e){detailTouchStart=e.clientX;}
+function detailTouchEndEvent(e){if(detailTouchStart==null)return;const d=detailTouchStart-e.clientX;if(Math.abs(d)>35)detailSlide(d>0?1:-1);detailTouchStart=null;}
+function closeProductDetail(){clearInterval(detailTimer);document.getElementById('productDetailModal').classList.remove('show');detailIndex=-1;}
+function addDetailToCart(){if(detailIndex<0)return;const sel=document.getElementById('detailSize');selectedSizes[detailIndex]=sel?sel.value:selectedSizes[detailIndex];addToCart(detailIndex);}
+function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const sz=selectedSizes[i]||sizes[0];cart=[{name:p.name,price:p.price,icon:'',pimg:productImagesOf(p)[0]||'',size:sz,qty:1}];saveCart();closeProductDetail();openCheckout();}
+function submitReview(){if(detailIndex<0)return;const name=document.getElementById('reviewName').value.trim(),text=document.getElementById('reviewText').value.trim(),rating=Number(document.getElementById('reviewRating').value);if(!name||!text){alert('Name aur review likhein');return;}const list=getReviews(detailIndex);list.unshift({name,text,rating,date:new Date().toISOString()});localStorage.setItem(reviewKey(detailIndex),JSON.stringify(list.slice(0,50)));document.getElementById('reviewName').value='';document.getElementById('reviewText').value='';renderReviews(detailIndex);}
+
 
 // ===== CART =====
 function saveCart(){updateCartCount();renderCart();}
 function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0);}
-function addToCart(i){const p=products[i];const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const sz=selectedSizes[i]||sizes[0];const ex=cart.find(x=>x.name===p.name&&x.size===sz);if(ex)ex.qty++;else cart.push({name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',size:sz,qty:1});saveCart();}
+function addToCart(i){const p=products[i];const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const sz=selectedSizes[i]||sizes[0];const ex=cart.find(x=>x.name===p.name&&x.size===sz);if(ex)ex.qty++;else cart.push({name:p.name,price:p.price,icon:'',pimg:productImagesOf(p)[0]||'',size:sz,qty:1});saveCart();}
 function renderCart(){const box=document.getElementById('cartItems');if(!cart.length){box.innerHTML='<div class="empty">Cart khaali hai</div>';}else{box.innerHTML=cart.map((x,i)=>`
   <div class="citem"><div class="cimg"><img src="${x.pimg||DEFAULT_PRODUCT_PLACEHOLDER}" alt="${x.name}"></div>
     <div class="cinfo"><b>${x.name}</b><br><small>₹${x.price} — ${x.size}</small><br>
@@ -731,8 +647,10 @@ function setTryOp(){const o=document.getElementById('tryOp').value;document.getE
 function showLogin(){document.getElementById('loginModal').classList.add('show');}
 function closeLogin(){document.getElementById('loginModal').classList.remove('show');}
 let lc=0,lt;document.getElementById('siteLogo').addEventListener('click',function(){lc++;clearTimeout(lt);lt=setTimeout(()=>{lc=0;},1200);if(lc>=5){lc=0;showLogin();}});
-document.addEventListener('keydown',function(e){if(e.ctrlKey&&e.shiftKey&&(e.key==='A'||e.key==='a')){e.preventDefault();showLogin();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeProductDetail();closeCheckout();closeTry();}
+if(e.ctrlKey&&e.shiftKey&&(e.key==='A'||e.key==='a')){e.preventDefault();showLogin();}});
 if(window.location.hash==='#admin')showLogin();
+document.getElementById('productDetailModal').addEventListener('click',e=>{if(e.target.id==='productDetailModal')closeProductDetail();});
 document.getElementById('loginModal').addEventListener('click',e=>{if(e.target.id==='loginModal')closeLogin();});
 async function doLogin(){
   const u=document.getElementById('loginUser').value.trim();
@@ -756,9 +674,9 @@ function loadAdminData(){
   document.getElementById('statProducts').textContent=products.length;
   document.getElementById('statCats').textContent=categories.length;
   document.getElementById('statOrders').textContent=orders.length;
-  document.getElementById('prodTable').innerHTML='<tr><th>Photo</th><th>Product</th><th>Price</th><th>Sizes</th><th></th></tr>'+products.map((p,i)=>`<tr><td>${(p.pimgs&&p.pimgs[0])||p.pimg?`<img src="${(p.pimgs&&p.pimgs[0])||p.pimg}" style="width:40px;height:40px;object-fit:cover;">`:(p.icon||'👕')}</td><td>${p.name}</td><td>₹${p.price}</td><td><small>${(p.sizes||[]).join(', ')}</small></td><td><button class="edit-btn" onclick="editProduct(${i})">✏️</button> <button class="del-btn" onclick="delProduct(${i})">🗑️</button></td></tr>`).join('');
+  document.getElementById('prodTable').innerHTML='<tr><th>Photo</th><th>Product</th><th>Price</th><th>Sizes</th><th></th></tr>'+products.map((p,i)=>`<tr><td>${(p.pimgs&&p.pimgs[0])||p.pimg?`<img src="${(p.pimgs&&p.pimgs[0])||p.pimg}" style="width:40px;height:40px;object-fit:cover;">`:(categoryImage(p.cat))}</td><td>${p.name}</td><td>₹${p.price}</td><td><small>${(p.sizes||[]).join(', ')}</small></td><td><button class="edit-btn" onclick="editProduct(${i})">✏️</button> <button class="del-btn" onclick="delProduct(${i})">🗑️</button></td></tr>`).join('');
   document.getElementById('pCat').innerHTML=categories.map(c=>`<option value="${slugify(c.name)}">${c.name}</option>`).join('');
-  document.getElementById('catTable').innerHTML='<tr><th>Icon</th><th>Category</th><th></th></tr>'+categories.map((c,i)=>`<tr><td>${c.icon||'🏷️'}</td><td>${c.name}</td><td><button class="del-btn" onclick="delCategory(${i})">🗑️</button></td></tr>`).join('');
+  document.getElementById('catTable').innerHTML='<tr><th>Icon</th><th>Category</th><th></th></tr>'+categories.map((c,i)=>`<tr><td><img class="icon-img" style="width:34px;height:34px;margin:0" src="${categoryImage(c.name)}" alt=""></td><td>${c.name}</td><td><button class="del-btn" onclick="delCategory(${i})">🗑️</button></td></tr>`).join('');
   document.getElementById('orderTable').innerHTML=orders.length?'<tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr>'+orders.map((o,i)=>`<tr><td><b>${o.id}</b><br><small>${o.date}</small></td><td><b>${o.name}</b><br><small>${o.phone}<br>${o.address}</small></td><td><small>${o.items}</small></td><td>₹${o.total}</td><td><span class="ord-st ord-${o.status}">${o.status.toUpperCase()}</span></td><td><button class="edit-btn" onclick="setOrd(${i},'confirmed')">✅</button> <button class="edit-btn" style="background:#17a2b8;color:#fff;" onclick="setOrd(${i},'delivered')">📦</button> <button class="del-btn" onclick="delOrd(${i})">🗑️</button></td></tr>`).join(''):'<tr><td style="text-align:center;padding:20px;">Koi order nahi</td></tr>';
   document.getElementById('upId').value=pay.upiId||'';
   document.getElementById('upName').value=pay.upiName||'';
@@ -791,7 +709,7 @@ async function saveProduct(){
   const id=document.getElementById('pId').value;
   const oldProduct=id!==''?(products[Number(id)]||{}):{};
   const imgs=productImages.length?productImages:(Array.isArray(oldProduct.pimgs)?oldProduct.pimgs.filter(Boolean):(oldProduct.pimg?[oldProduct.pimg]:[]));
-  const data={name:document.getElementById('pName').value.trim(),price:Number(document.getElementById('pPrice').value),oldPrice:Number(document.getElementById('pOld').value)||0,cat:document.getElementById('pCat').value,icon:'',pimg:imgs[0]||'',pimgs:imgs.slice(0,5),sizes:document.getElementById('pSizes').value.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean)};
+  const data={name:document.getElementById('pName').value.trim(),price:Number(document.getElementById('pPrice').value),oldPrice:Number(document.getElementById('pOld').value)||0,cat:document.getElementById('pCat').value,icon:'',description:document.getElementById('pDesc').value.trim(),pimg:imgs[0]||'',pimgs:imgs.slice(0,5),sizes:document.getElementById('pSizes').value.split(',').map(s=>s.trim().toUpperCase()).filter(Boolean)};
   if(!data.name||!data.price){alert('Naam aur price bharo');return;}
   if(data.pimgs.length<5){alert(`Minimum 5 photos required. Abhi ${data.pimgs.length} hain.`);return;}
   if(id==='')products.push(data);else products[Number(id)]=data;
@@ -809,6 +727,7 @@ function editProduct(i){
   document.getElementById('pPrice').value=p.price||'';
   document.getElementById('pOld').value=p.oldPrice||'';
   document.getElementById('pCat').value=p.cat||'';
+  document.getElementById('pDesc').value=p.description||'';
   document.getElementById('pSizes').value=(p.sizes||[]).join(', ');
   productImages=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);
   const prev=document.getElementById('pImgPrev');
@@ -826,7 +745,7 @@ async function delProduct(i){
 }
 
 function resetProductForm(){
-  ['pId','pName','pPrice','pOld'].forEach(id=>{
+  ['pId','pName','pPrice','pOld','pDesc'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.value='';
   });
@@ -840,7 +759,7 @@ function resetProductForm(){
 }
 
 // ===== CATEGORY CRUD =====
-async function addCategory(){const n=document.getElementById('catName').value.trim();const ic=document.getElementById('catIcon').value.trim();if(!n){alert('Naam bharo');return;}if(categories.some(c=>slugify(c.name)===slugify(n))){alert('Pehle se hai');return;}categories.push({name:n,icon:ic||'🏷️'});await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});document.getElementById('catName').value='';document.getElementById('catIcon').value='';loadAdminData();flash();}
+async function addCategory(){const n=document.getElementById('catName').value.trim();const ic=document.getElementById('catIcon').value.trim();if(!n){alert('Naam bharo');return;}if(categories.some(c=>slugify(c.name)===slugify(n))){alert('Pehle se hai');return;}categories.push({name:n,icon:''});await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});document.getElementById('catName').value='';document.getElementById('catIcon').value='';loadAdminData();flash();}
 async function delCategory(i){if(confirm('Delete?')){categories.splice(i,1);await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});loadAdminData();}}
 
 // ===== ORDERS =====
@@ -849,7 +768,7 @@ async function delOrd(i){if(confirm('Delete?')){orders.splice(i,1);await api('/a
 
 // ===== HERO IMAGE UPLOAD =====
 function compressImage(file,maxW=1200,quality=.72){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=e=>{const im=new Image();im.onload=()=>{const scale=Math.min(1,maxW/im.width);const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality));};im.onerror=reject;im.src=e.target.result;};r.onerror=reject;r.readAsDataURL(file);});}
-async function readPImgs(input){const file=input.files&&input.files[0];if(!file)return;if(productImages.length>=5){alert('Maximum 5 photos already selected');input.value='';return;}try{const data=await compressImage(file,1100,.70);productImages.push(data);renderProductPreviews();input.value='';if(productImages.length===5)alert('5 photos selected. Ab Save dabao.');}catch(e){alert('Photo load nahi hui');}}
+async function readPImgs(input){const file=input.files&&input.files[0];if(!file)return;if(productImages.length>=5){alert('Maximum 5 photos already selected');input.value='';return;}try{const data=await compressImage(file,650,.45);productImages.push(data);renderProductPreviews();input.value='';if(productImages.length===5)alert('5 photos selected. Ab Save dabao.');}catch(e){alert('Photo load nahi hui');}}
 function renderProductPreviews(){const prev=document.getElementById('pImgPrev');if(!prev)return;prev.innerHTML=productImages.map((src,i)=>`<div class="upload-thumb"><img src="${src}"><button type="button" onclick="removeProductImage(${i})">×</button></div>`).join('');}
 function removeProductImage(i){productImages.splice(i,1);renderProductPreviews();}
 async function readHeroImg(input){const file=input.files&&input.files[0];if(!file)return;if(heroImages.length>=5){alert('Maximum 5 header photos');input.value='';return;}try{heroImages.push(await compressImage(file,1400,.74));renderHeroPreviews();input.value='';}catch(e){alert('Header photo load nahi hui');}}
