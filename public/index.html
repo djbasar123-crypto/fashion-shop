@@ -265,7 +265,8 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
     </div>
     <h3>🧾 Order Summary</h3>
     <div class="order-summary" id="checkoutSummary"></div>
-    <h3>💳 Payment — UPI</h3>
+    <h3>💳 Payment Method</h3>
+    <div id="paymentMethods" style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;"></div>
     <div class="pay-box" id="payBox"></div>
     <div class="whatsapp-note" id="waNote"></div>
     <button class="btn" style="width:100%;background:#25D366;color:#fff;" onclick="placeOrder()">✅ Order Confirm</button>
@@ -383,7 +384,12 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
         <label>QR Code Upload</label><input type="file" id="upQrFile" accept="image/*" onchange="readQrFile(this)">
         <label>Ya QR URL</label><input type="text" id="upQrUrl">
         <div><img id="qrPrevImg" src="" style="max-width:140px;border:1px solid #ddd;border-radius:8px;display:none;"></div>
-        <button class="save-btn" onclick="savePayment()">💾 Save</button>
+        <hr style="margin:18px 0;border:0;border-top:1px solid #eee;">
+        <h3 style="margin:0 0 10px;">🚚 Cash on Delivery</h3>
+        <label style="display:flex;align-items:center;gap:8px;font-weight:700;"><input type="checkbox" id="codEnabled" style="width:auto;"> Enable COD</label>
+        <label>COD Charge</label><input type="number" id="codCharge" value="40" min="0">
+        <label>Courier Partner</label><input type="text" id="courierPartner" placeholder="e.g. Shiprocket / Delhivery / DTDC">
+        <button class="save-btn" onclick="savePayment()">💾 Save Payment & COD</button>
       </div>
     </div>
     <div id="tab-settings" class="hidden">
@@ -606,19 +612,33 @@ function closeCart(){document.getElementById('cartDrawer').classList.remove('ope
 function openCheckout(){
   if(!cart.length){alert('Cart khaali hai');return;}
   closeCart();
-  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
-  document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p style="border-top:1px solid #ddd;"><b>Total</b><b>₹${total}</b></p>`;
-  const pb=document.getElementById('payBox');
-  if(pay.upiId){
-    const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId)}&pn=${encodeURIComponent(pay.upiName||'Store')}&am=${total}&cu=INR&tn=Order`;
-    pb.innerHTML=(pay.qrCode?`<img src="${pay.qrCode}">`:'<p style="color:#888;">QR abhi nahi hua</p>')+`<div class="upi-id">${pay.upiId}</div><br>
-      <a class="pay-link" href="${upi}">📲 Pay Karein</a>
-      <p style="font-size:12px;color:#555;">Kisi bhi UPI app se paisa seedha admin ke account me jayega</p>`;
-    document.getElementById('waNote').innerHTML='<b>✅ Payment ke baad UTR/Transaction ID niche likho</b>';
-  }else{
-    pb.innerHTML='<p style="color:red;">Payment abhi set nahi hua</p>';document.getElementById('waNote').innerHTML='';
-  }
+  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const codEnabled=!!pay.codEnabled;
+  const codCharge=Number(pay.codCharge)||40;
+  document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
+  const methods=document.getElementById('paymentMethods');
+  methods.innerHTML=(pay.upiId?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="UPI" checked onchange="selectPaymentMethod('UPI')"> 📲 UPI / Online</label>`:'')+(codEnabled?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="COD" ${pay.upiId?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
+  if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
+  selectPaymentMethod(pay.upiId?'UPI':(codEnabled?'COD':''));
   document.getElementById('checkoutModal').classList.add('show');
+}
+function selectPaymentMethod(method){
+  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const codCharge=Number(pay.codCharge)||40;
+  const row=document.getElementById('codChargeRow');
+  const totalEl=document.getElementById('checkoutTotal');
+  if(method==='COD'){
+    if(row)row.style.display='flex';
+    if(totalEl)totalEl.textContent='₹'+(subtotal+codCharge);
+    document.getElementById('payBox').innerHTML=`<div style="padding:14px;border:2px dashed #198754;border-radius:10px;background:#f4fff6;color:#146c2e;font-weight:700;">💵 Cash on Delivery selected<br><small style="font-weight:500;color:#555;">₹${codCharge} COD charge included in total.</small>${pay.courierPartner?`<br><small style="font-weight:500;color:#555;">Courier: ${pay.courierPartner}</small>`:''}</div>`;
+    document.getElementById('waNote').innerHTML='<b>✅ COD order — delivery ke time cash payment karein.</b>';
+  }else if(method==='UPI'){
+    if(row)row.style.display='none';
+    if(totalEl)totalEl.textContent='₹'+subtotal;
+    const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId||'')}&pn=${encodeURIComponent(pay.upiName||'Store')}&am=${subtotal}&cu=INR&tn=Order`;
+    document.getElementById('payBox').innerHTML=pay.upiId?((pay.qrCode?`<img src="${pay.qrCode}">`:'<p style="color:#888;">QR abhi nahi hua</p>')+`<div class="upi-id">${pay.upiId}</div><br><a class="pay-link" href="${upi}">📲 Pay Karein</a><p style="font-size:12px;color:#555;">Kisi bhi UPI app se paisa seedha admin ke account me jayega</p>`):'<p style="color:red;">UPI Payment set nahi hua.</p>';
+    document.getElementById('waNote').innerHTML=pay.upiId?'<b>✅ Payment ke baad UTR/Transaction ID niche likho</b>':'';
+  }
 }
 function closeCheckout(){document.getElementById('checkoutModal').classList.remove('show');}
 async function placeOrder(){
@@ -628,17 +648,24 @@ async function placeOrder(){
   const city=document.getElementById('cCity').value.trim();
   const pin=document.getElementById('cPin').value.trim();
   if(!name||!phone||!addr||!pin){alert('Saari details bharein');return;}
-  const utr=prompt('UPI me mila Transaction ID/UTR likho:');
-  if(!utr){alert('UTR zaroori hai');return;}
-  const total=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const method=document.querySelector('input[name="paymentMethod"]:checked')?.value||'';
+  if(!method){alert('Payment method select karo');return;}
+  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const codCharge=method==='COD'?(Number(pay.codCharge)||40):0;
+  const total=subtotal+codCharge;
+  let utr='COD';
+  if(method==='UPI'){
+    utr=prompt('UPI me mila Transaction ID/UTR likho:');
+    if(!utr){alert('UTR zaroori hai');return;}
+    utr=utr.trim();
+  }
   const items=cart.map(x=>`${x.name} (${x.size}×${x.qty}) ₹${x.price*x.qty}`).join(', ');
-  const order={name,phone,address:addr+', '+city+' - '+pin,items,total:Number(total),utr:utr.trim()};
+  const order={name,phone,address:addr+', '+city+' - '+pin,items,total:Number(total),paymentMethod:method,codCharge:Number(codCharge),courierPartner:pay.courierPartner||'',utr};
   const r=await api('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(order)});
   if(r.ok){
-    const msg=`🛒 *NEW ORDER* ${r.id}%0A👤 ${name}%0A📞 ${phone}%0A📍 ${addr}%2C ${city} - ${pin}%0A🧾 ${items}%0A💰 ₹${total}%0A🔖 ${utr}`;
+    const msg=`🛒 *NEW ORDER* ${r.id}%0A👤 ${name}%0A📞 ${phone}%0A📍 ${addr}%2C ${city} - ${pin}%0A🧾 ${items}%0A💰 ₹${total}%0A💳 ${method}${method==='COD'?`%0A🚚 ${pay.courierPartner||'Courier not set'}%0A➕ COD Charge ₹${codCharge}`:`%0A🔖 ${utr}`}`;
     window.open(`https://wa.me/${social.whatsapp||'919876543210'}?text=${msg}`,'_blank');
-    cart=[];saveCart();closeCheckout();
-    alert('✅ Order confirm! WhatsApp par details bhej di gayi.');
+    cart=[];saveCart();closeCheckout();alert('✅ Order confirm! WhatsApp par details bhej di gayi.');
   }
 }
 
@@ -685,6 +712,9 @@ function loadAdminData(){
   document.getElementById('orderTable').innerHTML=orders.length?'<tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr>'+orders.map((o,i)=>`<tr><td><b>${o.id}</b><br><small>${o.date}</small></td><td><b>${o.name}</b><br><small>${o.phone}<br>${o.address}</small></td><td><small>${o.items}</small></td><td>₹${o.total}</td><td><span class="ord-st ord-${o.status}">${o.status.toUpperCase()}</span></td><td><button class="edit-btn" onclick="setOrd(${i},'confirmed')">✅</button> <button class="edit-btn" style="background:#17a2b8;color:#fff;" onclick="setOrd(${i},'delivered')">📦</button> <button class="del-btn" onclick="delOrd(${i})">🗑️</button></td></tr>`).join(''):'<tr><td style="text-align:center;padding:20px;">Koi order nahi</td></tr>';
   document.getElementById('upId').value=pay.upiId||'';
   document.getElementById('upName').value=pay.upiName||'';
+  document.getElementById('codEnabled').checked=!!pay.codEnabled;
+  document.getElementById('codCharge').value=Number(pay.codCharge)||40;
+  document.getElementById('courierPartner').value=pay.courierPartner||'';
   document.getElementById('upQrUrl').value=(pay.qrCode&&pay.qrCode.startsWith('http')?pay.qrCode:'');
   const pv=document.getElementById('qrPrevImg');if(pay.qrCode){pv.src=pay.qrCode;pv.style.display='inline-block';}else{pv.style.display='none';}
   document.getElementById('sName').value=settings.siteName||'';
@@ -823,7 +853,7 @@ async function delOrd(i){if(confirm('Delete?')){orders.splice(i,1);await api('/a
 // ===== SAVE SETTINGS =====
 async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();loadAdminData();flash();}
 async function saveSocial(){const d={instagram:document.getElementById('soInsta').value,facebook:document.getElementById('soFb').value,whatsapp:document.getElementById('soWa').value,youtube:document.getElementById('soYt').value,twitter:document.getElementById('soTw').value};await api('/api/admin/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});social={...social,...d};loadAdminData();flash();}
-async function savePayment(){const upiId=document.getElementById('upId').value.trim();if(!upiId){alert('UPI ID zaroori');return;}const d={upiId,upiName:document.getElementById('upName').value};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});pay={upiId,upiName:d.upiName,qrCode:d.qrCode||pay.qrCode};loadAdminData();flash();}
+async function savePayment(){const upiId=document.getElementById('upId').value.trim();const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim()};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});pay={...pay,...d};loadAdminData();flash();alert('✅ Payment/COD settings saved');}
 function readQrFile(i){const f=i.files[0];const r=new FileReader();r.onload=async e=>{pay.qrCode=e.target.result;const pv=document.getElementById('qrPrevImg');pv.src=pay.qrCode;pv.style.display='inline-block';document.getElementById('upQrUrl').value='';await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upiId:pay.upiId,upiName:pay.upiName,qrCode:pay.qrCode})});};r.readAsDataURL(f);}
 async function saveSecurity(){const u=document.getElementById('adUser').value.trim();const p=document.getElementById('adPass').value.trim();if(!u||!p){alert('Bharo');return;}await api('/api/admin/security',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});alert('✅ Login details update ho gayi! Yaad rakhein.');flash();}
 
