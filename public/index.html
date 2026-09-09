@@ -15,7 +15,8 @@ body{background:#f8f9fa;color:#222;}
 .header-search button:hover{filter:brightness(1.08);}
 @media(max-width:900px){.header{gap:10px}.header-search{order:3;max-width:none;margin:8px 0 0;flex-basis:100%;}.header>div:last-child{margin-left:auto;}}
 @media(max-width:700px){.header{padding:10px 14px}.header .logo img{height:45px !important}.header-search{min-width:0}.nav a{margin-left:8px;font-size:12px}}
-.header .logo{font-size:24px;font-weight:bold;cursor:pointer;user-select:none;}
+.header .logo{font-size:24px;font-weight:bold;cursor:pointer;user-select:none;display:flex;align-items:center;gap:10px;}
+#pImgPrev{display:flex;flex-wrap:wrap;align-items:center;margin-top:6px;}
 .header .logo span{color:var(--primary,#ffc107);}
 .nav a{color:#fff;text-decoration:none;margin-left:15px;font-size:14px;}
 .social-icons{display:flex;gap:10px;align-items:center;}
@@ -338,11 +339,11 @@ td{padding:10px;border-bottom:1px solid #eee;font-size:13px;vertical-align:middl
   </div>
 </div>
 
-<label>Product Photos — Minimum 5</label>
+<label>Product Photos — Add 1 at a time (Minimum 5)</label>
 <input type="file" id="pImgFiles" accept="image/*" onchange="readPImgs(this)">
 
 <p style="font-size:13px;color:#777;margin:6px 0;">
-  Minimum 5 photos required
+  Ek baar mein 1 photo select karo. Total 5 photos required.
 </p>
 
 <div id="pImgPrev"></div>
@@ -435,7 +436,7 @@ function applyTheme(){document.documentElement.style.setProperty('--primary',set
 function socLinks(){const l=[];if(social.instagram)l.push({t:'IG',u:social.instagram});if(social.facebook)l.push({t:'FB',u:social.facebook});if(social.whatsapp)l.push({t:'WA',u:'https://wa.me/'+social.whatsapp});if(social.youtube)l.push({t:'▶',u:social.youtube});if(social.twitter)l.push({t:'X',u:social.twitter});return l;}
 function renderSocial(){const l=socLinks();let h='';l.forEach(x=>{h+=`<a href="${x.u}" target="_blank">${x.t}</a>`;});document.getElementById('headerSocials').innerHTML=h;document.getElementById('footerSocials').innerHTML=h;}
 function renderHeader(){
-  document.getElementById('siteLogo').innerHTML=`<img src="IBM_COLLECTION_logo.png" alt="IBM COLLECTION" style="height:55px;width:55px;object-fit:contain;">`;
+  document.getElementById('siteLogo').innerHTML=`<img src="IBM_COLLECTION_logo.png" alt="IBM COLLECTION" style="height:55px;width:55px;object-fit:contain;"><span>IBM COLLECTION</span>`;
   document.getElementById('heroTitle').innerHTML=(settings.hero||'New Season').replace('New Style','<span>New Style</span>');
   document.getElementById('heroTagline').textContent=settings.tag||'';
   document.getElementById('footerName').textContent=settings.siteName||'IBM COLLECTION';
@@ -717,33 +718,37 @@ function loadAdminData(){
 let productImages=[];
 
 function readPImgs(input){
-  const files=[...input.files];
-  if(files.length<5){
-    alert('Minimum 5 photos select karo');
+  const file=input.files&&input.files[0];
+  if(!file)return;
+
+  if(productImages.length>=5){
+    alert('Maximum 5 photos allowed');
     input.value='';
-    productImages=[];
-    const prev=document.getElementById('pImgPrev');
-    if(prev)prev.innerHTML='';
     return;
   }
 
-  productImages=[];
-  const prev=document.getElementById('pImgPrev');
-  if(prev)prev.innerHTML='';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    productImages.push(e.target.result);
 
-  files.forEach(file=>{
-    const reader=new FileReader();
-    reader.onload=e=>{
-      productImages.push(e.target.result);
-      if(prev){
-        const img=document.createElement('img');
-        img.src=e.target.result;
-        img.style.cssText='width:80px;height:80px;object-fit:cover;margin:5px;border:1px solid #ddd;border-radius:8px;';
-        prev.appendChild(img);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
+    const prev=document.getElementById('pImgPrev');
+    if(prev){
+      const img=document.createElement('img');
+      img.src=e.target.result;
+      img.style.cssText='width:80px;height:80px;object-fit:cover;margin:5px;border:2px solid #ddd;border-radius:8px;';
+      prev.appendChild(img);
+    }
+
+    input.value='';
+
+    if(productImages.length===5){
+      alert('✅ 5 photos selected');
+    }else{
+      const remaining=5-productImages.length;
+      console.log(remaining+' photo(s) remaining');
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
 async function saveProduct(){
