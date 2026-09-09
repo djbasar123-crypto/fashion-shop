@@ -17,9 +17,9 @@ body{background:#f8f9fa;color:#222;}
 @media(max-width:700px){.header{padding:10px 14px}.header .logo img{height:45px !important}.header-search{min-width:0}.nav a{margin-left:8px;font-size:12px}}
 .header .logo{font-size:24px;font-weight:bold;cursor:pointer;user-select:none;display:flex;align-items:center;gap:10px;}
 .header .logo img{width:54px!important;height:54px!important;border-radius:50%;object-fit:cover;box-shadow:0 0 12px rgba(255,193,7,.95),0 0 28px rgba(255,193,7,.35);border:2px solid #ffc107;background:#050505;}
-.header .logo span{font-weight:800;letter-spacing:.4px;text-shadow:0 0 8px rgba(255,193,7,.25);}
+.header .logo span{font-weight:900;letter-spacing:.5px;color:#FFD700!important;text-shadow:0 0 6px rgba(255,215,0,.95),0 0 16px rgba(255,193,7,.55),0 1px 2px #000;}
 #pImgPrev{display:flex;flex-wrap:wrap;align-items:center;margin-top:6px;}
-.header .logo span{color:var(--primary,#ffc107);}
+.header .logo span{color:#FFD700!important;}
 .nav a{color:#fff;text-decoration:none;margin-left:15px;font-size:14px;}
 .social-icons{display:flex;gap:10px;align-items:center;}
 .social-icons a{font-size:12px;color:#fff;background:#333;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;text-decoration:none;font-weight:bold;}
@@ -585,7 +585,7 @@ function clearSearch(){
 
 function filterProducts(c){currentCat=c;renderProducts();}
 
-function buyNow(i){const p=products[i];const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const sz=selectedSizes[i]||sizes[0];cart=[{name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',size:sz,qty:1}];saveCart();openCheckout();}
+function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const sz=selectedSizes[i]||sizes[0];cart=[{name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',pimgs:Array.isArray(p.pimgs)?p.pimgs:[],size:sz,qty:1}];saveCart();closeProductDetail();setTimeout(()=>openCheckout(),80);}
 function reviewKey(i){return 'ibm_reviews_'+i;} function getReviews(i){try{return JSON.parse(localStorage.getItem(reviewKey(i))||'[]')}catch(e){return []}}
 function renderReviews(i){const rs=getReviews(i);if(!rs.length)return '<p style="color:#888;font-size:13px;">No reviews yet. Be the first to review.</p>';return rs.slice().reverse().map(r=>`<div style="border-top:1px solid #eee;padding:10px 0;"><b>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</b> <strong>${r.name}</strong><div style="font-size:13px;color:#555;margin-top:4px;">${r.text}</div></div>`).join('');}
 function submitReview(i){const name=document.getElementById('reviewName').value.trim()||'Customer';const text=document.getElementById('reviewText').value.trim();const rating=Number(document.getElementById('reviewRating').value||5);if(!text){alert('Review likho');return;}const rs=getReviews(i);rs.push({name,text,rating,date:Date.now()});localStorage.setItem(reviewKey(i),JSON.stringify(rs));openProductDetail(i);}
