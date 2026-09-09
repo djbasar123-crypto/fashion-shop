@@ -474,9 +474,25 @@ async function api(url, opt){
   return data;
 }
 async function loadStore(){
-  const d = await api('/api/store');
-  settings=d.settings; social=d.social; pay=d.pay; categories=d.categories; products=d.products;
-  applyTheme(); renderHeader(); renderSocial(); renderCategories(); renderProducts();
+  try{
+    const d = await api('/api/store');
+    settings=d.settings||{};
+    social=d.social||{};
+    pay=d.pay||{};
+    categories=Array.isArray(d.categories)?d.categories:[];
+    products=Array.isArray(d.products)?d.products:[];
+    applyTheme();
+    renderHeader();
+    renderSocial();
+    renderCategories();
+    renderProducts();
+  }catch(e){
+    console.error('Store load error:',e);
+    const cg=document.getElementById('catGrid');
+    const pg=document.getElementById('productGrid');
+    if(cg)cg.innerHTML='<p style="text-align:center;color:#c00;grid-column:1/-1;padding:30px;">Store data load nahi hua.</p>';
+    if(pg)pg.innerHTML='<p style="text-align:center;color:#c00;grid-column:1/-1;padding:30px;">Products load nahi hue.</p>';
+  }
 }
 async function loadAdmin(){
   orders = (await api('/api/admin/orders')).data;
@@ -500,10 +516,6 @@ function renderHeader(){
   document.getElementById('footerDomain').textContent=settings.domain?`© ${new Date().getFullYear()} ${settings.domain}`:`© ${new Date().getFullYear()} ${settings.siteName||'IBM COLLECTION'}`;
   document.title=(settings.siteName||'IBM COLLECTION')+' - Online Store';
 
-  document.getElementById('heroTitle').innerHTML=(settings.hero||'New Season, New Style').replace(/New Style/g,'<span>New Style</span>');
-  document.getElementById('heroTagline').textContent=settings.tag||'Premium quality T-Shirts, Shirts, Jeans, Jackets aur Track Pants — sab ek jagah!';
-  heroImages=(Array.isArray(settings.heroImages)&&settings.heroImages.length?settings.heroImages:DEFAULT_HERO_IMAGES).filter(Boolean).slice(0,5);
-  renderHeroSlider();
 }
 let heroTimer=null,heroIndex=0;
 function renderHeroSlider(){
@@ -554,6 +566,28 @@ map:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.1 7-12A7 7 
 };return p[type]||'';}
 function socLinks(){const l=[];if(social.instagram)l.push({t:'Instagram',k:'instagram',u:social.instagram});if(social.facebook)l.push({t:'Facebook',k:'facebook',u:social.facebook});if(social.whatsapp)l.push({t:'WhatsApp',k:'whatsapp',u:/^https?:\/\//i.test(social.whatsapp)?social.whatsapp:'https://wa.me/'+String(social.whatsapp).replace(/\D/g,'')});if(social.youtube)l.push({t:'YouTube',k:'youtube',u:social.youtube});if(social.twitter)l.push({t:'X',k:'twitter',u:social.twitter});if(social.telegram)l.push({t:'Telegram',k:'telegram',u:social.telegram});if(social.linkedin)l.push({t:'LinkedIn',k:'linkedin',u:social.linkedin});return l;}
 function renderSocial(){const l=socLinks();let h=l.map(x=>`<a class="social-logo" href="${x.u}" target="_blank" rel="noopener noreferrer" aria-label="${x.t}" title="${x.t}">${iconSvg(x.k)}</a>`).join('');if(settings.mapUrl)h+=`<a class="social-logo map-logo" href="${settings.mapUrl}" target="_blank" rel="noopener noreferrer" aria-label="Visit Store / Google Maps" title="Visit Store">${iconSvg('map')}</a>`;document.getElementById('headerSocials').innerHTML=h;document.getElementById('footerSocials').innerHTML=h;}
+
+
+// ===== CATEGORY ICON HELPERS =====
+// The store API provides category names, but older versions of this page did not
+// define categoryIcon(), which stopped the first render and made Categories/Products blank.
+function categoryIcon(name){
+  const n=String(name||'').toLowerCase();
+  let emoji='👕';
+  if(n==='all') emoji='🛍️';
+  else if(n.includes('shirt') && !n.includes('t-shirt')) emoji='👔';
+  else if(n.includes('jeans')) emoji='👖';
+  else if(n.includes('jacket')) emoji='🧥';
+  else if(n.includes('track') || n.includes('pant')) emoji='👖';
+  else if(n.includes('t-shirt') || n.includes('tshirt')) emoji='👕';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+    <rect width="160" height="160" rx="28" fill="#111"/>
+    <circle cx="80" cy="80" r="62" fill="#1d1d1d" stroke="#ffc107" stroke-width="4"/>
+    <text x="80" y="99" text-anchor="middle" font-size="64">${emoji}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+}
+function categoryImage(name){ return categoryIcon(name); }
 
 function renderCategories(){
   const g=document.getElementById('catGrid');
@@ -681,7 +715,7 @@ function detailGo(n){const photos=[...document.querySelectorAll('.detail-photo')
 // ===== CART =====
 function saveCart(){updateCartCount();renderCart();}
 function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0);}
-function addToCart(i){const p=products[i];const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const sz=selectedSizes[i]||sizes[0];const color=selectedColors[i]||colors[0];const ex=cart.find(x=>x.name===p.name&&x.size===sz&&x.color===color);if(ex)ex.qty++;else cart.push({name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',size:sz,color,qty:1});saveCart();}
+function addToCart(i){const p=products[i];const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const sz=selectedSizes[i]||sizes[0];const color=selectedColors[i]||colors[0];const ex=cart.find(x=>x.name===p.name&&x.size===sz&&x.color===color);if(ex)ex.qty++;else cart.push({name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',pimgs:Array.isArray(p.pimgs)?p.pimgs:[],size:sz,color,qty:1});saveCart();}
 function renderCart(){const box=document.getElementById('cartItems');if(!cart.length){box.innerHTML='<div class="empty">Cart khaali hai</div>';}else{box.innerHTML=cart.map((x,i)=>`
   <div class="citem"><div class="cimg">${x.pimg?`<img src="${x.pimg}">`:(x.icon||'👕')}</div>
     <div class="cinfo"><b>${x.name}</b><br><small>₹${x.price} — Size: ${x.size} — Colour: ${x.color||'Black'}</small><br>
