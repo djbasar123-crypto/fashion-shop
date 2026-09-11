@@ -455,6 +455,260 @@ body{
   .section-title{font-size:26px!important}
 }
 
+
+/* IBM COLLECTION - Checkout & Admin readability fixes */
+.checkout-box{
+  background:#ffffff !important;
+  color:#111111 !important;
+}
+.checkout-box h2,.checkout-box h3,
+.checkout-box p,.checkout-box span,.checkout-box b,
+.checkout-box small,.checkout-box div{
+  color:#111111;
+}
+.checkout-box label{
+  color:#222222 !important;
+  font-weight:700 !important;
+}
+.checkout-box input,.checkout-box textarea,.checkout-box select{
+  background:#ffffff !important;
+  color:#111111 !important;
+  border:1px solid #c9c9c9 !important;
+}
+.checkout-box input::placeholder,.checkout-box textarea::placeholder{
+  color:#777777 !important;
+}
+.order-summary{
+  background:#f7f7f7 !important;
+  color:#111111 !important;
+}
+.order-summary p,.order-summary span,.order-summary b{
+  color:#111111 !important;
+}
+.pay-box,.whatsapp-note{
+  color:#111111 !important;
+}
+.pay-box *,.whatsapp-note *{
+  color:#111111;
+}
+#paymentMethods label{
+  color:#222222 !important;
+  background:#fff !important;
+}
+#paymentMethods label input{
+  accent-color:#d4af37;
+}
+#checkoutModal .close-m,
+#productDetailModal .close-m,
+#tryonModal .close-m{
+  color:#111111 !important;
+  background:#ffffff !important;
+  border-radius:50%;
+  width:38px;height:38px;
+  line-height:34px;
+  box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+/* Admin pages: keep text readable on white content cards */
+.admin-content,.admin-content *{
+  color:inherit;
+}
+.admin-content input,.admin-content textarea,.admin-content select{
+  color:#111111 !important;
+  background:#ffffff !important;
+}
+.admin-content label,.admin-content h1,.admin-content h2,.admin-content h3,
+.admin-content h4,.admin-content p,.admin-content td,.admin-content th,
+.admin-content span,.admin-content b{
+  color:#222222 !important;
+}
+.admin-content table th{
+  color:#ffffff !important;
+}
+
+
+/* IBM COLLECTION - FULL LUXURY BLACK & GOLD SURFACES */
+:root{--lux-gold:#d4af37;--lux-gold2:#f4d76b;--lux-black:#050505;--lux-panel:#0b0b0b;--lux-panel2:#11100d;--lux-line:rgba(212,175,55,.28);}
+body{background:#030303!important;color:#eee!important;}
+/* Checkout / order modal */
+.checkout-box{
+  background:linear-gradient(145deg,#0a0a0a,#11100d)!important;
+  color:#f5f5f5!important;
+  border:1px solid var(--lux-line)!important;
+  box-shadow:0 20px 70px rgba(0,0,0,.65),0 0 30px rgba(212,175,55,.08)!important;
+}
+.checkout-box h2,.checkout-box h3{color:var(--lux-gold2)!important;font-family:Georgia,serif!important;}
+.checkout-box p,.checkout-box span,.checkout-box b,.checkout-box small,.checkout-box div{color:#e9e9e9;}
+.checkout-box label{color:var(--lux-gold2)!important;font-weight:700!important;}
+.checkout-box input,.checkout-box textarea,.checkout-box select{
+  background:#15130f!important;color:#fff!important;border:1px solid rgba(212,175,55,.38)!important;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.35)!important;
+}
+.checkout-box input::placeholder,.checkout-box textarea::placeholder{color:#8f8b7f!important;}
+.order-summary{
+  background:#11100d!important;color:#fff!important;border:1px solid rgba(212,175,55,.24)!important;
+}
+.order-summary p,.order-summary span,.order-summary b{color:#f2f2f2!important;}
+.pay-box{
+  background:linear-gradient(145deg,#10160f,#0b0b0b)!important;
+  color:#fff!important;border:1px dashed var(--lux-gold)!important;
+}
+.pay-box *,.whatsapp-note *{color:#f2f2f2!important;}
+.upi-id{background:#11100d!important;color:var(--lux-gold2)!important;border-color:var(--lux-line)!important;}
+.whatsapp-note{background:#10150f!important;color:#eee!important;border:1px solid rgba(212,175,55,.18)!important;}
+#paymentMethods label{
+  color:#eee!important;background:#11100d!important;border:1px solid rgba(212,175,55,.35)!important;
+}
+#checkoutModal .close-m,#productDetailModal .close-m,#tryonModal .close-m{
+  color:#111!important;background:var(--lux-gold2)!important;border:1px solid #8d7220!important;
+  box-shadow:0 0 18px rgba(212,175,55,.2)!important;
+}
+/* Product detail */
+#productDetailModal .checkout-box{background:linear-gradient(145deg,#070707,#12100c)!important;}
+.detail-info h2{color:var(--lux-gold2)!important;}
+.detail-info,.detail-info p,.detail-info span,.detail-info label{color:#eee!important;}
+.detail-desc{color:#c7c7c7!important;}
+.detail-main{background:#070707!important;border:1px solid var(--lux-line)!important;}
+.detail-thumbs img{border-color:rgba(212,175,55,.18)!important;}
+.detail-thumbs img:hover{border-color:var(--lux-gold)!important;}
+.detail-info select{background:#11100d!important;color:#fff!important;border-color:var(--lux-line)!important;}
+/* Cart drawer */
+.cart-drawer{background:linear-gradient(180deg,#090909,#11100d)!important;color:#eee!important;border-left:1px solid var(--lux-line)!important;}
+.cart-head{background:#050505!important;color:var(--lux-gold2)!important;border-bottom:1px solid var(--lux-line)!important;}
+.cart-items{background:#0a0a0a!important;}
+.citem{border-bottom:1px solid rgba(212,175,55,.18)!important;}
+.citem .cinfo,.citem .cinfo *{color:#eee!important;}
+.citem .cimg{background:#15130f!important;border:1px solid rgba(212,175,55,.15)!important;}
+.qty button{background:#15130f!important;color:#fff!important;border-color:var(--lux-line)!important;}
+.cart-foot{background:#11100d!important;color:#eee!important;border-top:1px solid var(--lux-line)!important;}
+.cart-total{color:var(--lux-gold2)!important;}
+.empty{color:#888!important;}
+/* Try-on */
+.tryon-box{background:linear-gradient(145deg,#090909,#12100c)!important;color:#eee!important;border:1px solid var(--lux-line)!important;}
+.tryon-box h2{color:var(--lux-gold2)!important;}
+.tryon-box p,.tryon-box span{color:#ddd!important;}
+.try-upload{background:#11100d!important;border-color:var(--lux-gold)!important;color:#eee!important;}
+.try-stage{background:#050505!important;border-color:var(--lux-line)!important;}
+.try-controls{background:#11100d!important;color:#eee!important;border:1px solid rgba(212,175,55,.2)!important;}
+.try-controls label{color:var(--lux-gold2)!important;}
+/* Admin: every white panel/card/table becomes luxury dark */
+.admin-main{background:linear-gradient(135deg,#050505,#0c0b09)!important;color:#eee!important;}
+.admin-content,.admin-content *{color:#eee!important;}
+.card,.admin-card,.stat,.login-box{
+  background:linear-gradient(145deg,#0b0b0b,#12100c)!important;
+  color:#eee!important;border:1px solid var(--lux-line)!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.35)!important;
+}
+.admin-content input,.admin-content textarea,.admin-content select,
+.admin-card input,.admin-card textarea,.admin-card select,
+.login-box input{
+  background:#15130f!important;color:#fff!important;border:1px solid rgba(212,175,55,.35)!important;
+}
+.admin-content label,.admin-content h1,.admin-content h2,.admin-content h3,
+.admin-content h4,.admin-content p,.admin-content td,.admin-content th,
+.admin-content span,.admin-content b{color:#eee!important;}
+.admin-content h1,.admin-content h2,.admin-content h3,.admin-card h3,.stat b{color:var(--lux-gold2)!important;}
+.admin-content table,table{background:#0b0b0b!important;border:1px solid rgba(212,175,55,.2)!important;}
+.admin-content table th,table th{background:#050505!important;color:var(--lux-gold2)!important;border-bottom:1px solid var(--lux-line)!important;}
+.admin-content table td,table td{background:#0d0d0d!important;color:#eee!important;border-bottom:1px solid rgba(212,175,55,.14)!important;}
+.notice{background:#171208!important;color:#f4d76b!important;border-color:rgba(212,175,55,.4)!important;}
+.success-msg{background:#0e1a12!important;color:#9fe3b1!important;border:1px solid #285c3a!important;}
+.sidebar{background:#050505!important;border-right:1px solid var(--lux-line)!important;}
+.sidebar h3,.sidebar h3 span{color:var(--lux-gold2)!important;}
+.sidebar button{color:#ddd!important;}
+.sidebar button.active,.sidebar button:hover{background:#171208!important;color:var(--lux-gold2)!important;}
+/* Generic admin cards / white surfaces */
+.admin-wrap .card,.admin-wrap .admin-card,.admin-wrap .admin-main,.admin-wrap .stat,
+.admin-wrap table,.admin-wrap .table-wrap{background-color:#0b0b0b!important;}
+/* Login */
+.login-box h2{color:var(--lux-gold2)!important;}
+.login-box{background:linear-gradient(145deg,#080808,#12100c)!important;}
+/* Gold accent for controls */
+.save-btn,.edit-btn{background:linear-gradient(135deg,#b88a18,#f4d76b)!important;color:#111!important;}
+
+</style>
+
+<style id="ibm-luxury-v4">
+:root{
+  --lux-black:#050505;--lux-deep:#090909;--lux-panel:#0d0d0d;--lux-panel2:#121212;
+  --lux-gold:#d6af45;--lux-gold2:#f3d36a;--lux-gold3:#9d7921;
+  --lux-white:#f7f4ec;--lux-muted:#b9b3a5;--lux-border:rgba(214,175,69,.34);
+}
+html{background:#050505!important;scroll-behavior:smooth}
+body{background:radial-gradient(circle at 50% -10%,#201a0b 0,#0a0a0a 34%,#050505 72%)!important;color:var(--lux-white)!important}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+/* universal dark luxury surfaces */
+.card,.product-card,.category-card,.feature-card,.checkout-box,.modal-box,.modal-content,.pay-box,.order-summary,
+.admin-wrap .card,.admin-wrap .admin-card,.admin-wrap .admin-main,.admin-wrap .stat,.admin-wrap table,.admin-wrap .table-wrap,
+section,.panel,.box,.details-box,.review-box,.cart-box,.tryon-box,.try-stage,.login-box{background:linear-gradient(145deg,#121212,#080808)!important;color:var(--lux-white)!important;border-color:var(--lux-border)!important;box-shadow:0 16px 45px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.025)!important}
+/* text */
+h1,h2,h3,h4,h5,h6,.title,.section-title,.section-heading{color:var(--lux-gold2)!important;text-shadow:0 1px 18px rgba(214,175,69,.12)}
+p,span,small,li,td,th,.muted,.description,.desc{color:var(--lux-white)!important}
+label{color:var(--lux-gold2)!important;font-weight:700!important}
+.price,.new-price,.amount,.total,.gold,.accent{color:var(--lux-gold2)!important}
+.old-price,.strike{color:#888!important}
+/* inputs / selects / textareas */
+input,textarea,select{background:#090909!important;color:#fff!important;border:1px solid rgba(214,175,69,.45)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.4)!important}
+input::placeholder,textarea::placeholder{color:#8d887c!important}
+select option{background:#0b0b0b!important;color:#fff!important}
+input:focus,textarea:focus,select:focus{border-color:var(--lux-gold2)!important;box-shadow:0 0 0 2px rgba(214,175,69,.12)!important;outline:none!important}
+/* buttons */
+button,.btn,.buy-btn,.cart-btn,.shop-btn{border:1px solid rgba(243,211,106,.55)!important;box-shadow:0 8px 24px rgba(0,0,0,.28)!important}
+.btn,.buy-btn,.shop-btn{background:linear-gradient(135deg,#8e6915,#f0d26a 52%,#b58a24)!important;color:#0a0a0a!important;font-weight:800!important}
+.cart-btn{background:linear-gradient(135deg,#17130a,#0b0b0b)!important;color:var(--lux-gold2)!important}
+button:hover,.btn:hover,.buy-btn:hover,.cart-btn:hover,.shop-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+/* header */
+header,.header,.site-header,.main-header{background:rgba(5,5,5,.94)!important;border-bottom:1px solid rgba(214,175,69,.3)!important;backdrop-filter:blur(16px)!important}
+.logo,.brand,.brand-name{color:var(--lux-gold2)!important}
+nav a,.nav a{color:#eee!important}
+nav a:hover,.nav a:hover{color:var(--lux-gold2)!important}
+/* top utility bar */
+.luxury-topbar{background:linear-gradient(90deg,#050505,#171207,#050505)!important;border-bottom:1px solid rgba(214,175,69,.25)!important;color:var(--lux-gold2)!important}
+/* search */
+.search-box,.search-wrap{background:#080808!important;border:1px solid rgba(214,175,69,.45)!important}
+.search-box input,.search-wrap input{background:transparent!important;border:0!important;color:#fff!important}
+/* hero */
+.hero,.hero-section,.hero-slide{border-color:rgba(214,175,69,.3)!important;box-shadow:0 20px 55px rgba(0,0,0,.48)!important}
+.hero:after{background:linear-gradient(90deg,rgba(0,0,0,.82),rgba(0,0,0,.22),rgba(0,0,0,.66))!important}
+/* category cards */
+.category-card{border:1px solid rgba(214,175,69,.28)!important;overflow:hidden!important}
+.category-card:hover{border-color:var(--lux-gold2)!important;box-shadow:0 18px 40px rgba(214,175,69,.12)!important}
+.category-card img{filter:saturate(.9) contrast(1.04)!important}
+/* product cards */
+.product-card{border:1px solid rgba(214,175,69,.22)!important;overflow:hidden!important}
+.product-card:hover{border-color:rgba(243,211,106,.8)!important;box-shadow:0 20px 50px rgba(214,175,69,.12)!important}
+.product-card .product-info,.product-card .info{background:linear-gradient(180deg,#101010,#070707)!important}
+.product-card .dots span,.dots span{border-color:var(--lux-gold)!important}
+/* modal: black/gold, readable */
+.modal{background:rgba(0,0,0,.78)!important;backdrop-filter:blur(10px)!important}
+.modal .checkout-box{background:linear-gradient(145deg,#15130e,#070707)!important;border:1px solid rgba(243,211,106,.42)!important;color:#fff!important}
+.close-m{background:#0b0b0b!important;color:var(--lux-gold2)!important;border:1px solid rgba(243,211,106,.55)!important;width:38px!important;height:38px!important;border-radius:50%!important;font-size:18px!important}
+.close-m:hover{background:#1a160c!important}
+/* checkout */
+.checkout-box h2,.checkout-box h3{color:var(--lux-gold2)!important}
+.order-summary{border:1px solid rgba(214,175,69,.28)!important}
+.order-summary *{color:#fff!important}
+.pay-box{border:1px solid rgba(214,175,69,.3)!important}
+.payment-option,.pay-option{background:#0b0b0b!important;color:#fff!important;border:1px solid rgba(214,175,69,.25)!important}
+.payment-option.active,.pay-option.active{border-color:var(--lux-gold2)!important;box-shadow:0 0 0 1px rgba(243,211,106,.25)!important}
+.whatsapp-note{background:#0b0b0b!important;color:#ddd!important;border-color:rgba(214,175,69,.18)!important}
+/* admin */
+.admin-wrap{background:radial-gradient(circle at top right,#211a09,#090909 45%,#050505)!important;color:#fff!important}
+.admin-wrap .card,.admin-wrap .admin-card{border:1px solid rgba(214,175,69,.28)!important}
+.admin-wrap table{border-collapse:separate!important;border-spacing:0!important;overflow:hidden!important}
+.admin-wrap th{background:linear-gradient(135deg,#1a1508,#0d0d0d)!important;color:var(--lux-gold2)!important;border-bottom:1px solid rgba(214,175,69,.35)!important}
+.admin-wrap td{background:#0b0b0b!important;color:#eee!important;border-bottom:1px solid rgba(255,255,255,.06)!important}
+.login-box{border:1px solid rgba(214,175,69,.4)!important}
+/* footer */
+footer,.footer{background:#050505!important;border-top:1px solid rgba(214,175,69,.28)!important;color:#bbb!important}
+footer h3,footer h4{color:var(--lux-gold2)!important}
+/* mobile */
+@media(max-width:700px){
+ body{background:radial-gradient(circle at 50% -10%,#1c1608 0,#090909 38%,#050505 75%)!important}
+ .checkout-box{max-width:94%!important;border-radius:18px!important}
+ .modal .checkout-box{padding:18px!important}
+ input,textarea,select{font-size:16px!important}
+ .product-card,.category-card{border-radius:14px!important}
+}
 </style>
 </head>
 <body>
@@ -997,6 +1251,7 @@ function openCheckout(){
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
   selectPaymentMethod(pay.upiId?'UPI':(codEnabled?'COD':''));
   document.getElementById('checkoutModal').classList.add('show');
+  openCheckoutHistory();
 }
 function selectPaymentMethod(method){
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
@@ -1016,7 +1271,26 @@ function selectPaymentMethod(method){
     document.getElementById('waNote').innerHTML=pay.upiId?'<b>✅ Payment ke baad UTR/Transaction ID niche likho</b>':'';
   }
 }
-function closeCheckout(){document.getElementById('checkoutModal').classList.remove('show');}
+let checkoutHistoryActive=false;
+function openCheckoutHistory(){
+  if(!checkoutHistoryActive){
+    history.pushState({ibmCheckout:true},'',location.href);
+    checkoutHistoryActive=true;
+  }
+}
+function closeCheckout(fromPop=false){
+  document.getElementById('checkoutModal').classList.remove('show');
+  if(checkoutHistoryActive){
+    checkoutHistoryActive=false;
+    if(!fromPop) history.back();
+  }
+}
+window.addEventListener('popstate',function(){
+  if(checkoutHistoryActive){
+    checkoutHistoryActive=false;
+    document.getElementById('checkoutModal').classList.remove('show');
+  }
+});
 async function placeOrder(){
   const name=document.getElementById('cName').value.trim();
   const phone=document.getElementById('cPhone').value.trim();
