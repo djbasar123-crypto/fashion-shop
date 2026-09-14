@@ -810,6 +810,11 @@ footer h3,footer h4{color:var(--lux-gold2)!important}
 }
 </style>
 
+<style id="ibm-v6-payment">
+#prepaidDiscountRow{color:#7CFC00!important;font-weight:800}
+#prepaidDiscountRow b{color:#7CFC00!important}
+</style>
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 </head>
 <body>
 
@@ -904,6 +909,10 @@ footer h3,footer h4{color:var(--lux-gold2)!important}
     <div id="paymentMethods" style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 12px;"></div>
     <div class="pay-box" id="payBox"></div>
     <div class="whatsapp-note" id="waNote"></div>
+    <label style="display:flex;align-items:flex-start;gap:8px;margin:12px 0;font-size:12px;color:#d8d2c4;line-height:1.5;">
+      <input type="checkbox" id="waOptIn" style="width:auto;margin-top:3px;">
+      <span>WhatsApp par order confirmation receive karna hai.</span>
+    </label>
     <button class="btn" style="width:100%;background:#25D366;color:#fff;" onclick="placeOrder()">✅ Order Confirm</button>
   </div>
 </div>
@@ -1012,7 +1021,7 @@ footer h3,footer h4{color:var(--lux-gold2)!important}
       <div class="card"><table id="catTable"></table></div>
     </div>
     <div id="tab-payment" class="hidden">
-      <h2>💳 Payment (BharatPe UPI)</h2>
+      <h2>💳 Payment & Offers</h2>
       <div class="notice">Customer kisi bhi UPI app se paisa bhejega — seedha aapke account me.</div>
       <div class="card">
         <label>UPI ID</label><input type="text" id="upId">
@@ -1024,8 +1033,29 @@ footer h3,footer h4{color:var(--lux-gold2)!important}
         <h3 style="margin:0 0 10px;">🚚 Cash on Delivery</h3>
         <label style="display:flex;align-items:center;gap:8px;font-weight:700;"><input type="checkbox" id="codEnabled" style="width:auto;"> Enable COD</label>
         <label>COD Charge</label><input type="number" id="codCharge" value="40" min="0">
-        <label>Courier Partner</label><input type="text" id="courierPartner" placeholder="e.g. Shiprocket / Delhivery / DTDC">
-        <button class="save-btn" onclick="savePayment()">💾 Save Payment & COD</button>
+        <label>Courier Partner</label><input type="text" id="courierPartner" placeholder="e.g. Delhivery / DTDC / Shiprocket">
+        <div style="margin-top:18px;padding:16px;border:1px solid rgba(214,175,69,.35);border-radius:10px;background:#090909;">
+          <h3 style="margin:0 0 10px;color:#d6af45;">🚚 Delhivery API Setup</h3>
+          <p style="font-size:12px;color:#cfc7b5;margin:0 0 12px;">API token Render Environment mein secure hai. Yahan sirf registered pickup details bharo.</p>
+          <label>Delhivery Client Name</label><input type="text" id="delClientName" placeholder="Exact registered client name">
+          <label>Pickup Location Name (exact)</label><input type="text" id="delPickupName" placeholder="Exact Delhivery warehouse name">
+          <div class="row2"><div><label>Pickup Phone</label><input type="text" id="delPickupPhone"></div><div><label>Pickup PIN</label><input type="text" id="delPickupPin"></div></div>
+          <div class="row2"><div><label>Pickup City</label><input type="text" id="delPickupCity"></div><div><label>Pickup State</label><input type="text" id="delPickupState"></div></div>
+          <label>Pickup Address</label><textarea id="delPickupAddress" rows="2"></textarea>
+          <div class="row2"><div><label>Default Weight (grams)</label><input type="number" id="delWeight" value="500" min="100"></div><div><label>Shipping Mode</label><select id="delMode"><option value="Express">Express</option><option value="Surface">Surface</option></select></div></div>
+          <div class="row2"><div><label>Length (cm)</label><input type="number" id="delLength" value="20" min="1"></div><div><label>Width (cm)</label><input type="number" id="delWidth" value="15" min="1"></div></div>
+          <label>Height (cm)</label><input type="number" id="delHeight" value="5" min="1">
+          <button class="save-btn" onclick="saveDelhiverySettings()">💾 Save Delhivery Settings</button>
+          <button class="save-btn gray" onclick="testDelhiveryStatus()">🔎 Check Delhivery Setup</button>
+          <p id="delStatusMsg" style="font-size:12px;margin:10px 0 0;color:#d8d2c4;"></p>
+        </div>
+        <hr style="margin:18px 0;border:0;border-top:1px solid #eee;">
+        <h3 style="margin:0 0 10px;">🎁 Prepaid Discount</h3>
+        <label>Prepaid Discount (%)</label><input type="number" id="prepaidDiscount" value="0" min="0" max="100" step="0.01" placeholder="e.g. 5">
+        <p style="font-size:12px;color:#777;margin:6px 0 12px;">UPI/Online payment choose karne par ye discount customer ko milega. COD par nahi.</p>
+        <label>Payment Instructions (customer ko dikhne wala text)</label>
+        <textarea id="paymentInstruction" rows="3" placeholder="UPI/Online payment ke liye yahan apna message likho..."></textarea>
+        <button class="save-btn" onclick="savePayment()">💾 Save Payment & Offers</button>
       </div>
     </div>
     <div id="tab-settings" class="hidden">
@@ -1345,7 +1375,7 @@ function openCheckout(){
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codEnabled=!!pay.codEnabled;
   const codCharge=Number(pay.codCharge)||40;
-  document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
+  document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="prepaidDiscountRow" style="display:none;"><span>🎁 Prepaid Discount</span><b id="prepaidDiscountValue">-₹0</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
   const methods=document.getElementById('paymentMethods');
   methods.innerHTML=(pay.upiId?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="UPI" checked onchange="selectPaymentMethod('UPI')"> 📲 UPI / Online</label>`:'')+(codEnabled?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="COD" ${pay.upiId?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
@@ -1353,45 +1383,78 @@ function openCheckout(){
   document.getElementById('checkoutModal').classList.add('show');
   openCheckoutHistory();
 }
+function getPrepaidDiscountAmount(subtotal){
+  const pct=Math.max(0,Math.min(100,Number(pay.prepaidDiscountPercent)||0));
+  return Math.round(subtotal*pct/100*100)/100;
+}
 function selectPaymentMethod(method){
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codCharge=Number(pay.codCharge)||40;
+  const discount=method==='UPI'?getPrepaidDiscountAmount(subtotal):0;
   const row=document.getElementById('codChargeRow');
+  const discRow=document.getElementById('prepaidDiscountRow');
   const totalEl=document.getElementById('checkoutTotal');
+  if(row)row.style.display=method==='COD'?'flex':'none';
+  if(discRow)discRow.style.display=method==='UPI'&&discount>0?'flex':'none';
   if(method==='COD'){
-    if(row)row.style.display='flex';
     if(totalEl)totalEl.textContent='₹'+(subtotal+codCharge);
-    document.getElementById('payBox').innerHTML=`<div style="padding:14px;border:2px dashed #198754;border-radius:10px;background:#f4fff6;color:#146c2e;font-weight:700;">💵 Cash on Delivery selected<br><small style="font-weight:500;color:#555;">₹${codCharge} COD charge included in total.</small>${pay.courierPartner?`<br><small style="font-weight:500;color:#555;">Courier: ${pay.courierPartner}</small>`:''}</div>`;
+    document.getElementById('payBox').innerHTML=`<div style="padding:14px;border:2px dashed #d6af45;border-radius:10px;background:#0b0b0b;color:#f7f4ec;font-weight:700;">💵 Cash on Delivery selected<br><small style="font-weight:500;color:#d8d2c4;">₹${codCharge} COD charge included in total.</small>${pay.courierPartner?`<br><small style="font-weight:500;color:#d8d2c4;">Courier: ${pay.courierPartner}</small>`:''}</div>`;
     document.getElementById('waNote').innerHTML='<b>✅ COD order — delivery ke time cash payment karein.</b>';
   }else if(method==='UPI'){
-    if(row)row.style.display='none';
+    if(totalEl)totalEl.textContent='₹'+(subtotal-discount);
+    const upiAmount=(subtotal-discount).toFixed(2);
+    const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId||'')}&pn=${encodeURIComponent(pay.upiName||'IBM COLLECTION')}&am=${upiAmount}&cu=INR&tn=IBM%20COLLECTION%20Order`;
+    document.getElementById('payBox').innerHTML=pay.upiId?((pay.qrCode?`<img src="${pay.qrCode}" style="max-width:220px;display:block;margin:0 auto 10px;border-radius:12px;">`:'')+`<div class="upi-id">${pay.upiId}</div><br><a class="pay-link" href="${upi}">📲 Pay Karein</a><p style="font-size:12px;color:#d8d2c4;">${pay.paymentInstruction||'Kisi bhi UPI app se payment karein. Payment successful hone ke baad order confirm hoga.'}</p>${discount>0?`<p style="color:#7CFC00;font-weight:800;margin:6px 0 0;">🎁 Prepaid Discount: ${Number(pay.prepaidDiscountPercent)||0}% (₹${discount.toFixed(2)})</p>`:''}`):'<p style="color:#ff7777;">UPI Payment set nahi hua.</p>';
+    document.getElementById('waNote').innerHTML=pay.upiId?'<b>✅ Online/UPI payment select kiya hai.</b>':'';
+  }else{
     if(totalEl)totalEl.textContent='₹'+subtotal;
-    const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId||'')}&pn=${encodeURIComponent(pay.upiName||'Store')}&am=${subtotal}&cu=INR&tn=Order`;
-    document.getElementById('payBox').innerHTML=pay.upiId?((pay.qrCode?`<img src="${pay.qrCode}">`:'<p style="color:#888;">QR abhi nahi hua</p>')+`<div class="upi-id">${pay.upiId}</div><br><a class="pay-link" href="${upi}">📲 Pay Karein</a><p style="font-size:12px;color:#555;">Kisi bhi UPI app se paisa seedha admin ke account me jayega</p>`):'<p style="color:red;">UPI Payment set nahi hua.</p>';
-    document.getElementById('waNote').innerHTML=pay.upiId?'<b>✅ Payment ke baad UTR/Transaction ID niche likho</b>':'';
+    document.getElementById('payBox').innerHTML='';
+    document.getElementById('waNote').innerHTML='';
   }
 }
-let checkoutHistoryActive=false;
-function openCheckoutHistory(){
-  if(!checkoutHistoryActive){
-    history.pushState({ibmCheckout:true},'',location.href);
-    checkoutHistoryActive=true;
-  }
+
+async function startCashfreePayment(){
+  const name=document.getElementById('cName').value.trim();
+  const phone=document.getElementById('cPhone').value.trim();
+  const addr=document.getElementById('cAddress').value.trim();
+  const city=document.getElementById('cCity').value.trim();
+  const pin=document.getElementById('cPin').value.trim();
+  if(!name||!phone||!addr||!pin){alert('Saari details bharein');return;}
+  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const prepaidDiscount=getPrepaidDiscountAmount(subtotal);
+  const amount=Math.max(0,subtotal-prepaidDiscount);
+  const items=cart.map(x=>`${x.name} (Size: ${x.size}, Colour: ${x.color||'Black'} ×${x.qty}) ₹${x.price*x.qty}`).join(', ');
+  const r=await api('/api/cashfree/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount,name,phone,items})});
+  if(!r.ok){alert(r.msg||'Online payment abhi available nahi hai.');return;}
+  sessionStorage.setItem('ibm_pending_cashfree',JSON.stringify({name,phone,address:addr+', '+city+' - '+pin,items,total:amount,subtotal,prepaidDiscount,prepaidDiscountPercent:Number(pay.prepaidDiscountPercent)||0,whatsappOptIn:!!document.getElementById('waOptIn')?.checked,codCharge:0,courierPartner:pay.courierPartner||'',paymentMethod:'UPI / Cashfree'}));
+  const cf=Cashfree({mode:r.environment==='production'?'production':'sandbox'});
+  await cf.checkout({paymentSessionId:r.paymentSessionId,redirectTarget:'_self'});
 }
-function closeCheckout(fromPop=false){
-  document.getElementById('checkoutModal').classList.remove('show');
-  if(checkoutHistoryActive){
-    checkoutHistoryActive=false;
-    if(!fromPop) history.back();
-  }
+
+async function handleCashfreeReturn(){
+  const params=new URLSearchParams(location.search);
+  const orderId=params.get('cashfree_order_id');
+  const pending=sessionStorage.getItem('ibm_pending_cashfree');
+  if(!orderId||!pending)return;
+  try{
+    const status=await api('/api/cashfree/order-status/'+encodeURIComponent(orderId));
+    if(status.ok && status.status==='PAID'){
+      const o=JSON.parse(pending); o.utr='Cashfree:'+orderId;
+      const r=await api('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
+      sessionStorage.removeItem('ibm_pending_cashfree');
+      history.replaceState({},'',location.pathname+location.hash);
+      if(r.ok){cart=[];saveCart();alert('✅ Payment successful! Order confirmed. WhatsApp confirmation bhi bhej diya jayega agar aapne opt-in kiya hai.');}
+      else alert(r.msg||'Order save nahi hua.');
+    }else if(status.ok){sessionStorage.removeItem('ibm_pending_cashfree');history.replaceState({},'',location.pathname+location.hash);alert('Payment successful nahi hua. Aap dobara try kar sakte hain.');}
+  }catch(e){console.error(e);}
 }
-window.addEventListener('popstate',function(){
-  if(checkoutHistoryActive){
-    checkoutHistoryActive=false;
-    document.getElementById('checkoutModal').classList.remove('show');
-  }
-});
+
 async function placeOrder(){
+  const selectedMethod=document.querySelector('input[name="paymentMethod"]:checked')?.value||'';
+  if(selectedMethod==='UPI') {
+    const st=await api('/api/cashfree/status');
+    if(st.ok&&st.enabled){ await startCashfreePayment(); return; }
+  }
   const name=document.getElementById('cName').value.trim();
   const phone=document.getElementById('cPhone').value.trim();
   const addr=document.getElementById('cAddress').value.trim();
@@ -1401,21 +1464,23 @@ async function placeOrder(){
   const method=document.querySelector('input[name="paymentMethod"]:checked')?.value||'';
   if(!method){alert('Payment method select karo');return;}
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
+  const prepaidDiscount=method==='UPI'?getPrepaidDiscountAmount(subtotal):0;
   const codCharge=method==='COD'?(Number(pay.codCharge)||40):0;
-  const total=subtotal+codCharge;
+  const total=Math.max(0,subtotal-prepaidDiscount+codCharge);
   let utr='COD';
   if(method==='UPI'){
-    utr=prompt('UPI me mila Transaction ID/UTR likho:');
-    if(!utr){alert('UTR zaroori hai');return;}
+    utr=prompt('Payment karne ke baad Transaction ID/UTR likho:');
+    if(!utr){alert('Transaction ID/UTR zaroori hai');return;}
     utr=utr.trim();
   }
   const items=cart.map(x=>`${x.name} (Size: ${x.size}, Colour: ${x.color||'Black'} ×${x.qty}) ₹${x.price*x.qty}`).join(', ');
-  const order={name,phone,address:addr+', '+city+' - '+pin,items,total:Number(total),paymentMethod:method,codCharge:Number(codCharge),courierPartner:pay.courierPartner||'',utr};
+  const order={name,phone,address:addr+', '+city+' - '+pin,addressLine:addr,city,state:'',pin,items,total:Number(total),subtotal:Number(subtotal),prepaidDiscount:Number(prepaidDiscount),prepaidDiscountPercent:Number(pay.prepaidDiscountPercent)||0,paymentMethod:method,codCharge:Number(codCharge),courierPartner:pay.courierPartner||'',utr,whatsappOptIn:!!document.getElementById('waOptIn')?.checked};
   const r=await api('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(order)});
   if(r.ok){
-    const msg=`🛒 *NEW ORDER* ${r.id}%0A👤 ${name}%0A📞 ${phone}%0A📍 ${addr}%2C ${city} - ${pin}%0A🧾 ${items}%0A💰 ₹${total}%0A💳 ${method}${method==='COD'?`%0A🚚 ${pay.courierPartner||'Courier not set'}%0A➕ COD Charge ₹${codCharge}`:`%0A🔖 ${utr}`}`;
-    window.open(`https://wa.me/${social.whatsapp||'919876543210'}?text=${msg}`,'_blank');
-    cart=[];saveCart();closeCheckout();alert('✅ Order confirm! WhatsApp par details bhej di gayi.');
+    cart=[];saveCart();closeCheckout();
+    alert(method==='UPI'?'✅ Order received! Payment/UTR verification ke baad order confirm hoga.':'✅ Order confirm!');
+  }else{
+    alert(r.message||'Order place nahi hua.');
   }
 }
 
@@ -1459,12 +1524,15 @@ function loadAdminData(){
   document.getElementById('prodTable').innerHTML='<tr><th>Photo</th><th>Product</th><th>Price</th><th>Sizes</th><th>Colours</th><th></th></tr>'+products.map((p,i)=>`<tr><td>${(p.pimgs&&p.pimgs[0])||p.pimg?`<img src="${(p.pimgs&&p.pimgs[0])||p.pimg}" style="width:40px;height:40px;object-fit:cover;">`:(p.icon||'👕')}</td><td>${p.name}</td><td>₹${p.price}</td><td><small>${(p.sizes||[]).join(', ')}</small></td><td><small>${(p.colors||[]).join(', ')||'Black'}</small></td><td><button class="edit-btn" onclick="editProduct(${i})">✏️</button> <button class="del-btn" onclick="delProduct(${i})">🗑️</button></td></tr>`).join('');
   document.getElementById('pCat').innerHTML=categories.map(c=>`<option value="${slugify(c.name)}">${c.name}</option>`).join('');
   document.getElementById('catTable').innerHTML='<tr><th>Icon</th><th>Category</th><th></th></tr>'+categories.map((c,i)=>`<tr><td>${c.icon||'🏷️'}</td><td>${c.name}</td><td><button class="del-btn" onclick="delCategory(${i})">🗑️</button></td></tr>`).join('');
-  document.getElementById('orderTable').innerHTML=orders.length?'<tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Action</th></tr>'+orders.map((o,i)=>`<tr><td><b>${o.id}</b><br><small>${o.date}</small></td><td><b>${o.name}</b><br><small>${o.phone}<br>${o.address}</small></td><td><small>${o.items}</small></td><td>₹${o.total}</td><td><span class="ord-st ord-${o.status}">${o.status.toUpperCase()}</span></td><td><button class="edit-btn" onclick="setOrd(${i},'confirmed')">✅</button> <button class="edit-btn" style="background:#17a2b8;color:#fff;" onclick="setOrd(${i},'delivered')">📦</button> <button class="del-btn" onclick="delOrd(${i})">🗑️</button></td></tr>`).join(''):'<tr><td style="text-align:center;padding:20px;">Koi order nahi</td></tr>';
+  document.getElementById('orderTable').innerHTML=orders.length?'<tr><th>ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th>Delhivery</th><th>Action</th></tr>'+orders.map((o,i)=>{const d=o.delhivery||{};const ship=d.waybill?`<b style="color:#d6af45;">AWB ${d.waybill}</b><br><small>${d.status||'Booked'}</small><br><button class="edit-btn" onclick="trackDelhivery(${i})">Track</button> <button class="edit-btn" onclick="openDelhiveryLabel(${i})">Label</button>`:`<button class="edit-btn" onclick="createDelhiveryShipment(${i})">Create Shipment</button>`;return `<tr><td><b>${o.id}</b><br><small>${o.date}</small></td><td><b>${o.name}</b><br><small>${o.phone}<br>${o.address}</small></td><td><small>${o.items}</small></td><td>₹${o.total}</td><td><span class="ord-st ord-${o.status}">${o.status.toUpperCase()}</span></td><td>${ship}</td><td><button class="edit-btn" onclick="setOrd(${i},'confirmed')">Confirm</button> <button class="edit-btn" style="background:#17a2b8;color:#fff;" onclick="requestDelhiveryPickup(${i})">Pickup</button> <button class="del-btn" onclick="delOrd(${i})">🗑️</button></td></tr>`}).join(''):'<tr><td colspan="7" style="text-align:center;padding:20px;">Koi order nahi</td></tr>';
   document.getElementById('upId').value=pay.upiId||'';
   document.getElementById('upName').value=pay.upiName||'';
   document.getElementById('codEnabled').checked=!!pay.codEnabled;
   document.getElementById('codCharge').value=Number(pay.codCharge)||40;
   document.getElementById('courierPartner').value=pay.courierPartner||'';
+  const dc=pay.delhivery||{}; const setv=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v??'';}; setv('delClientName',dc.clientName);setv('delPickupName',dc.pickupName);setv('delPickupPhone',dc.pickupPhone);setv('delPickupPin',dc.pickupPin);setv('delPickupCity',dc.pickupCity);setv('delPickupState',dc.pickupState);setv('delPickupAddress',dc.pickupAddress);setv('delWeight',dc.weight||500);setv('delMode',dc.mode||'Express');setv('delLength',dc.length||20);setv('delWidth',dc.width||15);setv('delHeight',dc.height||5);
+  document.getElementById('prepaidDiscount').value=Number(pay.prepaidDiscountPercent)||0;
+  document.getElementById('paymentInstruction').value=pay.paymentInstruction||'Kisi bhi UPI app se payment karein. Payment successful hone ke baad order confirm hoga.';
   document.getElementById('upQrUrl').value=(pay.qrCode&&pay.qrCode.startsWith('http')?pay.qrCode:'');
   const pv=document.getElementById('qrPrevImg');if(pay.qrCode){pv.src=pay.qrCode;pv.style.display='inline-block';}else{pv.style.display='none';}
   document.getElementById('sName').value=settings.siteName||'';
@@ -1604,6 +1672,11 @@ function resetProductForm(){
 async function addCategory(){const n=document.getElementById('catName').value.trim();const ic=document.getElementById('catIcon').value.trim();if(!n){alert('Naam bharo');return;}if(categories.some(c=>slugify(c.name)===slugify(n))){alert('Pehle se hai');return;}categories.push({name:n,icon:ic||'🏷️'});await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});document.getElementById('catName').value='';document.getElementById('catIcon').value='';loadAdminData();flash();}
 async function delCategory(i){if(confirm('Delete?')){categories.splice(i,1);await api('/api/admin/categories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(categories)});loadAdminData();}}
 
+async function createDelhiveryShipment(i){if(!confirm('Is order ko Delhivery mein create/manifest karna hai?'))return;const r=await api('/api/admin/delhivery/create-shipment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index:i})});if(!r.ok){alert(r.msg||'Delhivery shipment create nahi hua');return;}alert('✅ Delhivery shipment created. AWB: '+(r.waybill||'received'));loadAdminData();}
+async function trackDelhivery(i){const r=await api('/api/admin/delhivery/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index:i})});if(!r.ok){alert(r.msg||'Tracking nahi mili');return;}alert('📦 Delhivery Status: '+(r.status||'Updated')+(r.location?'\nLocation: '+r.location:''));loadAdminData();}
+function openDelhiveryLabel(i){window.open('/api/admin/delhivery/label?index='+encodeURIComponent(i),'_blank');}
+async function requestDelhiveryPickup(i){const d=orders[i]?.delhivery||{};if(!d.waybill){alert('Pehle Delhivery shipment create karo.');return;}const when=prompt('Pickup date YYYY-MM-DD likho:',new Date().toISOString().slice(0,10));if(!when)return;const time=prompt('Pickup time HH:MM:SS likho:','16:00:00');if(!time)return;const r=await api('/api/admin/delhivery/pickup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({index:i,pickupDate:when,pickupTime:time})});if(!r.ok){alert(r.msg||'Pickup request create nahi hua');return;}alert('✅ Pickup request created.');loadAdminData();}
+
 // ===== ORDERS =====
 async function setOrd(i,st){orders[i].status=st;await api('/api/admin/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(orders)});loadAdminData();flash();}
 async function delOrd(i){if(confirm('Delete?')){orders.splice(i,1);await api('/api/admin/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(orders)});loadAdminData();}}
@@ -1616,13 +1689,16 @@ function removeHeroImage(i){heroImages.splice(i,1);renderHeroPreviews();}
 
 async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value,mapUrl:document.getElementById('sMap').value.trim(),heroImages:heroImages.length?heroImages:(Array.isArray(settings.heroImages)?settings.heroImages:DEFAULT_HERO_IMAGES)};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();renderHeader();renderSocial();loadAdminData();flash();}
 async function saveSocial(){const d={instagram:document.getElementById('soInsta').value.trim(),facebook:document.getElementById('soFb').value.trim(),whatsapp:document.getElementById('soWa').value.trim(),youtube:document.getElementById('soYt').value.trim(),twitter:document.getElementById('soTw').value.trim(),telegram:document.getElementById('soTelegram').value.trim(),linkedin:document.getElementById('soLinkedin').value.trim()};await api('/api/admin/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});social={...social,...d};renderSocial();loadAdminData();flash();alert('✅ Social links saved');}
-async function savePayment(){const upiId=document.getElementById('upId').value.trim();const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim()};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});pay={...pay,...d};loadAdminData();flash();alert('✅ Payment/COD settings saved');}
+async function savePayment(){const upiId=document.getElementById('upId').value.trim();const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim(),prepaidDiscountPercent:Math.max(0,Math.min(100,Number(document.getElementById('prepaidDiscount').value)||0)),paymentInstruction:document.getElementById('paymentInstruction').value.trim()}; d.delhivery={clientName:document.getElementById('delClientName')?.value.trim()||'',pickupName:document.getElementById('delPickupName')?.value.trim()||'',pickupPhone:document.getElementById('delPickupPhone')?.value.trim()||'',pickupPin:document.getElementById('delPickupPin')?.value.trim()||'',pickupCity:document.getElementById('delPickupCity')?.value.trim()||'',pickupState:document.getElementById('delPickupState')?.value.trim()||'',pickupAddress:document.getElementById('delPickupAddress')?.value.trim()||'',weight:Number(document.getElementById('delWeight')?.value)||500,mode:document.getElementById('delMode')?.value||'Express',length:Number(document.getElementById('delLength')?.value)||20,width:Number(document.getElementById('delWidth')?.value)||15,height:Number(document.getElementById('delHeight')?.value)||5}; const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}const r=await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});if(!r.ok){alert(r.message||'Payment settings save nahi hui');return;}pay={...pay,...d};loadAdminData();flash();alert('✅ Payment, COD, discount & Delhivery settings saved');}
+function saveDelhiverySettings(){savePayment();}
+async function testDelhiveryStatus(){const r=await api('/api/admin/delhivery/status');const el=document.getElementById('delStatusMsg');if(el)el.textContent=r.ok?(r.configured?'✅ Delhivery token + pickup setup available.':'⚠️ Token ya pickup settings missing hain.'):'❌ '+(r.msg||'Delhivery status check failed');}
 function readQrFile(i){const f=i.files[0];const r=new FileReader();r.onload=async e=>{pay.qrCode=e.target.result;const pv=document.getElementById('qrPrevImg');pv.src=pay.qrCode;pv.style.display='inline-block';document.getElementById('upQrUrl').value='';await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upiId:pay.upiId,upiName:pay.upiName,qrCode:pay.qrCode})});};r.readAsDataURL(f);}
 async function saveSecurity(){const u=document.getElementById('adUser').value.trim();const p=document.getElementById('adPass').value.trim();if(!u||!p){alert('Bharo');return;}await api('/api/admin/security',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});alert('✅ Login details update ho gayi! Yaad rakhein.');flash();}
 
 // ===== INIT =====
 window.searchQuery=window.searchQuery||'';
 loadStore();
+handleCashfreeReturn();
 </script>
 </body>
 </html>
