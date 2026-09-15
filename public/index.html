@@ -906,6 +906,94 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;b
 @media(max-width:700px){.hero{min-height:72vh!important}.section{padding-top:52px!important;padding-bottom:52px!important}.luxury-v10-marquee{height:36px}.luxury-v10-marquee-track{font-size:9px;letter-spacing:2px;gap:25px}.luxury-v10-marquee-track span:after{margin-left:25px}.hero-content h1{letter-spacing:-1px!important}.hero-content{padding:20px!important}#checkoutModal .checkout-box{max-height:94vh!important;width:96%!important;padding-left:15px!important;padding-right:15px!important}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
+
+<style id="ibm-v11-final-fix">
+/* V11: premium product cards — selection lives inside product detail */
+.product .size-row{display:none!important}
+.product{cursor:pointer!important;overflow:hidden!important}
+.product .pimg{aspect-ratio:1/1!important;height:auto!important;min-height:0!important;background:radial-gradient(circle at 50% 35%,rgba(214,175,69,.09),transparent 55%),#070707!important}
+.product .pimg img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;padding:10px!important;transition:transform .8s cubic-bezier(.2,.75,.2,1),filter .8s ease!important}
+.product:hover .pimg img{transform:scale(1.045)!important;filter:brightness(1.05)!important}
+.product .pinfo{padding:14px 14px 15px!important}
+.product .pinfo h4{font-size:15px!important;line-height:1.2!important;margin:0 0 9px!important}
+.product .price{font-size:18px!important}
+.product .btn,.product .add-btn{transition:transform .3s ease,box-shadow .3s ease!important}
+.product:hover .btn{transform:translateY(-2px)!important}
+/* Remove custom mouse-follow cursor: normal browser pointer is cleaner */
+.v9-cursor,.v9-cursor-dot{display:none!important}
+body.v9-pointer{cursor:auto!important}
+/* Always-visible cinematic marquee */
+.ibm-v11-marquee{position:relative;z-index:20;overflow:hidden;border-top:1px solid rgba(214,175,69,.25);border-bottom:1px solid rgba(214,175,69,.25);background:linear-gradient(90deg,#030303,#0b0905,#030303);white-space:nowrap;padding:11px 0;box-shadow:0 0 30px rgba(214,175,69,.06)}
+.ibm-v11-marquee-track{display:inline-flex;gap:46px;min-width:max-content;animation:ibmV11Marquee 22s linear infinite;align-items:center;color:#b9ad91;font-size:11px;font-weight:700;letter-spacing:.28em;text-transform:uppercase}
+.ibm-v11-marquee-track b{color:#f1cf62;font-weight:800}
+@keyframes ibmV11Marquee{from{transform:translateX(0)}to{transform:translateX(-50%)} }
+/* Premium section reveals */
+#categories,#products,#contact{animation:ibmV11Fade .9s ease both}
+@keyframes ibmV11Fade{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+/* Detail modal: clean luxury selection */
+#productDetailModal .detail-info select{background:#0c0c0c!important;color:#f6f1e5!important;border:1px solid #b9912f!important;border-radius:8px!important;padding:12px!important}
+#productDetailModal .detail-info label{color:#e6c65b!important;font-weight:800!important;letter-spacing:.02em}
+#productDetailModal .detail-gallery .detail-main{background:#070707!important;border-color:rgba(214,175,69,.4)!important}
+/* Close buttons must remain obvious */
+.modal .close,.modal-close{z-index:999!important}
+@media(max-width:850px){
+ .ibm-v11-marquee{padding:9px 0}.ibm-v11-marquee-track{font-size:9px;gap:30px;letter-spacing:.2em}
+ .product .pinfo{padding:11px!important}.product .pinfo h4{font-size:13px!important}.product .price{font-size:16px!important}
+}
+</style>
+
+<style id="ibm-v12-final-css">
+:root{--lux-gold:#d9ad45;--lux-gold2:#ffe69a;--lux-black:#030303;--lux-panel:#0a0a0a;--lux-line:rgba(217,173,69,.34)}
+html{scroll-behavior:smooth}
+body{background:#020202!important;color:#f7f2e7!important;cursor:default!important}
+body:before{opacity:.018!important}
+.v9-cursor,.v9-cursor-dot{display:none!important}
+.v9-pointer{cursor:default!important}
+#ibmScrollProgress{height:2px!important;background:linear-gradient(90deg,#9b741d,#ffe69a,#c89a2e)!important;box-shadow:0 0 12px rgba(217,173,69,.8)!important;z-index:10050!important}
+.header{position:sticky!important;top:0!important;z-index:1000!important;background:rgba(3,3,3,.86)!important;border-bottom:1px solid var(--lux-line)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important}
+.header-search{max-width:520px!important}.header-search input{border:1px solid rgba(217,173,69,.5)!important;background:#070707!important;color:#fff!important;border-radius:999px!important}.header-search .btn{border-radius:999px!important}
+.nav a{letter-spacing:.8px!important}
+/* cinematic hero */
+.hero{min-height:calc(100vh - 138px)!important;height:min(820px,calc(100vh - 120px))!important;background:#020202!important;border-bottom:1px solid var(--lux-line)!important}
+.hero:before{background:radial-gradient(circle at 72% 48%,rgba(217,173,69,.28),transparent 22%),radial-gradient(circle at 86% 80%,rgba(217,173,69,.12),transparent 28%),linear-gradient(110deg,transparent 35%,rgba(217,173,69,.09) 49%,transparent 58%)!important;animation:luxGlow 7s ease-in-out infinite alternate!important}
+.hero:after{background:linear-gradient(90deg,rgba(0,0,0,.94) 0%,rgba(0,0,0,.72) 36%,rgba(0,0,0,.12) 72%,rgba(0,0,0,.55) 100%)!important}
+.hero-content{max-width:1400px!important;padding:8vh 7%!important}
+.hero-content:before{content:'01  /  04';display:block;color:var(--lux-gold);font-size:11px;letter-spacing:4px;margin-bottom:24px;opacity:.9}
+.hero-content h1{font-size:clamp(52px,7.4vw,112px)!important;max-width:850px!important;letter-spacing:-4px!important}
+.hero-content p{font-size:17px!important;max-width:600px!important}
+.hero-content .btn{border-radius:0!important;padding:14px 28px!important;letter-spacing:2px!important;text-transform:uppercase!important}
+.hero-dots{right:3%!important;left:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;display:flex!important;flex-direction:column!important;gap:13px!important}
+.hero-dots>*{width:8px!important;height:8px!important;border:1px solid var(--lux-gold)!important;background:transparent!important}.hero-dots>*:first-child{background:var(--lux-gold)!important;box-shadow:0 0 16px var(--lux-gold)}
+.hero:after{pointer-events:none}
+@keyframes luxGlow{from{transform:scale(1) translate3d(-1%,0,0)}to{transform:scale(1.08) translate3d(3%,-2%,0)}}
+/* moving brand strip */
+.ibm-v12-marquee{overflow:hidden;border-top:1px solid var(--lux-line);border-bottom:1px solid var(--lux-line);background:#050505;white-space:nowrap}
+.ibm-v12-marquee-track{display:flex;width:max-content;animation:luxMarquee 26s linear infinite;padding:14px 0;gap:54px;align-items:center}
+.ibm-v12-marquee span{font-size:11px;letter-spacing:5px;color:#eee7da}.ibm-v12-marquee b{font-size:11px;letter-spacing:4px;color:var(--lux-gold2);font-weight:700}@keyframes luxMarquee{to{transform:translateX(-50%)}}
+/* category feature rail */
+.lux-feature-rail{display:grid;grid-template-columns:repeat(4,1fr);background:#050505;border-bottom:1px solid var(--lux-line);border-top:1px solid rgba(255,255,255,.03)}
+.lux-feature-rail a{min-height:108px;padding:24px 30px;display:flex;align-items:center;gap:18px;text-decoration:none;color:#fff;border-right:1px solid var(--lux-line);position:relative;overflow:hidden;transition:.45s}
+.lux-feature-rail a:last-child{border-right:0}.lux-feature-rail a:before{content:'';position:absolute;inset:auto 0 0;height:2px;background:linear-gradient(90deg,transparent,var(--lux-gold),transparent);transform:translateX(-100%);transition:.5s}.lux-feature-rail a:hover:before{transform:translateX(0)}.lux-feature-rail a:hover{background:linear-gradient(135deg,#0b0b0b,#111)}
+.lux-feature-icon{width:50px;height:50px;border:1px solid var(--lux-gold);border-radius:50%;display:grid;place-items:center;color:var(--lux-gold2);font-size:23px;box-shadow:0 0 20px rgba(217,173,69,.12)}.lux-feature-rail strong{display:block;letter-spacing:2px;font-size:13px}.lux-feature-rail small{color:#999;margin-top:6px;display:block}
+/* sticky scroll showcase */
+.v12-scroll-showcase{min-height:240vh;background:radial-gradient(circle at 50% 20%,rgba(217,173,69,.10),transparent 24%),#030303;padding:110px 5% 160px;position:relative;border-bottom:1px solid var(--lux-line)}
+.v12-show-head{max-width:1260px;margin:0 auto 70px;display:flex;justify-content:space-between;gap:35px;align-items:end}.v12-show-head .eyebrow{font-size:11px;letter-spacing:5px;color:var(--lux-gold)}.v12-show-head h2{font:700 clamp(42px,6vw,86px)/.9 Georgia,serif;margin-top:14px}.v12-show-head em{color:var(--lux-gold2);font-style:normal}.v12-show-head p{max-width:430px;color:#aaa;line-height:1.8}
+.v12-stage{position:sticky;top:94px;height:min(690px,72vh);max-width:1260px;margin:auto;overflow:hidden;border:1px solid var(--lux-line);background:linear-gradient(120deg,#0a0a0a,#020202 70%);box-shadow:0 40px 120px rgba(0,0,0,.75)}
+.v12-stage:before{content:'';position:absolute;width:70%;height:90%;right:-10%;top:-15%;background:radial-gradient(circle,rgba(217,173,69,.20),transparent 62%);filter:blur(20px);animation:stagePulse 8s ease-in-out infinite alternate}.v12-stage:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.86),transparent 53%,rgba(0,0,0,.2));pointer-events:none}.v12-slide{position:absolute;inset:0;display:grid;grid-template-columns:46% 54%;align-items:center;opacity:0;transform:translateY(40px) scale(.97);transition:opacity .7s,transform .9s cubic-bezier(.22,1,.36,1);visibility:hidden}.v12-slide.active{opacity:1;transform:none;visibility:visible}.v12-copy{padding:8%;position:relative;z-index:4}.v12-num{font-size:11px;letter-spacing:4px;color:var(--lux-gold);margin-bottom:20px}.v12-copy h3{font:700 clamp(42px,5vw,82px)/.92 Georgia,serif;margin-bottom:16px}.v12-copy .v12-cat{color:#aaa;text-transform:uppercase;letter-spacing:3px;font-size:11px}.v12-copy .v12-price{font-size:26px;color:var(--lux-gold2);font-weight:800;margin:18px 0 25px}.v12-view{display:inline-flex;align-items:center;gap:15px;border:1px solid var(--lux-gold);padding:14px 22px;color:#fff;text-decoration:none;font-size:11px;letter-spacing:2px;text-transform:uppercase;transition:.35s}.v12-view:hover{background:var(--lux-gold);color:#070707;transform:translateY(-3px)}.v12-media{height:100%;display:grid;place-items:center;position:relative}.v12-media img{width:88%;height:88%;object-fit:contain;filter:drop-shadow(0 35px 45px rgba(0,0,0,.8));transform:scale(.86) rotate(-2deg);transition:1s cubic-bezier(.22,1,.36,1)}.v12-slide.active .v12-media img{transform:scale(1) rotate(0)}.v12-dots{position:absolute;right:25px;top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;gap:13px}.v12-dots i{width:7px;height:7px;border:1px solid var(--lux-gold);border-radius:50%;transition:.3s}.v12-dots i.active{background:var(--lux-gold2);box-shadow:0 0 16px var(--lux-gold);transform:scale(1.5)}.v12-scroll-label{position:absolute;right:20px;bottom:24px;z-index:6;writing-mode:vertical-rl;font-size:9px;letter-spacing:3px;color:#bdb4a2}.v12-scroll-label:before{content:'';display:block;height:48px;width:1px;background:linear-gradient(var(--lux-gold),transparent);margin-bottom:12px}@keyframes stagePulse{to{transform:translate(-3%,4%) scale(1.12);opacity:.72}}
+/* editorial sections */
+.v12-editorial{padding:120px 6%;background:#030303;border-bottom:1px solid var(--lux-line)}.v12-editorial-grid{max-width:1260px;margin:auto;display:grid;grid-template-columns:1.05fr .95fr;gap:22px}.v12-panel{min-height:520px;border:1px solid var(--lux-line);position:relative;overflow:hidden;background:#070707}.v12-panel img{width:100%;height:100%;object-fit:cover;transition:1s cubic-bezier(.22,1,.36,1);opacity:.78}.v12-panel:hover img{transform:scale(1.06);opacity:.95}.v12-panel:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.9),transparent 65%)}.v12-panel-copy{position:absolute;left:34px;bottom:32px;z-index:2}.v12-panel-copy span{font-size:10px;letter-spacing:4px;color:var(--lux-gold)}.v12-panel-copy h3{font:700 clamp(32px,4vw,58px)/.95 Georgia,serif;margin-top:9px}.v12-panel-copy p{color:#aaa;max-width:440px;margin-top:12px;line-height:1.7}
+/* product area */
+#products{background:#030303!important;padding-top:110px!important}.products{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important;max-width:1320px!important;margin:auto!important}.product{background:linear-gradient(145deg,#0c0c0c,#050505)!important;border:1px solid rgba(217,173,69,.28)!important;min-width:0!important}.product .pimg{aspect-ratio:1/1!important;height:auto!important;background:#080808!important}.product .pimg-slide img{padding:8px!important;object-fit:contain!important}.product .pinfo{padding:14px!important}.product .pinfo h4{font-size:15px!important;min-height:38px}.product .tag{border-color:rgba(217,173,69,.35)!important;color:var(--lux-gold2)!important;background:#0b0b0b!important}.product .size-row{display:none!important}.product .btn,.product .add-btn{border-radius:0!important}.product:hover{transform:translateY(-8px)!important;box-shadow:0 25px 70px rgba(0,0,0,.7),0 0 30px rgba(217,173,69,.12)!important}
+/* reveal */
+.lux-reveal{opacity:0;transform:translateY(55px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}.lux-reveal.is-in{opacity:1;transform:none}
+/* reviews / instagram */
+.v12-social-strip{padding:100px 6%;background:#050505;border-top:1px solid var(--lux-line);border-bottom:1px solid var(--lux-line)}.v12-social-head{text-align:center;margin-bottom:35px}.v12-social-head span{font-size:10px;letter-spacing:4px;color:var(--lux-gold)}.v12-social-head h2{font:700 clamp(34px,5vw,64px) Georgia,serif;margin-top:10px}.v12-social-grid{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.v12-social-card{height:280px;border:1px solid rgba(217,173,69,.25);background:radial-gradient(circle at 50% 35%,rgba(217,173,69,.13),transparent 45%),#080808;display:grid;place-items:center;text-decoration:none;color:#fff;transition:.45s}.v12-social-card:hover{transform:translateY(-7px);border-color:var(--lux-gold);box-shadow:0 20px 60px rgba(0,0,0,.6)}.v12-social-card svg{width:42px;height:42px;color:var(--lux-gold2)}.v12-social-card strong{letter-spacing:3px;font-size:11px;text-transform:uppercase;margin-top:12px}
+/* checkout */
+#checkoutModal .modal-box{background:#070707!important;border:1px solid var(--lux-line)!important;color:#f7f2e7!important;box-shadow:0 35px 100px rgba(0,0,0,.85)!important;position:relative!important}.checkout-close-v12{position:sticky;top:0;float:right;z-index:20;width:40px;height:40px;border:1px solid var(--lux-gold);background:#080808;color:var(--lux-gold2);font-size:22px;cursor:pointer;border-radius:50%;display:grid;place-items:center;margin:8px}.checkout-close-v12:hover{background:var(--lux-gold);color:#050505}.size-row{display:none!important}
+/* mobile */
+@media(max-width:900px){.lux-feature-rail{grid-template-columns:repeat(2,1fr)}.lux-feature-rail a:nth-child(2){border-right:0}.v12-show-head{display:block}.v12-show-head p{margin-top:20px}.v12-stage{top:76px;height:650px}.v12-slide{grid-template-columns:1fr}.v12-copy{padding:28px 26px;align-self:end;z-index:5}.v12-copy h3{font-size:42px}.v12-media{position:absolute;inset:0;opacity:.45}.v12-media img{width:100%;height:100%}.v12-editorial-grid{grid-template-columns:1fr}.v12-panel{min-height:430px}.products{grid-template-columns:repeat(2,minmax(0,1fr))!important}.v12-social-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.lux-feature-rail{grid-template-columns:1fr}.lux-feature-rail a{border-right:0;border-bottom:1px solid var(--lux-line)}.lux-feature-rail a:last-child{border-bottom:0}.hero{min-height:620px!important;height:620px!important}.hero-content{padding:45px 22px!important}.hero-content h1{font-size:48px!important;letter-spacing:-2px!important}.hero-content p{font-size:14px!important}.v12-scroll-showcase{padding:75px 14px 110px}.v12-stage{height:620px}.v12-copy{padding:24px 20px}.v12-copy h3{font-size:38px}.products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.product .pinfo{padding:9px!important}.product .pinfo h4{font-size:12px!important;min-height:32px}.product .price{font-size:14px!important}.product .btn,.product .add-btn{font-size:11px!important;padding:8px!important}.v12-social-grid{grid-template-columns:1fr 1fr}.v12-social-card{height:190px}.header-search{max-width:100%!important}.header-search input{font-size:12px!important}}
+</style>
 </head>
 <body><div class="v9-goldline"></div>
 
@@ -1992,7 +2080,7 @@ body{background:#050505!important;color:var(--cream)!important;overflow-x:hidden
   }
   function patchRender(){
     if(typeof window.renderProducts==='function'&&!window.__v9patched){const old=window.renderProducts;window.renderProducts=function(){const r=old.apply(this,arguments);setTimeout(()=>{reveal();tilt();if(!$('.v9-showcase'))buildShowcase()},60);return r};window.__v9patched=true}}
-  function init(){marquee();patchRender();setTimeout(()=>{if(!$('.v9-showcase'))buildShowcase();reveal();tilt();cursor()},800);goldProgress();headerFX()}
+  function init(){marquee();patchRender();setTimeout(()=>{if(!$('.v9-showcase'))buildShowcase();reveal();tilt()},800);goldProgress();headerFX()}
   addEventListener('scroll',goldProgress,{passive:true});addEventListener('scroll',headerFX,{passive:true});document.addEventListener('DOMContentLoaded',init);setTimeout(init,1200);
 })();
 </script>
@@ -2026,6 +2114,41 @@ body{background:#050505!important;color:var(--cream)!important;overflow-x:hidden
     if(checkoutPushed){checkoutPushed=false;const m=document.getElementById('checkoutModal');if(m)m.classList.remove('show');}
   });
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('checkoutModal');if(m?.classList.contains('show'))window.closeCheckout(false);}});
+})();
+</script>
+
+<script id="ibm-v11-marquee-script">
+(function(){
+  function addV11Marquee(){
+    if(document.querySelector('.ibm-v11-marquee')) return;
+    const header=document.querySelector('.header');
+    if(!header) return setTimeout(addV11Marquee,300);
+    const m=document.createElement('div');
+    m.className='ibm-v11-marquee';
+    m.innerHTML='<div class="ibm-v11-marquee-track"><span>IBM COLLECTION</span><b>✦ PREMIUM QUALITY</b><span>STYLE / COMFORT / CONFIDENCE</span><b>✦ NEW ARRIVALS</b><span>BLACK & GOLD</span><b>✦ SHOP THE COLLECTION</b><span>IBM COLLECTION</span><b>✦ PREMIUM QUALITY</b><span>STYLE / COMFORT / CONFIDENCE</span><b>✦ NEW ARRIVALS</b><span>BLACK & GOLD</span><b>✦ SHOP THE COLLECTION</b></div>';
+    header.insertAdjacentElement('afterend',m);
+  }
+  document.addEventListener('DOMContentLoaded',addV11Marquee);
+})();
+</script>
+
+<script id="ibm-v12-final-js">
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  function escapeHtml(v){return String(v??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'&#92;','"':'&quot;'}[m]));}
+  function firstImage(p){const a=Array.isArray(p?.pimgs)?p.pimgs.filter(Boolean):[];return a[0]||p?.pimg||''}
+  function addMarquee(){if($('.ibm-v12-marquee'))return;const h=$('.header');if(!h)return;const m=document.createElement('div');m.className='ibm-v12-marquee';m.innerHTML='<div class="ibm-v12-marquee-track"><span>IBM COLLECTION</span><b>✦ PREMIUM QUALITY</b><span>STYLE / COMFORT / CONFIDENCE</span><b>✦ NEW ARRIVALS</b><span>BLACK & GOLD</span><b>✦ SHOP THE COLLECTION</b><span>IBM COLLECTION</span><b>✦ PREMIUM QUALITY</b><span>STYLE / COMFORT / CONFIDENCE</span><b>✦ NEW ARRIVALS</b><span>BLACK & GOLD</span><b>✦ SHOP THE COLLECTION</b></div>';h.insertAdjacentElement('afterend',m)}
+  function addFeatureRail(){if($('.lux-feature-rail'))return;const sec=document.createElement('section');sec.className='lux-feature-rail lux-reveal';sec.innerHTML='<a href="#products"><span class="lux-feature-icon">👕</span><span><strong>T-SHIRTS</strong><small>Comfort meets style →</small></span></a><a href="#products"><span class="lux-feature-icon">👖</span><span><strong>TRACK PANTS</strong><small>Move with confidence →</small></span></a><a href="#products"><span class="lux-feature-icon">🧥</span><span><strong>SHIRTS</strong><small>Classic & timeless →</small></span></a><a href="#products"><span class="lux-feature-icon">✦</span><span><strong>JACKETS</strong><small>For every season →</small></span></a>';const hero=$('#home');if(hero)hero.insertAdjacentElement('afterend',sec)}
+  function addShowcase(){if($('.v12-scroll-showcase'))return;const list=(window.products||[]).filter(p=>firstImage(p)).slice(0,4);if(!list.length)return;const sec=document.createElement('section');sec.className='v12-scroll-showcase lux-reveal';const slides=list.map((p,i)=>'<article class="v12-slide '+(i===0?'active':'')+'" data-i="'+i+'"><div class="v12-copy"><div class="v12-num">0'+(i+1)+' / 0'+list.length+'</div><h3>'+escapeHtml(p.name||'IBM COLLECTION')+'</h3><div class="v12-cat">'+escapeHtml(typeof catName==='function'?catName(p.cat):p.cat||'SIGNATURE COLLECTION')+'</div><div class="v12-price">₹'+escapeHtml(p.price||'')+'</div><a class="v12-view" href="#products" onclick="setTimeout(()=>document.getElementById(\'products\')?.scrollIntoView({behavior:\'smooth\'}),40)">VIEW PRODUCT <span>→</span></a></div><div class="v12-media"><img src="'+firstImage(p)+'" alt="'+escapeHtml(p.name||'')+'"></div></article>').join('');sec.innerHTML='<div class="v12-show-head"><div><div class="eyebrow">IBM COLLECTION / SIGNATURE EDIT</div><h2>THE COLLECTION<br><em>IN MOTION.</em></h2></div><p>Scroll through the collection with smooth cinematic transitions. Product size and colour options open only when you enter the product.</p></div><div class="v12-stage">'+slides+'<div class="v12-dots">'+list.map((_,i)=>'<i class="'+(i===0?'active':'')+'"></i>').join('')+'</div><div class="v12-scroll-label">SCROLL TO EXPLORE</div></div>';const hero=$('#home');if(hero)hero.insertAdjacentElement('afterend',sec);const stage=sec.querySelector('.v12-stage'), ss=[...sec.querySelectorAll('.v12-slide')], ds=[...sec.querySelectorAll('.v12-dots i')];function set(n){n=Math.max(0,Math.min(ss.length-1,n));ss.forEach((x,i)=>x.classList.toggle('active',i===n));ds.forEach((x,i)=>x.classList.toggle('active',i===n))}function tick(){const r=stage.getBoundingClientRect();const span=Math.max(1,sec.offsetHeight-stage.offsetHeight);const p=Math.max(0,Math.min(1,(innerHeight*.45-r.top)/span));set(Math.round(p*(ss.length-1)))}addEventListener('scroll',tick,{passive:true});tick()}
+  function addEditorial(){if($('.v12-editorial'))return;const list=(window.products||[]).filter(p=>firstImage(p)).slice(0,3);if(!list.length)return;const sec=document.createElement('section');sec.className='v12-editorial lux-reveal';const a=list[0],b=list[1]||list[0];sec.innerHTML='<div class="v12-editorial-grid"><article class="v12-panel"><img src="'+firstImage(a)+'" alt=""><div class="v12-panel-copy"><span>THE LOOKBOOK</span><h3>WEAR YOUR<br>OWN STORY.</h3><p>Clean silhouettes, bold graphics and premium everyday pieces from IBM COLLECTION.</p></div></article><article class="v12-panel"><img src="'+firstImage(b)+'" alt=""><div class="v12-panel-copy"><span>NEW SEASON</span><h3>BUILT FOR<br>CONFIDENCE.</h3><p>Explore the latest collection and choose your size and colour inside each product.</p></div></article></div>';const productsSec=$('#products');if(productsSec)productsSec.insertAdjacentElement('beforebegin',sec)}
+  function addSocial(){if($('.v12-social-strip'))return;const links=typeof socLinks==='function'?socLinks():[];if(!links.length)return;const sec=document.createElement('section');sec.className='v12-social-strip lux-reveal';sec.innerHTML='<div class="v12-social-head"><span>FOLLOW IBM COLLECTION</span><h2>THE BRAND, EVERYWHERE.</h2></div><div class="v12-social-grid">'+links.slice(0,4).map(x=>'<a class="v12-social-card" href="'+x.u+'" target="_blank" rel="noopener noreferrer"><span>'+iconSvg(x.k)+'</span><strong>'+escapeHtml(x.t)+'</strong></a>').join('')+'</div>';const contact=$('#contact');if(contact)contact.insertAdjacentElement('beforebegin',sec)}
+  function reveal(){const els=$$('.lux-reveal,.section,.product,.cat-card');const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('is-in');io.unobserve(e.target)}}),{threshold:.08});els.forEach((e,i)=>{if(!e.classList.contains('lux-reveal'))e.classList.add('lux-reveal');e.style.transitionDelay=Math.min((i%6)*.06,.35)+'s';io.observe(e)})}
+  function hideCardSelectors(){ $$('.product .size-row').forEach(e=>e.remove()); }
+  function patchRender(){if(window.__v12render)return;const old=window.renderProducts;if(typeof old==='function'){window.renderProducts=function(){const r=old.apply(this,arguments);setTimeout(()=>{hideCardSelectors();reveal()},40);return r};window.__v12render=true}}
+  function patchCheckout(){const m=$('#checkoutModal');if(!m)return;function ensure(){const box=m.querySelector('.modal-box')||m.firstElementChild;if(!box)return;if(!box.querySelector('.checkout-close-v12')){const b=document.createElement('button');b.className='checkout-close-v12';b.type='button';b.textContent='×';b.title='Close checkout';b.onclick=()=>window.closeCheckout?window.closeCheckout(false):m.classList.remove('show');box.prepend(b)}}const old=window.openCheckout;if(typeof old==='function'&&!window.__v12checkout){window.openCheckout=function(){const r=old.apply(this,arguments);setTimeout(ensure,80);return r};window.__v12checkout=true}if(m.classList.contains('show'))ensure()}
+  function boot(){addMarquee();addFeatureRail();setTimeout(()=>{addShowcase();addEditorial();addSocial();patchRender();hideCardSelectors();reveal();patchCheckout()},700);setTimeout(patchCheckout,1500)}
+  document.addEventListener('DOMContentLoaded',boot);setTimeout(boot,1200);
+  addEventListener('scroll',()=>{$('.header')?.classList.toggle('lux-scrolled',scrollY>30)},{passive:true});
 })();
 </script>
 </body>
