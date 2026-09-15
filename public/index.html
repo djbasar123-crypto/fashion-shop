@@ -1024,13 +1024,8 @@ footer h3,footer h4{color:var(--lux-gold2)!important}
       <h2>💳 Payment & Offers</h2>
       <div class="notice">Customer kisi bhi UPI app se paisa bhejega — seedha aapke account me.</div>
       <div class="card">
-        <div style="padding:14px;border:1px solid #d6af45;border-radius:12px;background:linear-gradient(135deg,#0b0b0b,#17120a);margin-bottom:14px;">
-          <h3 style="margin:0 0 7px;color:#d6af45;">💳 Cashfree Payment Gateway</h3>
-          <p style="margin:0;color:#f7f4ec;font-size:13px;line-height:1.6;">Live Cashfree API keys Render mein add hone ke baad Online Payment automatically Cashfree checkout par chala jayega. Tab tak BharatPe UPI backup rahega.</p>
-          <div id="cashfreeAdminStatus" style="margin-top:8px;color:#d8d2c4;font-size:12px;">Checking Cashfree status...</div>
-        </div>
-        <label>Backup UPI ID (BharatPe)</label><input type="text" id="upId">
-        <label>Backup Account Name</label><input type="text" id="upName">
+        <label>UPI ID</label><input type="text" id="upId">
+        <label>Account Name</label><input type="text" id="upName">
         <label>QR Code Upload</label><input type="file" id="upQrFile" accept="image/*" onchange="readQrFile(this)">
         <label>Ya QR URL</label><input type="text" id="upQrUrl">
         <div><img id="qrPrevImg" src="" style="max-width:140px;border:1px solid #ddd;border-radius:8px;display:none;"></div>
@@ -1060,6 +1055,11 @@ footer h3,footer h4{color:var(--lux-gold2)!important}
         <p style="font-size:12px;color:#777;margin:6px 0 12px;">UPI/Online payment choose karne par ye discount customer ko milega. COD par nahi.</p>
         <label>Payment Instructions (customer ko dikhne wala text)</label>
         <textarea id="paymentInstruction" rows="3" placeholder="UPI/Online payment ke liye yahan apna message likho..."></textarea>
+        <div style="margin-top:18px;padding:16px;border:1px solid rgba(214,175,69,.35);border-radius:10px;background:#090909;">
+          <h3 style="margin:0 0 8px;color:#d6af45;">💳 Cashfree Payment Gateway</h3>
+          <p id="cashfreeAdminStatus" style="font-size:12px;color:#d8d2c4;margin:0 0 10px;">Checking Cashfree status...</p>
+          <p style="font-size:12px;color:#aaa;margin:0;">Cashfree API keys Render Environment mein rahengi. BharatPe UPI backup Cashfree configure hone tak available rahega.</p>
+        </div>
         <button class="save-btn" onclick="savePayment()">💾 Save Payment & Offers</button>
       </div>
     </div>
@@ -1374,20 +1374,17 @@ function openCart(){document.getElementById('cartDrawer').classList.add('open');
 function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('cartOverlay').classList.remove('show');}
 
 // ===== CHECKOUT =====
-async function openCheckout(){
+function openCheckout(){
   if(!cart.length){alert('Cart khaali hai');return;}
   closeCart();
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codEnabled=!!pay.codEnabled;
   const codCharge=Number(pay.codCharge)||40;
-  let cashfreeEnabled=false;
-  try{const st=await api('/api/cashfree/status');cashfreeEnabled=!!(st&&st.ok&&st.enabled);}catch(e){}
-  const onlineLabel=cashfreeEnabled?'💳 Pay Online (Cashfree)':'📲 Pay Online (Backup UPI)';
   document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="prepaidDiscountRow" style="display:none;"><span>🎁 Prepaid Discount</span><b id="prepaidDiscountValue">-₹0</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
   const methods=document.getElementById('paymentMethods');
-  methods.innerHTML=(cashfreeEnabled||pay.upiId?`<label style="flex:1;min-width:210px;border:2px solid #d6af45;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="UPI" checked onchange="selectPaymentMethod('UPI')"> ${onlineLabel}</label>`:'')+(codEnabled?`<label style="flex:1;min-width:180px;border:2px solid #d6af45;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="COD" ${cashfreeEnabled||pay.upiId?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
-  if(!methods.innerHTML) methods.innerHTML='<div style="color:#ff7777;font-weight:700;">Payment abhi set nahi hua.</div>';
-  selectPaymentMethod((cashfreeEnabled||pay.upiId)?'UPI':(codEnabled?'COD':''));
+  methods.innerHTML=(pay.upiId?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="UPI" checked onchange="selectPaymentMethod('UPI')"> 💳 Cashfree / Online</label>`:'')+(codEnabled?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="COD" ${pay.upiId?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
+  if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
+  selectPaymentMethod(pay.upiId?'UPI':(codEnabled?'COD':''));
   document.getElementById('checkoutModal').classList.add('show');
   openCheckoutHistory();
 }
@@ -1395,7 +1392,7 @@ function getPrepaidDiscountAmount(subtotal){
   const pct=Math.max(0,Math.min(100,Number(pay.prepaidDiscountPercent)||0));
   return Math.round(subtotal*pct/100*100)/100;
 }
-async function selectPaymentMethod(method){
+function selectPaymentMethod(method){
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codCharge=Number(pay.codCharge)||40;
   const discount=method==='UPI'?getPrepaidDiscountAmount(subtotal):0;
@@ -1410,17 +1407,23 @@ async function selectPaymentMethod(method){
     document.getElementById('waNote').innerHTML='<b>✅ COD order — delivery ke time cash payment karein.</b>';
   }else if(method==='UPI'){
     if(totalEl)totalEl.textContent='₹'+(subtotal-discount);
-    const upiAmount=(subtotal-discount).toFixed(2);
-    const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId||'')}&pn=${encodeURIComponent(pay.upiName||'IBM COLLECTION')}&am=${upiAmount}&cu=INR&tn=IBM%20COLLECTION%20Order`;
-    let cashfreeEnabled=false;
-    try{const st=await api('/api/cashfree/status');cashfreeEnabled=!!(st&&st.ok&&st.enabled);}catch(e){}
-    if(cashfreeEnabled){
-      document.getElementById('payBox').innerHTML=`<div style="padding:16px;border:2px solid #d6af45;border-radius:12px;background:#0b0b0b;color:#f7f4ec;text-align:center;"><div style="font-size:18px;color:#d6af45;font-weight:800;">💳 Cashfree Secure Checkout</div><p style="font-size:13px;color:#d8d2c4;margin:8px 0;">UPI, Card, Net Banking aur available payment methods Cashfree par milenge.</p><button class="btn" type="button" onclick="startCashfreePayment()" style="width:100%;">Pay ₹${(subtotal-discount).toFixed(2)} Securely</button>${discount>0?`<p style="color:#7CFC00;font-weight:800;margin:8px 0 0;">🎁 Prepaid Discount: ${Number(pay.prepaidDiscountPercent)||0}% (₹${discount.toFixed(2)})</p>`:''}</div>`;
-      document.getElementById('waNote').innerHTML='<b>✅ Cashfree online payment selected.</b>';
-    }else{
-      document.getElementById('payBox').innerHTML=pay.upiId?((pay.qrCode?`<img src="${pay.qrCode}" style="max-width:220px;display:block;margin:0 auto 10px;border-radius:12px;">`:'')+`<div style="font-size:12px;color:#d8d2c4;margin-bottom:5px;">Backup UPI</div><div class="upi-id">${pay.upiId}</div><br><a class="pay-link" href="${upi}">📲 Pay Karein</a><p style="font-size:12px;color:#d8d2c4;">${pay.paymentInstruction||'Cashfree live hone tak ye backup UPI option available hai.'}</p>${discount>0?`<p style="color:#7CFC00;font-weight:800;margin:6px 0 0;">🎁 Prepaid Discount: ${Number(pay.prepaidDiscountPercent)||0}% (₹${discount.toFixed(2)})</p>`:''}`):'<p style="color:#ff7777;">Cashfree abhi activate nahi hua aur backup UPI set nahi hai.</p>';
-      document.getElementById('waNote').innerHTML=pay.upiId?'<b>✅ Backup UPI payment selected.</b>':'<b>⚠️ Cashfree activation ke baad online payment available hoga.</b>';
-    }
+    document.getElementById('payBox').innerHTML=`<div style="padding:14px;border:2px solid #d6af45;border-radius:10px;background:#0b0b0b;color:#f7f4ec;text-align:center;">
+      <div style="font-size:18px;font-weight:800;color:#d6af45;">💳 Cashfree Online Payment</div>
+      <p style="font-size:13px;color:#d8d2c4;margin:8px 0;">UPI, Card, Net Banking aur available online payment methods se pay karein.</p>
+      <button type="button" class="save-btn" onclick="startCashfreePayment()" style="width:100%;max-width:320px;">🔐 Pay Securely with Cashfree</button>
+      <div id="cashfreeBackupBox" style="margin-top:10px;"></div>
+      ${discount>0?`<p style="color:#7CFC00;font-weight:800;margin:10px 0 0;">🎁 Prepaid Discount: ${Number(pay.prepaidDiscountPercent)||0}% (₹${discount.toFixed(2)})</p>`:''}
+    </div>`;
+    document.getElementById('waNote').innerHTML='<b>✅ Online payment selected — Cashfree checkout open hoga.</b>';
+    api('/api/cashfree/status').then(st=>{
+      const box=document.getElementById('cashfreeBackupBox'); if(!box)return;
+      if(st.ok&&st.enabled){ box.innerHTML='<small style="color:#7CFC00;">Cashfree is ready.</small>'; }
+      else if(pay.upiId){
+        const upiAmount=(subtotal-discount).toFixed(2);
+        const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId||'')}&pn=${encodeURIComponent(pay.upiName||'IBM COLLECTION')}&am=${upiAmount}&cu=INR&tn=IBM%20COLLECTION%20Order`;
+        box.innerHTML=`<details style="margin-top:8px;text-align:left;"><summary style="cursor:pointer;color:#d6af45;font-weight:700;">BharatPe UPI backup</summary><div style="padding-top:8px;">${pay.qrCode?`<img src="${pay.qrCode}" style="max-width:180px;display:block;margin:0 auto 8px;border-radius:12px;">`:''}<div class="upi-id">${pay.upiId}</div><br><a class="pay-link" href="${upi}">📲 Pay Karein</a><p style="font-size:12px;color:#d8d2c4;">${pay.paymentInstruction||'Cashfree activate hone tak ye backup payment option hai.'}</p></div></details>`;
+      }
+    }).catch(()=>{});
   }else{
     if(totalEl)totalEl.textContent='₹'+subtotal;
     document.getElementById('payBox').innerHTML='';
@@ -1433,15 +1436,12 @@ async function startCashfreePayment(){
   const phone=document.getElementById('cPhone').value.trim();
   const addr=document.getElementById('cAddress').value.trim();
   const city=document.getElementById('cCity').value.trim();
+  const state=document.getElementById('cState')?.value.trim()||'';
   const pin=document.getElementById('cPin').value.trim();
   if(!name||!phone||!addr||!pin){alert('Saari details bharein');return;}
-  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
-  const prepaidDiscount=getPrepaidDiscountAmount(subtotal);
-  const amount=Math.max(0,subtotal-prepaidDiscount);
-  const items=cart.map(x=>`${x.name} (Size: ${x.size}, Colour: ${x.color||'Black'} ×${x.qty}) ₹${x.price*x.qty}`).join(', ');
-  const r=await api('/api/cashfree/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount,name,phone,items})});
-  if(!r.ok){alert(r.msg||'Online payment abhi available nahi hai.');return;}
-  sessionStorage.setItem('ibm_pending_cashfree',JSON.stringify({name,phone,address:addr+', '+city+' - '+pin,items,total:amount,subtotal,prepaidDiscount,prepaidDiscountPercent:Number(pay.prepaidDiscountPercent)||0,whatsappOptIn:!!document.getElementById('waOptIn')?.checked,codCharge:0,courierPartner:pay.courierPartner||'',paymentMethod:'UPI / Cashfree'}));
+  const r=await api('/api/cashfree/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,phone,address:addr,city,state,pin,cart,whatsappOptIn:!!document.getElementById('waOptIn')?.checked})});
+  if(!r.ok){alert(r.msg||'Cashfree payment abhi available nahi hai.');return;}
+  sessionStorage.setItem('ibm_pending_cashfree',JSON.stringify({cashfreeOrderId:r.orderId}));
   const cf=Cashfree({mode:r.environment==='production'?'production':'sandbox'});
   await cf.checkout({paymentSessionId:r.paymentSessionId,redirectTarget:'_self'});
 }
@@ -1452,15 +1452,11 @@ async function handleCashfreeReturn(){
   const pending=sessionStorage.getItem('ibm_pending_cashfree');
   if(!orderId||!pending)return;
   try{
-    const status=await api('/api/cashfree/order-status/'+encodeURIComponent(orderId));
-    if(status.ok && status.status==='PAID'){
-      const o=JSON.parse(pending); o.utr='Cashfree:'+orderId;
-      const r=await api('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(o)});
-      sessionStorage.removeItem('ibm_pending_cashfree');
-      history.replaceState({},'',location.pathname+location.hash);
-      if(r.ok){cart=[];saveCart();alert('✅ Payment successful! Order confirmed. WhatsApp confirmation bhi bhej diya jayega agar aapne opt-in kiya hai.');}
-      else alert(r.msg||'Order save nahi hua.');
-    }else if(status.ok){sessionStorage.removeItem('ibm_pending_cashfree');history.replaceState({},'',location.pathname+location.hash);alert('Payment successful nahi hua. Aap dobara try kar sakte hain.');}
+    const r=await api('/api/cashfree/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId})});
+    sessionStorage.removeItem('ibm_pending_cashfree');
+    history.replaceState({},'',location.pathname+location.hash);
+    if(r.ok){cart=[];saveCart();alert('✅ Cashfree payment successful! Order confirmed.');}
+    else alert(r.msg||'Payment successful nahi hua. Aap dobara try kar sakte hain.');
   }catch(e){console.error(e);}
 }
 
@@ -1532,7 +1528,14 @@ function showTab(t,btn){document.querySelectorAll('.admin-main>div').forEach(d=>
 function flash(){const m=document.getElementById('saveMsg');m.style.display='block';setTimeout(()=>m.style.display='none',2000);}
 
 // ===== ADMIN LOAD =====
+async function loadCashfreeAdminStatus(){
+  const el=document.getElementById('cashfreeAdminStatus'); if(!el)return;
+  try{const r=await api('/api/cashfree/status'); el.innerHTML=r.ok&&r.enabled?'🟢 <b>Cashfree configured</b> — API keys Render mein available hain.':'🟡 <b>Cashfree keys pending</b> — BharatPe backup active rahega.';}
+  catch(e){el.textContent='Cashfree status check failed';}
+}
+
 function loadAdminData(){
+  loadCashfreeAdminStatus();
   document.getElementById('statProducts').textContent=products.length;
   document.getElementById('statCats').textContent=categories.length;
   document.getElementById('statOrders').textContent=orders.length;
@@ -1548,7 +1551,6 @@ function loadAdminData(){
   const dc=pay.delhivery||{}; const setv=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v??'';}; setv('delClientName',dc.clientName);setv('delPickupName',dc.pickupName);setv('delPickupPhone',dc.pickupPhone);setv('delPickupPin',dc.pickupPin);setv('delPickupCity',dc.pickupCity);setv('delPickupState',dc.pickupState);setv('delPickupAddress',dc.pickupAddress);setv('delWeight',dc.weight||500);setv('delMode',dc.mode||'Express');setv('delLength',dc.length||20);setv('delWidth',dc.width||15);setv('delHeight',dc.height||5);
   document.getElementById('prepaidDiscount').value=Number(pay.prepaidDiscountPercent)||0;
   document.getElementById('paymentInstruction').value=pay.paymentInstruction||'Kisi bhi UPI app se payment karein. Payment successful hone ke baad order confirm hoga.';
-  checkCashfreeAdminStatus();
   document.getElementById('upQrUrl').value=(pay.qrCode&&pay.qrCode.startsWith('http')?pay.qrCode:'');
   const pv=document.getElementById('qrPrevImg');if(pay.qrCode){pv.src=pay.qrCode;pv.style.display='inline-block';}else{pv.style.display='none';}
   document.getElementById('sName').value=settings.siteName||'';
@@ -1705,16 +1707,6 @@ function removeHeroImage(i){heroImages.splice(i,1);renderHeroPreviews();}
 
 async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value,mapUrl:document.getElementById('sMap').value.trim(),heroImages:heroImages.length?heroImages:(Array.isArray(settings.heroImages)?settings.heroImages:DEFAULT_HERO_IMAGES)};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();renderHeader();renderSocial();loadAdminData();flash();}
 async function saveSocial(){const d={instagram:document.getElementById('soInsta').value.trim(),facebook:document.getElementById('soFb').value.trim(),whatsapp:document.getElementById('soWa').value.trim(),youtube:document.getElementById('soYt').value.trim(),twitter:document.getElementById('soTw').value.trim(),telegram:document.getElementById('soTelegram').value.trim(),linkedin:document.getElementById('soLinkedin').value.trim()};await api('/api/admin/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});social={...social,...d};renderSocial();loadAdminData();flash();alert('✅ Social links saved');}
-async function checkCashfreeAdminStatus(){
-  const el=document.getElementById('cashfreeAdminStatus');
-  if(!el)return;
-  try{
-    const r=await api('/api/cashfree/status');
-    if(r.ok&&r.enabled){el.textContent='✅ Cashfree ready — Online payments will use Cashfree.';el.style.color='#7CFC00';}
-    else{el.textContent='🟡 Cashfree not connected yet — BharatPe backup remains active.';el.style.color='#d6af45';}
-  }catch(e){el.textContent='🟡 Cashfree not connected yet — BharatPe backup remains active.';}
-}
-
 async function savePayment(){const upiId=document.getElementById('upId').value.trim();const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim(),prepaidDiscountPercent:Math.max(0,Math.min(100,Number(document.getElementById('prepaidDiscount').value)||0)),paymentInstruction:document.getElementById('paymentInstruction').value.trim()}; d.delhivery={clientName:document.getElementById('delClientName')?.value.trim()||'',pickupName:document.getElementById('delPickupName')?.value.trim()||'',pickupPhone:document.getElementById('delPickupPhone')?.value.trim()||'',pickupPin:document.getElementById('delPickupPin')?.value.trim()||'',pickupCity:document.getElementById('delPickupCity')?.value.trim()||'',pickupState:document.getElementById('delPickupState')?.value.trim()||'',pickupAddress:document.getElementById('delPickupAddress')?.value.trim()||'',weight:Number(document.getElementById('delWeight')?.value)||500,mode:document.getElementById('delMode')?.value||'Express',length:Number(document.getElementById('delLength')?.value)||20,width:Number(document.getElementById('delWidth')?.value)||15,height:Number(document.getElementById('delHeight')?.value)||5}; const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}const r=await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});if(!r.ok){alert(r.message||'Payment settings save nahi hui');return;}pay={...pay,...d};loadAdminData();flash();alert('✅ Payment, COD, discount & Delhivery settings saved');}
 function saveDelhiverySettings(){savePayment();}
 async function testDelhiveryStatus(){const r=await api('/api/admin/delhivery/status');const el=document.getElementById('delStatusMsg');if(el)el.textContent=r.ok?(r.configured?'✅ Delhivery token + pickup setup available.':'⚠️ Token ya pickup settings missing hain.'):'❌ '+(r.msg||'Delhivery status check failed');}
@@ -1725,6 +1717,162 @@ async function saveSecurity(){const u=document.getElementById('adUser').value.tr
 window.searchQuery=window.searchQuery||'';
 loadStore();
 handleCashfreeReturn();
+</script>
+<style id="ibm-motion-v8">
+:root{--gold:#d6af45;--gold2:#f3d77a;--ink:#070707;--ink2:#101010;--cream:#f7f4ec}
+html{scroll-behavior:auto}
+body{background:#050505!important;color:var(--cream)!important;overflow-x:hidden}
+#storeView{background:radial-gradient(circle at 50% 0%,rgba(214,175,69,.09),transparent 34%),linear-gradient(180deg,#050505 0%,#090909 48%,#050505 100%)!important}
+.luxury-topbar{border-bottom:1px solid rgba(214,175,69,.22)!important;background:rgba(4,4,4,.94)!important;backdrop-filter:blur(14px)}
+.header{position:sticky!important;top:0;z-index:1000;background:rgba(5,5,5,.88)!important;backdrop-filter:blur(18px);border-bottom:1px solid rgba(214,175,69,.22)!important;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.hero{min-height:calc(100vh - 100px)!important;overflow:hidden!important;perspective:1000px}
+.hero-slides{transform:scale(1.04);will-change:transform;transition:transform .2s linear}
+.hero-slide{transition:opacity 1s ease,transform 1.4s cubic-bezier(.2,.7,.2,1)!important;transform:scale(1.08)!important}
+.hero-slide.active{transform:scale(1)!important}
+.hero-content{transform:translateY(0);will-change:transform}
+.hero-content h1{font-size:clamp(42px,7vw,94px)!important;line-height:.96!important;letter-spacing:-.045em!important;text-shadow:0 10px 50px rgba(0,0,0,.65)}
+.hero-content h1 span{color:var(--gold2)!important}
+.hero-content p{max-width:650px;font-size:clamp(14px,1.5vw,19px)!important;color:#f4f0e6!important}
+.hero-content .btn,.btn{box-shadow:0 12px 35px rgba(214,175,69,.18)!important;transition:transform .35s ease,box-shadow .35s ease!important}
+.hero-content .btn:hover,.btn:hover{transform:translateY(-4px)!important;box-shadow:0 18px 45px rgba(214,175,69,.3)!important}
+.section{position:relative;isolation:isolate}
+.section-title{font-family:Georgia,serif!important;letter-spacing:.08em!important;color:#f5df9a!important}
+/* scroll-driven featured showcase inspired by the supplied reference */
+.ibm-v8-showcase{position:relative;height:430vh;background:linear-gradient(180deg,#070707,#0b0b0b 50%,#060606);border-top:1px solid rgba(214,175,69,.16);border-bottom:1px solid rgba(214,175,69,.16)}
+.ibm-v8-sticky{position:sticky;top:0;height:100vh;min-height:620px;overflow:hidden;display:grid;grid-template-columns:1fr 1.35fr;align-items:center;gap:4vw;padding:7vh 7vw}
+.ibm-v8-bgword{position:absolute;inset:auto 0 5%;text-align:center;font-size:clamp(90px,19vw,280px);font-weight:900;letter-spacing:-.08em;color:rgba(214,175,69,.045);pointer-events:none;white-space:nowrap}
+.ibm-v8-copy{position:relative;z-index:3;max-width:560px}
+.ibm-v8-kicker{font-size:12px;letter-spacing:.35em;color:var(--gold2);font-weight:800;margin-bottom:18px}
+.ibm-v8-index{font-size:14px;letter-spacing:.22em;color:#aaa;margin-bottom:10px}
+.ibm-v8-title{font-family:Georgia,serif;font-size:clamp(42px,6vw,86px);line-height:.94;margin:0 0 18px;color:#fff;letter-spacing:-.045em}
+.ibm-v8-desc{font-size:15px;line-height:1.7;color:#c9c4b9;max-width:470px;min-height:52px}
+.ibm-v8-price{font-size:24px;font-weight:900;color:var(--gold2);margin:20px 0}
+.ibm-v8-meta{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0 22px}
+.ibm-v8-chip{border:1px solid rgba(214,175,69,.5);padding:8px 13px;border-radius:999px;color:#eee;background:rgba(214,175,69,.05);font-size:12px}
+.ibm-v8-cta{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#b88620,#f3d77a);color:#0a0a0a;border:0;border-radius:999px;padding:14px 23px;font-weight:900;cursor:pointer;box-shadow:0 12px 35px rgba(214,175,69,.2);transition:.35s}
+.ibm-v8-cta:hover{transform:translateY(-3px) scale(1.02)}
+.ibm-v8-stage{position:relative;height:min(76vh,720px);display:flex;align-items:center;justify-content:center;z-index:2}
+.ibm-v8-stage:before{content:"";position:absolute;width:75%;height:75%;border-radius:50%;background:radial-gradient(circle,rgba(214,175,69,.18),transparent 67%);filter:blur(12px)}
+.ibm-v8-product{position:absolute;max-width:90%;max-height:76vh;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 35px 55px rgba(0,0,0,.65));will-change:transform,opacity,filter;transition:opacity .65s ease,transform .8s cubic-bezier(.2,.75,.2,1),filter .8s ease}
+.ibm-v8-product.is-old{opacity:0;transform:translateX(-90px) rotateY(-12deg) scale(.84);filter:blur(9px) drop-shadow(0 20px 30px rgba(0,0,0,.4))}
+.ibm-v8-product.is-new{opacity:1;transform:translateX(0) rotateY(0) scale(1);filter:blur(0) drop-shadow(0 35px 55px rgba(0,0,0,.65))}
+.ibm-v8-dots{position:absolute;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:9px;z-index:4}
+.ibm-v8-dot{width:7px;height:7px;border-radius:50%;background:#555;transition:.3s}
+.ibm-v8-dot.active{height:28px;border-radius:8px;background:var(--gold2);box-shadow:0 0 14px rgba(214,175,69,.45)}
+.ibm-v8-progress{position:absolute;left:7vw;right:7vw;bottom:5vh;height:1px;background:#262626;z-index:4}
+.ibm-v8-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));box-shadow:0 0 12px rgba(214,175,69,.5)}
+.ibm-v8-note{position:absolute;left:7vw;bottom:6.5vh;font-size:10px;letter-spacing:.25em;color:#777;text-transform:uppercase}
+.ibm-v8-marquee{overflow:hidden;border-top:1px solid rgba(214,175,69,.12);border-bottom:1px solid rgba(214,175,69,.12);background:#050505;padding:17px 0;white-space:nowrap}
+.ibm-v8-marquee-track{display:inline-flex;min-width:max-content;gap:45px;animation:ibmMarquee 28s linear infinite;color:#8c8064;font-size:12px;letter-spacing:.35em;text-transform:uppercase}
+.ibm-v8-marquee strong{color:#e9d48e}
+@keyframes ibmMarquee{to{transform:translateX(-50%)}}
+.ibm-v8-reveal{opacity:0;transform:translateY(55px) skewY(3deg);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+.ibm-v8-reveal.in{opacity:1;transform:none}
+#categories,#products{background:transparent!important}
+.categories,.products{position:relative;z-index:2}
+.category-card,.product-card{transform:translateZ(0);transition:transform .5s cubic-bezier(.2,.75,.2,1),box-shadow .5s ease,border-color .5s ease!important}
+.category-card:hover,.product-card:hover{transform:translateY(-8px)!important;box-shadow:0 24px 55px rgba(0,0,0,.55),0 0 0 1px rgba(214,175,69,.28)!important}
+.product-card img{transition:transform .7s cubic-bezier(.2,.75,.2,1)!important}
+.product-card:hover img{transform:scale(1.045)!important}
+.footer{border-top:1px solid rgba(214,175,69,.2)!important}
+@media(max-width:850px){
+ .ibm-v8-showcase{height:360vh}
+ .ibm-v8-sticky{grid-template-columns:1fr;height:100vh;min-height:650px;padding:10vh 5vw 6vh;align-content:center;gap:0}
+ .ibm-v8-copy{order:2;max-width:none;margin-top:-5vh}
+ .ibm-v8-stage{order:1;height:47vh;min-height:280px}
+ .ibm-v8-product{max-height:44vh;max-width:92%}
+ .ibm-v8-title{font-size:clamp(36px,12vw,58px)}
+ .ibm-v8-desc{font-size:13px;line-height:1.55;min-height:40px}
+ .ibm-v8-price{font-size:20px;margin:12px 0}
+ .ibm-v8-meta{margin:10px 0 15px}
+ .ibm-v8-chip{padding:6px 10px}
+ .ibm-v8-progress{left:5vw;right:5vw;bottom:3vh}
+ .ibm-v8-note{left:5vw;bottom:4.5vh;font-size:8px}
+ .ibm-v8-dots{right:3vw}
+}
+@media(prefers-reduced-motion:reduce){.ibm-v8-product,.ibm-v8-reveal{transition:none!important}.ibm-v8-marquee-track{animation:none}.ibm-v8-showcase{height:auto}.ibm-v8-sticky{position:relative;height:auto}.ibm-v8-dots,.ibm-v8-progress,.ibm-v8-note{display:none}}
+</style><script id="ibm-motion-v8-js">
+(function(){
+  const boot=()=>{
+    if(window.__IBM_V8_MOTION__) return;
+    if(!Array.isArray(window.products)||!window.products.length){setTimeout(boot,500);return;}
+    window.__IBM_V8_MOTION__=true;
+    const hero=document.querySelector('.hero');
+    const categories=document.getElementById('categories');
+    if(!hero||!categories)return;
+    const section=document.createElement('section');
+    section.className='ibm-v8-showcase';
+    section.id='scrollShowcase';
+    section.innerHTML=`<div class="ibm-v8-sticky">
+      <div class="ibm-v8-bgword">IBM</div>
+      <div class="ibm-v8-copy ibm-v8-reveal">
+        <div class="ibm-v8-kicker">IBM COLLECTION · THE DROP</div>
+        <div class="ibm-v8-index" id="v8Index">01 / 04</div>
+        <h2 class="ibm-v8-title" id="v8Title">The Collection</h2>
+        <p class="ibm-v8-desc" id="v8Desc">Premium pieces, presented with a cinematic shopping experience.</p>
+        <div class="ibm-v8-price" id="v8Price">₹0</div>
+        <div class="ibm-v8-meta" id="v8Meta"></div>
+        <button class="ibm-v8-cta" id="v8Cta">Explore Product →</button>
+      </div>
+      <div class="ibm-v8-stage"><div id="v8Stage"></div></div>
+      <div class="ibm-v8-dots" id="v8Dots"></div>
+      <div class="ibm-v8-note">SCROLL TO EXPLORE</div>
+      <div class="ibm-v8-progress"><span id="v8Progress"></span></div>
+    </div>`;
+    hero.insertAdjacentElement('afterend',section);
+
+    const chosen=products.filter(p=>p && ((Array.isArray(p.pimgs)&&p.pimgs.length)||p.pimg)).slice(0,4);
+    if(!chosen.length)return;
+    const stage=document.getElementById('v8Stage'), dots=document.getElementById('v8Dots');
+    const title=document.getElementById('v8Title'), desc=document.getElementById('v8Desc'), price=document.getElementById('v8Price'), meta=document.getElementById('v8Meta'), index=document.getElementById('v8Index'), cta=document.getElementById('v8Cta'), progress=document.getElementById('v8Progress');
+    const imgs=chosen.map((p,i)=>{const src=(Array.isArray(p.pimgs)?p.pimgs.filter(Boolean)[0]:'')||p.pimg;const im=document.createElement('img');im.className='ibm-v8-product '+(i===0?'is-new':'is-old');im.src=src;im.alt=p.name||'IBM COLLECTION product';stage.appendChild(im);return im;});
+    dots.innerHTML=chosen.map((_,i)=>`<span class="ibm-v8-dot ${i===0?'active':''}"></span>`).join('');
+    const dotEls=[...dots.children];
+    let active=0;
+    function show(n){
+      n=Math.max(0,Math.min(chosen.length-1,n));
+      if(n===active && title.textContent!== 'The Collection') {updateText(n);return;}
+      imgs.forEach((im,i)=>im.className='ibm-v8-product '+(i===n?'is-new':'is-old'));
+      dotEls.forEach((d,i)=>d.classList.toggle('active',i===n));
+      active=n; updateText(n);
+    }
+    function updateText(n){
+      const p=chosen[n];
+      index.textContent=String(n+1).padStart(2,'0')+' / '+String(chosen.length).padStart(2,'0');
+      title.textContent=p.name||'IBM COLLECTION';
+      desc.textContent=p.description||p.desc||'Premium quality fashion from IBM COLLECTION.';
+      price.textContent='₹'+(p.price||0);
+      const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];
+      const colors=p.colors&&p.colors.length?p.colors:['Black'];
+      meta.innerHTML='<span class="ibm-v8-chip">Sizes '+sizes.slice(0,5).join(' · ')+'</span><span class="ibm-v8-chip">'+colors.slice(0,3).join(' · ')+'</span>';
+      cta.onclick=()=>{const idx=products.indexOf(p);if(typeof openProductDetail==='function')openProductDetail(idx);};
+    }
+    updateText(0);
+    const revealEls=[...document.querySelectorAll('.section-title,.category-card,.product-card,.footer,.ibm-v8-reveal')];
+    const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12}):null;
+    revealEls.forEach(e=>{e.classList.add('ibm-v8-reveal');if(io)io.observe(e);else e.classList.add('in')});
+    let ticking=false;
+    function onScroll(){
+      if(ticking)return;ticking=true;requestAnimationFrame(()=>{
+        ticking=false;
+        const r=section.getBoundingClientRect();
+        const max=Math.max(1,section.offsetHeight-window.innerHeight);
+        const prog=Math.max(0,Math.min(1,-r.top/max));
+        progress.style.width=(prog*100)+'%';
+        const n=Math.min(chosen.length-1,Math.floor(prog*chosen.length));
+        if(n!==active)show(n);
+        if(hero){const hr=hero.getBoundingClientRect();const hp=Math.max(-1,Math.min(1,-hr.top/window.innerHeight));const hs=hero.querySelector('.hero-slides');const hc=hero.querySelector('.hero-content');if(hs)hs.style.transform='scale(1.04) translateY('+(hp*5)+'%)';if(hc)hc.style.transform='translateY('+(hp*45)+'px)';}
+      });
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+    // Gentle magnetic hover for primary controls.
+    document.querySelectorAll('.btn,.add-btn,.save-btn,.edit-btn').forEach(b=>{b.addEventListener('pointermove',e=>{const q=b.getBoundingClientRect();b.style.transform='translate('+(e.clientX-q.left-q.width/2)*.035+'px,'+(e.clientY-q.top-q.height/2)*.035+'px)'});b.addEventListener('pointerleave',()=>b.style.transform='')});
+    // Premium reveal when store sections are dynamically re-rendered.
+    const observer=new MutationObserver(()=>{document.querySelectorAll('.product-card,.category-card').forEach(e=>{if(!e.classList.contains('ibm-v8-reveal')){e.classList.add('ibm-v8-reveal');if(io)io.observe(e);}})});
+    const pg=document.getElementById('productGrid');const cg=document.getElementById('catGrid');if(pg)observer.observe(pg,{childList:true,subtree:true});if(cg)observer.observe(cg,{childList:true,subtree:true});
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
 </script>
 </body>
 </html>
