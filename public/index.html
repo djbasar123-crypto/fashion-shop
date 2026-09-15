@@ -854,11 +854,65 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;o
 @media(max-width:430px){.v9-stage{height:570px}.v9-feature{grid-template-rows:45% 55%}.v9-feature-copy{padding:22px}.v9-feature h3{font-size:31px}.v9-feature .price{font-size:20px}.v9-showcase-head h2{font-size:42px}}
 @media(pointer:coarse){.v9-cursor,.v9-cursor-dot{display:none}}
 </style>
+
+<style id="ibm-v10-ultra">
+html{scroll-behavior:smooth}
+body{background:#030303!important;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:9990;background:radial-gradient(circle at 20% 20%,rgba(214,175,69,.07),transparent 28%),radial-gradient(circle at 80% 70%,rgba(214,175,69,.05),transparent 30%);mix-blend-mode:screen}
+#ibmScrollProgress{position:fixed;top:0;left:0;width:0;height:3px;background:linear-gradient(90deg,#8b6514,#f7d76b,#fff2b0,#b88a18);z-index:10050;box-shadow:0 0 14px rgba(247,215,107,.75);pointer-events:none}
+.luxury-v10-marquee{height:42px;display:flex;align-items:center;overflow:hidden;border-top:1px solid rgba(214,175,69,.22);border-bottom:1px solid rgba(214,175,69,.22);background:linear-gradient(90deg,#050505,#111,#050505)}
+.luxury-v10-marquee-track{display:flex;gap:42px;white-space:nowrap;animation:v10marquee 24s linear infinite;font-size:11px;letter-spacing:3px;font-weight:800;color:#e9c85c;text-transform:uppercase}
+.luxury-v10-marquee-track span:after{content:'✦';margin-left:42px;color:#8f6b1a}
+@keyframes v10marquee{to{transform:translateX(-50%)}}
+.hero{min-height:78vh!important;position:relative;isolation:isolate;overflow:hidden}
+.hero:after{content:"";position:absolute;inset:auto 0 0;height:30%;background:linear-gradient(transparent,#030303);z-index:3;pointer-events:none}
+.hero-slides{transform:scale(1.03);animation:v10heroBreath 12s ease-in-out infinite alternate}
+@keyframes v10heroBreath{to{transform:scale(1.09)}}
+.hero-content{z-index:5!important;animation:v10heroIn 1.1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes v10heroIn{from{opacity:0;transform:translateY(45px);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+.hero-content h1{letter-spacing:-2px;text-shadow:0 0 24px rgba(214,175,69,.16)}
+.hero-content .btn{box-shadow:0 0 0 rgba(214,175,69,0);transition:transform .35s,box-shadow .35s}
+.hero-content .btn:hover{transform:translateY(-4px) scale(1.03);box-shadow:0 10px 35px rgba(214,175,69,.25)}
+.section{position:relative;padding-top:72px!important;padding-bottom:72px!important}
+.section:before{content:"";position:absolute;left:50%;top:0;width:min(80%,900px);height:1px;background:linear-gradient(90deg,transparent,rgba(214,175,69,.55),transparent);transform:translateX(-50%)}
+.section-title{font-size:clamp(28px,4vw,54px)!important;letter-spacing:5px!important;text-transform:uppercase!important;background:linear-gradient(90deg,#b88a18,#ffe88a,#fff,#d6af45);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.categories,.products{perspective:1200px}
+.categories>*,.products>.product{transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s,filter .5s;will-change:transform}
+.categories>*:hover,.products>.product:hover{transform:translateY(-10px) rotateX(1deg) scale(1.015);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 28px rgba(214,175,69,.12)!important;filter:brightness(1.06)}
+.product{overflow:hidden!important}
+.product .pimg{position:relative;overflow:hidden}
+.product .pimg img{transition:transform .8s cubic-bezier(.2,.8,.2,1),filter .6s!important}
+.product:hover .pimg img{transform:scale(1.06)!important;filter:brightness(1.08) contrast(1.03)!important}
+.product .pinfo{position:relative;z-index:2}
+.product .btn,.add-btn{transition:transform .3s,box-shadow .3s,background .3s!important}
+.product .btn:hover,.add-btn:hover{transform:translateY(-2px)!important;box-shadow:0 8px 24px rgba(214,175,69,.2)!important}
+/* reveal */
+.v10-reveal{opacity:0;transform:translateY(40px) scale(.985);filter:blur(5px);transition:opacity .9s,transform .9s,filter .9s}
+.v10-reveal.v10-visible{opacity:1;transform:none;filter:none}
+/* fixed modal close */
+#checkoutModal .checkout-box{position:relative!important;max-height:92vh!important;overflow-y:auto!important;padding-top:68px!important;scroll-behavior:smooth}
+#checkoutModal .close-m{position:sticky!important;top:0!important;float:right!important;margin:-50px 0 10px auto!important;z-index:100!important;width:44px!important;height:44px!important;border-radius:50%!important;background:linear-gradient(135deg,#f4d76b,#b88a18)!important;color:#111!important;border:2px solid #f4d76b!important;font-size:21px!important;font-weight:900!important;box-shadow:0 6px 22px rgba(0,0,0,.5)!important;cursor:pointer!important}
+#checkoutModal .close-m:hover{transform:scale(1.08);box-shadow:0 0 24px rgba(244,215,107,.35)!important}
+#checkoutModal.show .checkout-box{animation:v10modalIn .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes v10modalIn{from{opacity:0;transform:translateY(35px) scale(.97)}to{opacity:1;transform:none}}
+.modal{backdrop-filter:blur(12px)!important;background:rgba(0,0,0,.72)!important}
+.checkout-box{border:1px solid rgba(214,175,69,.55)!important;box-shadow:0 30px 100px rgba(0,0,0,.8),0 0 45px rgba(214,175,69,.08)!important}
+#paymentMethods label{transition:.3s!important;background:linear-gradient(145deg,#0d0d0d,#161616)!important;color:#fff!important;border-color:#6e5318!important}
+#paymentMethods label:hover{transform:translateY(-2px);border-color:#f4d76b!important;box-shadow:0 8px 25px rgba(214,175,69,.14)}
+/* floating gold particles */
+#ibmGoldParticles{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.v10-particle{position:absolute;width:3px;height:3px;border-radius:50%;background:#e8c65d;opacity:.0;box-shadow:0 0 12px #d6af45;animation:v10float linear infinite}
+@keyframes v10float{0%{transform:translateY(110vh) scale(.5);opacity:0}12%{opacity:.55}85%{opacity:.2}100%{transform:translateY(-10vh) scale(1.2);opacity:0}}
+@media(max-width:700px){.hero{min-height:72vh!important}.section{padding-top:52px!important;padding-bottom:52px!important}.luxury-v10-marquee{height:36px}.luxury-v10-marquee-track{font-size:9px;letter-spacing:2px;gap:25px}.luxury-v10-marquee-track span:after{margin-left:25px}.hero-content h1{letter-spacing:-1px!important}.hero-content{padding:20px!important}#checkoutModal .checkout-box{max-height:94vh!important;width:96%!important;padding-left:15px!important;padding-right:15px!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body><div class="v9-goldline"></div>
 
 <!-- STORE -->
+<div id="ibmScrollProgress"></div><div id="ibmGoldParticles"></div>
 <div id="storeView">
+  <div class="luxury-v10-marquee"><div class="luxury-v10-marquee-track"><span>IBM COLLECTION</span><span>PREMIUM STREETWEAR</span><span>STYLE • COMFORT • CONFIDENCE</span><span>NEW ARRIVALS</span><span>FREE DELIVERY</span><span>COD AVAILABLE</span><span>IBM COLLECTION</span><span>PREMIUM STREETWEAR</span><span>STYLE • COMFORT • CONFIDENCE</span><span>NEW ARRIVALS</span></div></div>
   <div class="luxury-topbar">
     <div class="luxury-top-left">
       <span>✦ FREE DELIVERY</span><span>✦ COD AVAILABLE</span><span>✦ NO RETURN</span>
@@ -1940,6 +1994,38 @@ body{background:#050505!important;color:var(--cream)!important;overflow-x:hidden
     if(typeof window.renderProducts==='function'&&!window.__v9patched){const old=window.renderProducts;window.renderProducts=function(){const r=old.apply(this,arguments);setTimeout(()=>{reveal();tilt();if(!$('.v9-showcase'))buildShowcase()},60);return r};window.__v9patched=true}}
   function init(){marquee();patchRender();setTimeout(()=>{if(!$('.v9-showcase'))buildShowcase();reveal();tilt();cursor()},800);goldProgress();headerFX()}
   addEventListener('scroll',goldProgress,{passive:true});addEventListener('scroll',headerFX,{passive:true});document.addEventListener('DOMContentLoaded',init);setTimeout(init,1200);
+})();
+</script>
+<script id="ibm-v10-js">
+(function(){
+  const progress=document.getElementById('ibmScrollProgress');
+  const particles=document.getElementById('ibmGoldParticles');
+  if(particles){for(let i=0;i<22;i++){const p=document.createElement('i');p.className='v10-particle';p.style.left=(Math.random()*100)+'%';p.style.animationDuration=(8+Math.random()*12)+'s';p.style.animationDelay=(-Math.random()*15)+'s';p.style.transform='scale('+(0.5+Math.random()*1.5)+')';particles.appendChild(p)}}
+  function onScroll(){
+    if(progress){const h=document.documentElement.scrollHeight-innerHeight;progress.style.width=(h>0?(scrollY/h*100):0)+'%';}
+    document.querySelectorAll('.section,.product,.categories>*').forEach(el=>{if(!el.classList.contains('v10-reveal'))el.classList.add('v10-reveal')});
+    const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('v10-visible');io.unobserve(e.target)}}),{threshold:.08});
+    document.querySelectorAll('.v10-reveal:not(.v10-visible)').forEach(e=>io.observe(e));
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  setTimeout(onScroll,150);
+
+  // Make checkout close button always work and browser/mobile back close the modal.
+  let checkoutPushed=false;
+  const originalOpenCheckout=window.openCheckout;
+  window.openCheckout=function(){
+    const r=originalOpenCheckout&&originalOpenCheckout.apply(this,arguments);
+    setTimeout(()=>{if(document.getElementById('checkoutModal')?.classList.contains('show')&&!checkoutPushed){history.pushState({ibmCheckoutV10:true},'',location.href);checkoutPushed=true;}},30);
+    return r;
+  };
+  window.closeCheckout=function(fromPop){
+    const m=document.getElementById('checkoutModal');if(m)m.classList.remove('show');
+    if(checkoutPushed){checkoutPushed=false;if(!fromPop)history.back();}
+  };
+  window.addEventListener('popstate',function(){
+    if(checkoutPushed){checkoutPushed=false;const m=document.getElementById('checkoutModal');if(m)m.classList.remove('show');}
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){const m=document.getElementById('checkoutModal');if(m?.classList.contains('show'))window.closeCheckout(false);}});
 })();
 </script>
 </body>
