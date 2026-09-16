@@ -893,6 +893,74 @@ html{scroll-behavior:smooth}body{background:var(--v14-bg)!important;color:var(--
   #productDetailModal .detail-actions button{min-height:44px!important;padding:8px!important}
 }
 </style>
+
+<style id="ibm-v14-final-fix">
+:root{--lux-gold:#d6af45;--lux-gold2:#f5d76e;--lux-black:#050505;--lux-panel:#0b0b0b;--lux-text:#f6f2e8}
+html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!important;color:var(--lux-text)!important}
+/* Keep ONE elegant moving line */
+#v14-marquee{height:38px!important;overflow:hidden!important;background:#070707!important;border-top:1px solid rgba(214,175,69,.25)!important;border-bottom:1px solid rgba(214,175,69,.25)!important;position:relative!important;z-index:1100!important}
+#v14-marquee .track{display:flex!important;width:max-content!important;animation:v14ticker 24s linear infinite!important;will-change:transform!important}
+#v14-marquee .item{display:flex!important;align-items:center!important;gap:18px!important;padding:0 26px!important;font-size:10px!important;letter-spacing:3px!important;text-transform:uppercase!important;color:#ddd6c8!important;font-weight:700!important}
+#v14-marquee b{color:var(--lux-gold2)!important}.v14-marquee-dot{width:4px;height:4px;border-radius:50%;background:var(--lux-gold2);box-shadow:0 0 10px rgba(245,215,110,.8);display:inline-block}
+@keyframes v14ticker{to{transform:translateX(-50%)}}
+/* Compact product grid — especially mobile */
+.products{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important}
+.product{min-width:0!important;border:1px solid rgba(214,175,69,.24)!important;border-radius:12px!important;background:linear-gradient(145deg,#101010,#070707)!important;overflow:hidden!important;cursor:pointer!important;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important}
+.product:hover{transform:translateY(-4px)!important;border-color:rgba(245,215,110,.7)!important;box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 18px rgba(214,175,69,.10)!important}
+.product .pimg{height:260px!important;background:#090909!important}
+.product .pimg-slide img{object-fit:contain!important;padding:6px!important}
+.pinfo{padding:11px!important}.pinfo h4{font-size:14px!important;color:#f7f3ea!important;line-height:1.25!important;margin-bottom:5px!important}.price{color:var(--lux-gold2)!important;font-size:16px!important}.old{color:#777!important}.tag{background:#151515!important;color:var(--lux-gold2)!important;border:1px solid rgba(214,175,69,.35)!important}
+/* Never show size controls on product cards */
+.product .size-row,.product .size-select{display:none!important}
+.product .btn,.product .add-btn{margin-top:6px!important;padding:8px!important;font-size:12px!important}
+/* Product detail: compact and luxury */
+#productDetailModal{z-index:5000!important;align-items:flex-start!important;padding:12px!important;overflow:auto!important}
+#productDetailModal>.checkout-box{position:relative!important;margin:12px auto!important;background:#080808!important;border:1px solid rgba(214,175,69,.45)!important;color:#f7f3ea!important;box-shadow:0 20px 70px rgba(0,0,0,.8)!important;max-height:calc(100vh - 24px)!important;overflow:auto!important}
+#productDetailModal .close-m,#checkoutModal .close-m{position:fixed!important;right:18px!important;top:18px!important;width:58px!important;height:58px!important;min-width:58px!important;border-radius:50%!important;border:2px solid #d6af45!important;background:#f5d76e!important;color:#111!important;font-size:30px!important;font-weight:900!important;z-index:99999!important;box-shadow:0 5px 24px rgba(0,0,0,.55)!important;cursor:pointer!important;display:flex!important;align-items:center!important;justify-content:center!important}
+#productDetailModal .detail-layout{grid-template-columns:minmax(0,1fr) minmax(280px,.8fr)!important;gap:18px!important}
+#productDetailModal .detail-main{height:min(58vh,520px)!important;background:#050505!important;border:1px solid rgba(214,175,69,.25)!important}
+#productDetailModal .detail-info{color:#f7f3ea!important}
+#productDetailModal .detail-info label{color:var(--lux-gold2)!important;font-weight:800!important;margin-top:10px!important;display:block!important}
+#productDetailModal .detail-info select{background:#0c0c0c!important;color:#fff!important;border:1px solid var(--lux-gold)!important;border-radius:10px!important;padding:11px!important;width:100%!important}
+#productDetailModal .detail-price{color:var(--lux-gold2)!important}
+#productDetailModal .old{color:#888!important}
+#productDetailModal .detail-desc{color:#d4d0c7!important}
+/* Golden size / colour chips */
+.v14-choice-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 4px}
+.v14-choice{appearance:none!important;background:#0b0b0b!important;color:#eee!important;border:1px solid rgba(214,175,69,.6)!important;border-radius:999px!important;padding:8px 14px!important;font-size:13px!important;font-weight:800!important;cursor:pointer!important;transition:all .18s ease!important}
+.v14-choice:hover{border-color:#f5d76e!important;transform:translateY(-1px)!important}.v14-choice.active{background:linear-gradient(135deg,#d6af45,#f5d76e)!important;color:#111!important;border-color:#f5d76e!important;box-shadow:0 0 14px rgba(245,215,110,.22)!important}
+.v14-color-choice{padding:8px 13px!important}
+/* Checkout close button must remain clickable above everything */
+#checkoutModal{z-index:6000!important;pointer-events:auto!important}
+#checkoutModal>.checkout-box{position:relative!important;z-index:2!important;background:#080808!important;color:#f7f3ea!important;border:1px solid rgba(214,175,69,.45)!important}
+#checkoutModal .close-m{position:absolute!important;right:12px!important;top:12px!important}
+/* All checkout controls dark/gold */
+#checkoutModal input,#checkoutModal textarea,#checkoutModal select{background:#0d0d0d!important;color:#f7f3ea!important;border:1px solid rgba(214,175,69,.5)!important}
+#checkoutModal h2,#checkoutModal h3{color:var(--lux-gold2)!important}
+#checkoutModal #paymentMethods label{background:#0d0d0d!important;color:#f7f3ea!important;border-color:rgba(214,175,69,.45)!important}
+/* subtle sparkle layer, lightweight */
+#v14-sparkles{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.v14-spark{position:absolute;width:3px;height:3px;border-radius:50%;background:#f5d76e;box-shadow:0 0 8px rgba(245,215,110,.85);animation:v14spark 4s ease-in-out infinite;opacity:.45}
+@keyframes v14spark{0%,100%{opacity:.08;transform:scale(.7)}50%{opacity:.7;transform:scale(1.35)}}
+@media(max-width:1250px){.products{grid-template-columns:repeat(4,minmax(0,1fr))!important}.product .pimg{height:230px!important}}
+@media(max-width:850px){
+ .products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ .product .pimg{height:190px!important}.pinfo{padding:9px!important}.pinfo h4{font-size:13px!important}.price{font-size:15px!important}.product .btn,.product .add-btn{font-size:11px!important;padding:7px!important}
+ #productDetailModal{padding:5px!important}.productDetailModal,.checkout-box{max-width:100%!important}
+ #productDetailModal>.checkout-box{width:100%!important;max-width:100%!important;margin:0!important;border-radius:16px!important;padding:12px!important;max-height:calc(100vh - 10px)!important}
+ #productDetailModal .detail-layout{grid-template-columns:1fr!important;gap:10px!important}
+ #productDetailModal .detail-main{height:48vh!important;min-height:280px!important;max-height:430px!important}
+ #productDetailModal .detail-thumbs img{width:60px!important;height:60px!important}
+ #productDetailModal .detail-info h2{font-size:27px!important;line-height:1.1!important}
+ #productDetailModal .detail-desc{font-size:14px!important;margin:10px 0!important}
+ #productDetailModal .detail-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+ #productDetailModal .detail-actions .btn,#productDetailModal .detail-actions .add-btn{margin-top:0!important;padding:11px 8px!important}
+ #productDetailModal .close-m{position:fixed!important;right:12px!important;top:12px!important;width:52px!important;height:52px!important;min-width:52px!important;font-size:28px!important}
+ #v14-marquee{height:34px!important}.header{z-index:3000!important}
+}
+@media(max-width:430px){.product .pimg{height:165px!important}.pinfo h4{font-size:12px!important}.product .btn,.product .add-btn{font-size:10px!important}.v14-choice{padding:7px 12px!important;font-size:12px!important}}
+</style>
+
 </head>
 <body>
 
@@ -1324,14 +1392,24 @@ function discountPct(p){
 }
 function renderProducts(){
   const g=document.getElementById('productGrid');
+  if(!g)return;
   let list=currentCat==='all'?products:products.filter(p=>p.cat===currentCat);
   const q=(window.searchQuery||'').trim().toLowerCase();
   if(q)list=list.filter(p=>String(p.name||'').toLowerCase().includes(q)||String(p.cat||'').toLowerCase().includes(q)||String(catName(p.cat)||'').toLowerCase().includes(q));
   document.getElementById('current-category').textContent=q?`Search results for "${q}"`:(currentCat==='all'?'Sabhi products':catName(currentCat));
-  if(!list.length){g.innerHTML='<p style="text-align:center;color:#888;grid-column:1/-1;padding:30px;">Koi product nahi mila.</p>';return;}
+  if(!list.length){g.innerHTML='<p style="text-align:center;color:#aaa;grid-column:1/-1;padding:30px;">Koi product nahi mila.</p>';return;}
   g.innerHTML=list.map(p=>{
-    const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL']; const idx=products.indexOf(p); const sel=selectedSizes[idx]||sizes[0]; const off=discountPct(p);
-    return `<div class="product" onclick="openProductDetail(${idx})"><div class="pimg">${pImgHtml(p,idx)}</div><div class="pinfo"><h4>${p.name}</h4><span class="price">₹${p.price}</span>${p.oldPrice?`<span class="old">₹${p.oldPrice}</span>`:''}${off?`<span style="color:#198754;font-weight:800;font-size:12px;margin-left:6px;">${off}% OFF</span>`:''}<br><span class="tag">${catName(p.cat)}</span><div class="size-row"><label>Size:</label><select class="size-select" onclick="event.stopPropagation()" onchange="selectedSizes[${idx}]=this.value">${sizes.map(s=>`<option ${s===sel?'selected':''}>${s}</option>`).join('')}</select></div><button class="btn" style="width:100%;margin-top:8px;padding:9px;" onclick="event.stopPropagation();buyNow(${idx})">🛒 Buy Now</button><button class="add-btn" onclick="event.stopPropagation();addToCart(${idx})">Add to Cart</button></div></div>`;
+    const idx=products.indexOf(p), off=discountPct(p);
+    return `<div class="product" onclick="openProductDetail(${idx})">
+      <div class="pimg">${pImgHtml(p,idx)}</div>
+      <div class="pinfo">
+        <h4>${p.name}</h4>
+        <div><span class="price">₹${p.price}</span>${p.oldPrice?` <span class="old">₹${p.oldPrice}</span>`:''}${off?` <span style="color:#f5d76e;font-weight:800;font-size:11px;margin-left:5px;">${off}% OFF</span>`:''}</div>
+        <span class="tag">${catName(p.cat)}</span>
+        <button class="btn" style="width:100%;margin-top:7px;" onclick="event.stopPropagation();openProductDetail(${idx})">🛒 Buy Now</button>
+        <button class="add-btn" onclick="event.stopPropagation();openProductDetail(${idx})">Add to Cart</button>
+      </div>
+    </div>`;
   }).join('');
   list.forEach(p=>{const idx=products.indexOf(p);const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);startAutoSlider(idx,imgs.length);});
 }
@@ -1403,8 +1481,26 @@ function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes
 function reviewKey(i){return 'ibm_reviews_'+i;} function getReviews(i){try{return JSON.parse(localStorage.getItem(reviewKey(i))||'[]')}catch(e){return []}}
 function renderReviews(i){const rs=getReviews(i);if(!rs.length)return '<p style="color:#888;font-size:13px;">No reviews yet. Be the first to review.</p>';return rs.slice().reverse().map(r=>`<div style="border-top:1px solid #eee;padding:10px 0;"><b>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</b> <strong>${r.name}</strong><div style="font-size:13px;color:#555;margin-top:4px;">${r.text}</div></div>`).join('');}
 function submitReview(i){const name=document.getElementById('reviewName').value.trim()||'Customer';const text=document.getElementById('reviewText').value.trim();const rating=Number(document.getElementById('reviewRating').value||5);if(!text){alert('Review likho');return;}const rs=getReviews(i);rs.push({name,text,rating,date:Date.now()});localStorage.setItem(reviewKey(i),JSON.stringify(rs));openProductDetail(i);}
-function openProductDetail(i){const p=products[i];if(!p)return;const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const off=discountPct(p);const gallery=imgs.length?`<div class=\"detail-gallery\"><div class=\"detail-main\" id=\"detailMain\">${imgs.map((src,n)=>`<img src=\"${src}\" class=\"detail-photo ${n===0?'active':''}\">`).join('')}<div class=\"detail-dots\">${imgs.map((_,n)=>`<span class=\"pimg-dot ${n===0?'active':''}\" onclick=\"detailGo(${n})\"></span>`).join('')}</div></div><div class=\"detail-thumbs\">${imgs.map((src,n)=>`<img src=\"${src}\" onclick=\"detailGo(${n})\">`).join('')}</div></div>`:`<div class=\"detail-gallery\"><div class=\"detail-main\" style=\"display:flex;align-items:center;justify-content:center;\"><img src=\"${categoryImage(p.cat)}\" style=\"width:180px;height:180px;object-fit:contain;\"></div></div>`;document.getElementById('productDetail').innerHTML=`<div class=\"detail-layout\">${gallery}<div class=\"detail-info\"><span class=\"tag\">${catName(p.cat)}</span><h2 style=\"margin:10px 0;\">${p.name}</h2><div><span class=\"detail-price\">₹${p.price}</span>${p.oldPrice?` <span class=\"old\">₹${p.oldPrice}</span>`:''}${off?` <span style=\"color:#198754;font-weight:800;\">${off}% OFF</span>`:''}</div><p class=\"detail-desc\">${p.description||p.desc||'Premium quality product from IBM COLLECTION.'}</p><label>Size</label><select id=\"detailSize\">${sizes.map(x=>`<option ${x===(selectedSizes[i]||sizes[0])?'selected':''}>${x}</option>`).join('')}</select><label style=\"display:block;margin-top:12px;\">Colour</label><select id=\"detailColor\">${colors.map(x=>`<option ${x===(selectedColors[i]||colors[0])?'selected':''}>${x}</option>`).join('')}</select><div class=\"detail-actions\"><button class=\"btn\" onclick=\"selectedSizes[${i}]=document.getElementById('detailSize').value;selectedColors[${i}]=document.getElementById('detailColor').value;buyNow(${i})\">🛒 Buy Now</button><button class=\"add-btn\" onclick=\"selectedSizes[${i}]=document.getElementById('detailSize').value;selectedColors[${i}]=document.getElementById('detailColor').value;addToCart(${i});closeProductDetail()\">Add to Cart</button></div></div></div><div style=\"margin-top:25px;border-top:1px solid #eee;padding-top:18px;\"><h3>Customer Reviews</h3><div style=\"margin-top:8px;\">${renderReviews(i)}</div><div style=\"margin-top:15px;background:#f8f9fa;padding:14px;border-radius:10px;\"><div class=\"row2\"><input id=\"reviewName\" placeholder=\"Your name\"><select id=\"reviewRating\"><option value=5>★★★★★</option><option value=4>★★★★☆</option><option value=3>★★★☆☆</option><option value=2>★★☆☆☆</option><option value=1>★☆☆☆☆</option></select></div><textarea id=\"reviewText\" rows=\"3\" placeholder=\"Write your review...\"></textarea><button class=\"save-btn\" onclick=\"submitReview(${i})\">Post Review</button></div></div>`;document.getElementById('productDetailModal').classList.add('show');}
-function closeProductDetail(){document.getElementById('productDetailModal').classList.remove('show');}
+function openProductDetail(i){
+  const p=products[i]; if(!p)return;
+  const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);
+  const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];
+  const colors=p.colors&&p.colors.length?p.colors:['Black'];
+  const off=discountPct(p);
+  const gallery=imgs.length?`<div class="detail-gallery"><div class="detail-main" id="detailMain">${imgs.map((src,n)=>`<img src="${src}" class="detail-photo ${n===0?'active':''}">`).join('')}<div class="detail-dots">${imgs.map((_,n)=>`<span class="pimg-dot ${n===0?'active':''}" onclick="detailGo(${n})"></span>`).join('')}</div></div><div class="detail-thumbs">${imgs.map((src,n)=>`<img src="${src}" onclick="detailGo(${n})">`).join('')}</div></div>`:`<div class="detail-gallery"><div class="detail-main" style="display:flex;align-items:center;justify-content:center;"><img src="${categoryImage(p.cat)}" style="width:180px;height:180px;object-fit:contain;"></div></div>`;
+  const selS=selectedSizes[i]||sizes[0], selC=selectedColors[i]||colors[0];
+  document.getElementById('productDetail').innerHTML=`<div class="detail-layout">${gallery}<div class="detail-info"><span class="tag">${catName(p.cat)}</span><h2 style="margin:10px 0;color:#f5d76e;">${p.name}</h2><div><span class="detail-price">₹${p.price}</span>${p.oldPrice?` <span class="old">₹${p.oldPrice}</span>`:''}${off?` <span style="color:#f5d76e;font-weight:800;">${off}% OFF</span>`:''}</div><p class="detail-desc">${p.description||p.desc||'Premium quality product from IBM COLLECTION.'}</p><label>Size</label><div class="v14-choice-wrap" id="detailSizeChoices">${sizes.map(s=>`<button type="button" class="v14-choice ${s===selS?'active':''}" onclick="setDetailSize(${i},'${String(s).replace(/'/g,"\\'")}')">${s}</button>`).join('')}</div><label style="display:block;margin-top:12px;">Colour</label><div class="v14-choice-wrap" id="detailColorChoices">${colors.map(c=>`<button type="button" class="v14-choice v14-color-choice ${c===selC?'active':''}" onclick="setDetailColor(${i},'${String(c).replace(/'/g,"\\'")}')">${c}</button>`).join('')}</div><div class="detail-actions"><button class="btn" onclick="buyNow(${i})">🛒 Buy Now</button><button class="add-btn" onclick="addToCart(${i});closeProductDetail()">Add to Cart</button></div></div></div><div style="margin-top:20px;border-top:1px solid rgba(214,175,69,.25);padding-top:15px;"><h3 style="color:#f5d76e;">Customer Reviews</h3><div style="margin-top:8px;">${renderReviews(i)}</div><div style="margin-top:12px;"><input id="reviewName" placeholder="Your name"><textarea id="reviewText" placeholder="Write a review"></textarea><select id="reviewRating"><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select><button class="btn" onclick="submitReview(${i})">Submit Review</button></div></div>`;
+  document.getElementById('productDetailModal').classList.add('show');
+  openProductDetailHistory();
+  window.detailIndex=0;
+}
+function setDetailSize(i,v){selectedSizes[i]=v;document.querySelectorAll('#detailSizeChoices .v14-choice').forEach(b=>b.classList.toggle('active',b.textContent.trim()===v));}
+function setDetailColor(i,v){selectedColors[i]=v;document.querySelectorAll('#detailColorChoices .v14-choice').forEach(b=>b.classList.toggle('active',b.textContent.trim()===v));}
+
+let productDetailHistoryActive=false;
+function openProductDetailHistory(){if(!productDetailHistoryActive){history.pushState({ibmProductDetail:true},'',location.href);productDetailHistoryActive=true;}}
+function closeProductDetail(fromPop=false){document.getElementById('productDetailModal').classList.remove('show');if(productDetailHistoryActive){productDetailHistoryActive=false;if(!fromPop)history.back();}}
+
 function detailGo(n){const photos=[...document.querySelectorAll('.detail-photo')];if(!photos.length)return;window.detailIndex=(n+photos.length)%photos.length;photos.forEach((im,i)=>im.classList.toggle('active',i===window.detailIndex));document.querySelectorAll('.detail-dots .pimg-dot').forEach((d,i)=>d.classList.toggle('active',i===window.detailIndex));}
 
 // ===== CART =====
@@ -1470,10 +1566,8 @@ function closeCheckout(fromPop=false){
   }
 }
 window.addEventListener('popstate',function(){
-  if(checkoutHistoryActive){
-    checkoutHistoryActive=false;
-    document.getElementById('checkoutModal').classList.remove('show');
-  }
+  if(checkoutHistoryActive){checkoutHistoryActive=false;document.getElementById('checkoutModal').classList.remove('show');return;}
+  if(productDetailHistoryActive){productDetailHistoryActive=false;document.getElementById('productDetailModal').classList.remove('show');}
 });
 async function placeOrder(){
   const name=document.getElementById('cName').value.trim();
@@ -1699,7 +1793,7 @@ async function readHeroImg(input){const file=input.files&&input.files[0];if(!fil
 function renderHeroPreviews(){const prev=document.getElementById('heroPrev');if(!prev)return;prev.innerHTML=heroImages.map((src,i)=>`<div class=\"upload-thumb\"><img src=\"${src}\"><button type=\"button\" onclick=\"removeHeroImage(${i})\">×</button></div>`).join('');}
 function removeHeroImage(i){heroImages.splice(i,1);renderHeroPreviews();}
 
-async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,marqueeText:document.getElementById('sMarquee').value.trim(),color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value,mapUrl:document.getElementById('sMap').value.trim(),heroImages:heroImages.length?heroImages:(Array.isArray(settings.heroImages)?settings.heroImages:DEFAULT_HERO_IMAGES)};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();renderHeader();renderSocial();loadAdminData();flash();}
+async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,marqueeText:document.getElementById('sMarquee').value.trim(),color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value,mapUrl:document.getElementById('sMap').value.trim(),heroImages:heroImages.length?heroImages:(Array.isArray(settings.heroImages)?settings.heroImages:DEFAULT_HERO_IMAGES)};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();renderHeader();renderSocial();if(window.refreshV14Marquee)refreshV14Marquee();loadAdminData();flash();}
 async function saveSocial(){const d={instagram:document.getElementById('soInsta').value.trim(),facebook:document.getElementById('soFb').value.trim(),whatsapp:document.getElementById('soWa').value.trim(),youtube:document.getElementById('soYt').value.trim(),twitter:document.getElementById('soTw').value.trim(),telegram:document.getElementById('soTelegram').value.trim(),linkedin:document.getElementById('soLinkedin').value.trim()};await api('/api/admin/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});social={...social,...d};renderSocial();loadAdminData();flash();alert('✅ Social links saved');}
 async function savePayment(){const upiId=document.getElementById('upId').value.trim();const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim()};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});pay={...pay,...d};loadAdminData();flash();alert('✅ Payment/COD settings saved');}
 function readQrFile(i){const f=i.files[0];const r=new FileReader();r.onload=async e=>{pay.qrCode=e.target.result;const pv=document.getElementById('qrPrevImg');pv.src=pay.qrCode;pv.style.display='inline-block';document.getElementById('upQrUrl').value='';await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upiId:pay.upiId,upiName:pay.upiName,qrCode:pay.qrCode})});};r.readAsDataURL(f);}
@@ -1785,5 +1879,26 @@ loadStore();
   document.addEventListener('click',function(e){const b=e.target.closest('.modal .close-m');if(!b)return;e.preventDefault();e.stopPropagation();const m=b.closest('.modal');if(!m)return;if(m.id==='checkoutModal'&&typeof window.closeCheckout==='function')window.closeCheckout();else if(m.id==='productDetailModal'&&typeof window.closeProductDetail==='function')window.closeProductDetail();else if(m.id==='tryonModal'&&typeof window.closeTry==='function')window.closeTry();else m.classList.remove('show');},true);
 })();
 </script>
+
+<script id="ibm-v14-final-runtime">
+(function(){
+  const esc=s=>String(s||'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  window.refreshV14Marquee=function(){
+    const m=document.getElementById('v14-marquee'); if(!m)return;
+    const raw=(window.settings&&settings.marqueeText)||'IBM COLLECTION • PREMIUM QUALITY • NEW ARRIVALS • FREE DELIVERY • COD AVAILABLE';
+    const items=String(raw).split('•').map(x=>x.trim()).filter(Boolean);
+    const one=items.map(x=>`<span class="item"><b>${esc(x)}</b><i class="v14-marquee-dot"></i></span>`).join('');
+    m.innerHTML=`<div class="track">${one}${one}</div>`;
+  };
+  window.addV14Sparkles=function(){
+    if(document.getElementById('v14-sparkles'))return;
+    const layer=document.createElement('div');layer.id='v14-sparkles';
+    for(let i=0;i<18;i++){const s=document.createElement('span');s.className='v14-spark';s.style.left=(Math.random()*100)+'%';s.style.top=(8+Math.random()*86)+'%';s.style.animationDelay=(-Math.random()*4)+'s';layer.appendChild(s)}
+    document.body.appendChild(layer);
+  };
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{refreshV14Marquee();addV14Sparkles()},700)});
+})();
+</script>
+
 </body>
 </html>
