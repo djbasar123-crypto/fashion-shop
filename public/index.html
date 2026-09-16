@@ -873,30 +873,48 @@ html{scroll-behavior:smooth}body{background:var(--v14-bg)!important;color:var(--
 @media(max-width:430px){.product .pimg{height:185px!important}.product .pinfo h4{font-size:11px!important}.product .price{font-size:14px!important}}
 @media(prefers-reduced-motion:reduce){#v14-marquee .track{animation:none}.hero-content{animation:none}.v14-reveal{transition:none}#v14-showcase{height:auto}#v14-showcase .sticky{position:relative;height:auto}.shot{transition:none!important}}
 </style>
-<style id="ibm-v15-product-choice">
-/* Compact mobile-first product detail choices */
-.choice-box{margin-top:12px;border:1px solid rgba(214,175,69,.55);border-radius:14px;padding:10px 12px;background:linear-gradient(180deg,#11100d,#090909);box-shadow:0 8px 22px rgba(0,0,0,.18)}
-.choice-head{display:flex;justify-content:space-between;align-items:center;color:#f6f1e7;font-weight:800;font-size:14px;margin-bottom:8px}.choice-head b{color:#f5d76e;font-size:13px}
-.choice-options{display:flex;gap:7px;flex-wrap:wrap}.choice-pill{border:1px solid #7d6320!important;background:#0a0a0a!important;color:#f5f1e8!important;border-radius:999px!important;padding:7px 12px!important;font-weight:800!important;font-size:12px!important;min-width:44px;cursor:pointer;transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease}.choice-pill:hover{transform:translateY(-1px)}.choice-pill.active{background:linear-gradient(135deg,#d4af37,#f6dc78)!important;color:#080808!important;border-color:#f6dc78!important;box-shadow:0 0 14px rgba(214,175,69,.25)}
-.color-pill{display:flex;align-items:center;gap:6px}.color-dot{width:13px;height:13px;border-radius:50%;border:1px solid #bda45a;display:inline-block;flex:none}.color-pill.active .color-dot{border-color:#111}
-/* reliable close */
-#productDetailModal .close-m,#checkoutModal .close-m,#tryonModal .close-m{position:fixed!important;top:14px!important;right:14px!important;z-index:2147483647!important;pointer-events:auto!important;width:44px!important;height:44px!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important}
-/* compact product detail */
-#productDetailModal .modal-content{width:min(980px,94vw)!important;max-height:92vh!important;overflow:auto!important}
-#productDetail .detail-layout{gap:16px!important}.detail-main{min-height:0!important}.detail-gallery{min-width:0!important}.detail-info{min-width:0!important}
-@media(max-width:850px){
- #productDetailModal .modal-content{width:calc(100vw - 18px)!important;max-height:90vh!important;border-radius:18px!important;margin:5vh auto 2vh!important;padding:10px!important}
- #productDetail .detail-layout{display:flex!important;flex-direction:column!important;gap:10px!important}
- #productDetail .detail-gallery{width:100%!important}.detail-main{height:46vh!important;max-height:430px!important;border-radius:14px!important}.detail-photo{max-height:100%!important}
- #productDetail .detail-thumbs{display:flex!important;gap:6px!important;overflow-x:auto!important;padding:4px 0!important}.detail-thumbs img{width:64px!important;height:72px!important;flex:0 0 64px!important}
- #productDetail .detail-info{padding:4px 2px!important}.detail-info h2{font-size:28px!important;line-height:1.05!important;margin:8px 0!important}.detail-price{font-size:25px!important}.detail-desc{font-size:13px!important;line-height:1.45!important;margin:8px 0!important}.choice-box{padding:9px 10px!important;margin-top:9px!important}.choice-head{font-size:13px!important}.choice-pill{padding:6px 11px!important;font-size:11px!important}
- #productDetail .detail-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:10px!important}.detail-actions button{min-height:42px!important;font-size:12px!important;padding:9px!important}
- #productDetailModal .close-m{top:9px!important;right:9px!important;width:42px!important;height:42px!important}
+
+<style id="ibm-v14-final-clean">
+:root{--gold:#e7c45a;--gold2:#f7dc83;--ink:#050505;--panel:#0b0b0b}
+html{scroll-behavior:smooth;overflow-x:hidden}body{overflow-x:hidden;background:#050505;color:#f5f1e7}
+/* ONE clean marquee */
+#v14-marquee{height:40px!important;overflow:hidden!important;background:#050505!important;border-top:1px solid rgba(231,196,90,.35)!important;border-bottom:1px solid rgba(231,196,90,.35)!important;position:relative!important;z-index:20!important}
+#v14-marquee .track{height:100%;display:flex!important;align-items:center!important;width:max-content!important;animation:v14Marquee 28s linear infinite!important;will-change:transform}
+#v14-marquee .item{display:inline-flex!important;align-items:center!important;gap:22px!important;padding:0 28px!important;white-space:nowrap!important;color:#f2d77b!important;font-size:11px!important;letter-spacing:3px!important;font-weight:800!important}
+#v14-marquee .item i{display:block!important;width:4px!important;height:4px!important;border-radius:50%!important;background:var(--gold)!important}
+@keyframes v14Marquee{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
+@media(prefers-reduced-motion:reduce){#v14-marquee .track{animation:none!important}}
+/* Product cards: compact, click card to open detail */
+.product{cursor:pointer!important;min-width:0!important;overflow:hidden!important;border-radius:12px!important}
+.product .size-row{display:none!important}.product .pimg{height:auto!important;aspect-ratio:1/1!important;overflow:hidden!important}.product .pimg-slider,.product .pimg-slide{height:100%!important}.product .pimg-slide img{width:100%!important;height:100%!important;object-fit:contain!important;display:block!important}
+.product .pinfo{padding:9px!important}.product .pinfo h4{font-size:14px!important;line-height:1.25!important;margin:0 0 6px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}.product .price{font-size:17px!important}.product .btn{padding:8px 9px!important;font-size:12px!important}
+/* Detail modal: mobile-first, compact */
+#productDetailModal{z-index:99999!important;align-items:flex-start!important;padding:8px!important;overflow-y:auto!important}
+#productDetailModal>.checkout-box{position:relative!important;width:min(980px,100%)!important;max-width:980px!important;max-height:calc(100svh - 16px)!important;overflow-y:auto!important;overflow-x:hidden!important;margin:0 auto!important;padding:12px!important;border-radius:18px!important;background:#090909!important;border:1px solid rgba(231,196,90,.6)!important;box-shadow:0 20px 80px rgba(0,0,0,.8)!important}
+#productDetailModal .close-m{position:fixed!important;right:14px!important;top:12px!important;z-index:100001!important;width:58px!important;height:58px!important;min-width:58px!important;border-radius:50%!important;background:linear-gradient(145deg,#ffe58a,#d6ad3e)!important;color:#111!important;border:2px solid #f8df87!important;font-size:30px!important;font-weight:900!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;pointer-events:auto!important;box-shadow:0 8px 30px rgba(0,0,0,.55)!important}
+#productDetailModal .close-m:hover{transform:scale(1.04)}
+#productDetail{min-width:0!important}#productDetail .detail-layout{gap:18px!important}#productDetail .detail-main{overflow:hidden!important;border-radius:14px!important;background:#050505!important}#productDetail .detail-photo{object-fit:contain!important;max-height:560px!important;width:100%!important}#productDetail .detail-thumbs{display:flex!important;gap:6px!important;overflow-x:auto!important;padding:6px 0!important}#productDetail .detail-thumbs img{width:68px!important;height:68px!important;object-fit:cover!important;flex:0 0 68px!important;border-radius:9px!important}
+#productDetail .size-options,#productDetail .colour-options{display:flex!important;flex-wrap:wrap!important;gap:7px!important}
+#productDetail .size-options button,#productDetail .colour-options button{min-width:42px!important;min-height:38px!important;padding:7px 11px!important;border-radius:10px!important;background:#0d0d0d!important;color:#f6f1e6!important;border:1px solid rgba(231,196,90,.55)!important;font-weight:800!important;cursor:pointer!important}
+#productDetail .size-options button.active,#productDetail .colour-options button.active{background:linear-gradient(145deg,#ffe48a,#d4a936)!important;color:#111!important;border-color:#ffe48a!important}
+#productDetail .detail-actions{display:flex!important;gap:8px!important;margin-top:14px!important}.detail-actions .btn,.detail-actions .add-btn{flex:1!important;min-height:44px!important}
+#productDetail input,#productDetail textarea,#productDetail select{background:#0d0d0d!important;color:#fff!important;border:1px solid rgba(231,196,90,.5)!important}
+/* compact grids */
+.products{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}@media(min-width:1250px){.products{grid-template-columns:repeat(5,minmax(0,1fr))!important}}
+/* no mouse follower */.ibm-cursor,.custom-cursor,#cursor,#mouseGlow,.mouse-glow{display:none!important}
+/* editable moving-text editor */
+#v14MarqueeEditor{margin-top:12px;padding:12px;border:1px solid rgba(231,196,90,.35);border-radius:12px;background:#0a0a0a}#v14MarqueeEditor label{display:block;color:#f2d77b;font-weight:800;margin-bottom:6px}#v14MarqueeText{width:100%;box-sizing:border-box;background:#080808;color:#fff;border:1px solid rgba(231,196,90,.6);border-radius:9px;padding:10px}
+@media(max-width:700px){
+ #productDetailModal{padding:6px!important}#productDetailModal>.checkout-box{max-height:calc(100svh - 12px)!important;padding:9px!important;border-radius:16px!important}
+ #productDetailModal .close-m{position:sticky!important;float:right!important;top:0!important;right:auto!important;width:52px!important;height:52px!important;min-width:52px!important;font-size:27px!important;margin:-2px -2px 2px auto!important}
+ #productDetail .detail-layout{display:block!important}#productDetail .detail-gallery{width:100%!important}#productDetail .detail-main{max-height:62svh!important}
+ #productDetail .detail-photo{max-height:58svh!important;min-height:280px!important}#productDetail .detail-thumbs img{width:62px!important;height:62px!important;flex-basis:62px!important}
+ #productDetail h2{font-size:29px!important;line-height:1.05!important;margin:8px 0!important}.product .pinfo h4{font-size:12px!important}.product .price{font-size:15px!important}.product .old{font-size:10px!important}.product .tag{font-size:9px!important}.product .btn{font-size:10px!important;padding:7px 5px!important}
+ .products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ #v14-showcase .v14-copy{padding:18px!important}#v14-showcase .v14-copy h2{font-size:38px!important;line-height:.95!important}#v14-showcase .v14-copy .sub{font-size:13px!important}
 }
-@media(max-width:430px){#productDetailModal .modal-content{width:calc(100vw - 10px)!important;max-height:88vh!important;margin:4vh auto 1vh!important}.detail-main{height:39vh!important;max-height:340px!important}.detail-thumbs img{width:58px!important;height:64px!important;flex-basis:58px!important}.detail-info h2{font-size:25px!important}.detail-price{font-size:23px!important}.choice-options{gap:5px!important}.choice-pill{padding:6px 9px!important;min-width:40px!important}}
-/* smooth but light */
-html{scroll-behavior:smooth!important}.product,.category-card,.btn,.add-btn,.choice-pill{will-change:transform}.product{transition:transform .22s ease,box-shadow .22s ease}.product:hover{transform:translateY(-3px)}
 </style>
+
 </head>
 <body>
 
@@ -1121,7 +1139,7 @@ html{scroll-behavior:smooth!important}.product,.category-card,.btn,.add-btn,.cho
         <label>Site Name</label><input type="text" id="sName">
         <label>Logo</label><input type="text" id="sLogo">
         <label>Hero Heading</label><input type="text" id="sHero">
-        <label>Tagline</label><input type="text" id="sTag"><label>Moving Text (Marquee)</label><input type="text" id="sMarquee" placeholder="FREE DELIVERY • COD AVAILABLE • PREMIUM QUALITY">
+        <label>Tagline</label><input type="text" id="sTag">
         <label>Hero/Header Photos — Add 1 at a time (up to 5)</label>
         <input type="file" id="heroFiles" accept="image/*" onchange="readHeroImg(this)">
         <div id="heroPrev"></div>
@@ -1406,42 +1424,12 @@ function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes
 function reviewKey(i){return 'ibm_reviews_'+i;} function getReviews(i){try{return JSON.parse(localStorage.getItem(reviewKey(i))||'[]')}catch(e){return []}}
 function renderReviews(i){const rs=getReviews(i);if(!rs.length)return '<p style="color:#888;font-size:13px;">No reviews yet. Be the first to review.</p>';return rs.slice().reverse().map(r=>`<div style="border-top:1px solid #eee;padding:10px 0;"><b>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</b> <strong>${r.name}</strong><div style="font-size:13px;color:#555;margin-top:4px;">${r.text}</div></div>`).join('');}
 function submitReview(i){const name=document.getElementById('reviewName').value.trim()||'Customer';const text=document.getElementById('reviewText').value.trim();const rating=Number(document.getElementById('reviewRating').value||5);if(!text){alert('Review likho');return;}const rs=getReviews(i);rs.push({name,text,rating,date:Date.now()});localStorage.setItem(reviewKey(i),JSON.stringify(rs));openProductDetail(i);}
-function openProductDetail(i){const p=products[i];if(!p)return;const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const off=discountPct(p);const gallery=imgs.length?`<div class=\"detail-gallery\"><div class=\"detail-main\" id=\"detailMain\">${imgs.map((src,n)=>`<img src=\"${src}\" class=\"detail-photo ${n===0?'active':''}\">`).join('')}<div class=\"detail-dots\">${imgs.map((_,n)=>`<span class=\"pimg-dot ${n===0?'active':''}\" onclick=\"detailGo(${n})\"></span>`).join('')}</div></div><div class=\"detail-thumbs\">${imgs.map((src,n)=>`<img src=\"${src}\" onclick=\"detailGo(${n})\">`).join('')}</div></div>`:`<div class=\"detail-gallery\"><div class=\"detail-main\" style=\"display:flex;align-items:center;justify-content:center;\"><img src=\"${categoryImage(p.cat)}\" style=\"width:180px;height:180px;object-fit:contain;\"></div></div>`;document.getElementById('productDetail').innerHTML=`<div class=\"detail-layout\">${gallery}<div class=\"detail-info\"><span class=\"tag\">${catName(p.cat)}</span><h2 style=\"margin:10px 0;\">${p.name}</h2><div><span class=\"detail-price\">₹${p.price}</span>${p.oldPrice?` <span class=\"old\">₹${p.oldPrice}</span>`:''}${off?` <span style=\"color:#198754;font-weight:800;\">${off}% OFF</span>`:''}</div><p class=\"detail-desc\">${p.description||p.desc||'Premium quality product from IBM COLLECTION.'}</p><div class=\"choice-box\"><div class=\"choice-head\"><span>📏 Size</span><b id=\"detailSizeLabel\">${selectedSizes[i]||sizes[0]}</b></div><div class=\"choice-options\">${sizes.map(x=>`<button type=\"button\" class=\"choice-pill size-pill ${(x===(selectedSizes[i]||sizes[0]))?'active':''}\" onclick=\"chooseDetailSize(${i},'${String(x).replace(/'/g,\"\\'\")}')\">${x}</button>`).join('')}</div></div><div class=\"choice-box\"><div class=\"choice-head\"><span>🎨 Colour</span><b id=\"detailColorLabel\">${selectedColors[i]||colors[0]}</b></div><div class=\"choice-options\">${colors.map(x=>`<button type=\"button\" class=\"choice-pill color-pill ${(x===(selectedColors[i]||colors[0]))?'active':''}\" onclick=\"chooseDetailColor(${i},'${String(x).replace(/'/g,\"\\'\")}')\"><span class=\"color-dot\" style=\"background:${String(x).toLowerCase().includes('white')?'#fff':String(x).toLowerCase().includes('red')?'#e33':String(x).toLowerCase().includes('blue')?'#2673d9':String(x).toLowerCase().includes('green')?'#2f9d62':'#111'}\"></span>${x}</button>`).join('')}</div></div><div class=\"detail-actions\"><button class=\"btn\" onclick=\"buyNow(${i})\">🛒 Buy Now</button><button class=\"add-btn\" onclick=\"addToCart(${i});closeProductDetail()\">Add to Cart</button></div></div></div><div style=\"margin-top:25px;border-top:1px solid #eee;padding-top:18px;\"><h3>Customer Reviews</h3><div style=\"margin-top:8px;\">${renderReviews(i)}</div><div style=\"margin-top:15px;background:#f8f9fa;padding:14px;border-radius:10px;\"><div class=\"row2\"><input id=\"reviewName\" placeholder=\"Your name\"><select id=\"reviewRating\"><option value=5>★★★★★</option><option value=4>★★★★☆</option><option value=3>★★★☆☆</option><option value=2>★★☆☆☆</option><option value=1>★☆☆☆☆</option></select></div><textarea id=\"reviewText\" rows=\"3\" placeholder=\"Write your review...\"></textarea><button class=\"save-btn\" onclick=\"submitReview(${i})\">Post Review</button></div></div>`;document.getElementById('productDetailModal').classList.add('show');}
-function chooseDetailSize(i,v){selectedSizes[i]=v;const l=document.getElementById('detailSizeLabel');if(l)l.textContent=v;document.querySelectorAll('#productDetail .size-pill').forEach(b=>b.classList.toggle('active',b.textContent.trim()===v));}
-function chooseDetailColor(i,v){selectedColors[i]=v;const l=document.getElementById('detailColorLabel');if(l)l.textContent=v;document.querySelectorAll('#productDetail .color-pill').forEach(b=>b.classList.toggle('active',b.textContent.replace(/^[^\w]+/,'').trim()===v));}
+function openProductDetail(i){const p=products[i];if(!p)return;const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const off=discountPct(p);selectedSizes[i]=selectedSizes[i]||sizes[0];selectedColors[i]=selectedColors[i]||colors[0];const gallery=imgs.length?`<div class="detail-gallery"><div class="detail-main" id="detailMain">${imgs.map((src,n)=>`<img src="${src}" class="detail-photo ${n===0?'active':''}">`).join('')}<div class="detail-dots">${imgs.map((_,n)=>`<span class="pimg-dot ${n===0?'active':''}" onclick="detailGo(${n})"></span>`).join('')}</div></div><div class="detail-thumbs">${imgs.map((src,n)=>`<img src="${src}" onclick="detailGo(${n})">`).join('')}</div></div>`:`<div class="detail-gallery"><div class="detail-main" style="display:flex;align-items:center;justify-content:center;"><img src="${categoryImage(p.cat)}" style="width:180px;height:180px;object-fit:contain;"></div></div>`;document.getElementById('productDetail').innerHTML=`<div class="detail-layout">${gallery}<div class="detail-info"><span class="tag">${catName(p.cat)}</span><h2 style="margin:10px 0;">${p.name}</h2><div><span class="detail-price">₹${p.price}</span>${p.oldPrice?` <span class="old">₹${p.oldPrice}</span>`:''}${off?` <span style="color:#e7c45a;font-weight:800;">${off}% OFF</span>`:''}</div><p class="detail-desc">${p.description||p.desc||'Premium quality product from IBM COLLECTION.'}</p><label>Size</label><div class="size-options" id="detailSizeOptions">${sizes.map(x=>`<button type="button" class="${x===selectedSizes[i]?'active':''}" onclick="setDetailSize(${i},'${String(x).replace(/'/g,"\'")}')">${x}</button>`).join('')}</div><label style="display:block;margin-top:12px;">Colour</label><div class="colour-options" id="detailColorOptions">${colors.map(x=>`<button type="button" class="${x===selectedColors[i]?'active':''}" onclick="setDetailColor(${i},'${String(x).replace(/'/g,"\'")}')">${x}</button>`).join('')}</div><div class="detail-actions"><button class="btn" onclick="buyNow(${i})">🛒 Buy Now</button><button class="add-btn" onclick="addToCart(${i});closeProductDetail()">Add to Cart</button></div></div></div><div style="margin-top:25px;border-top:1px solid #333;padding-top:18px;"><h3>Customer Reviews</h3><div style="margin-top:8px;">${renderReviews(i)}</div><div style="margin-top:15px;background:#0d0d0d;padding:14px;border-radius:10px;"><div class="row2"><input id="reviewName" placeholder="Your name"><select id="reviewRating"><option value=5>★★★★★</option><option value=4>★★★★☆</option><option value=3>★★★☆☆</option><option value=2>★★☆☆☆</option><option value=1>★☆☆☆☆</option></select></div><textarea id="reviewText" rows="3" placeholder="Write your review..."></textarea><button class="save-btn" onclick="submitReview(${i})">Post Review</button></div></div>`;document.getElementById('productDetailModal').classList.add('show');}
+function setDetailSize(i,v){selectedSizes[i]=v;document.querySelectorAll('#detailSizeOptions button').forEach(b=>b.classList.toggle('active',b.textContent.trim()===v));}
+function setDetailColor(i,v){selectedColors[i]=v;document.querySelectorAll('#detailColorOptions button').forEach(b=>b.classList.toggle('active',b.textContent.trim()===v));}
 function closeProductDetail(){document.getElementById('productDetailModal').classList.remove('show');}
 function detailGo(n){const photos=[...document.querySelectorAll('.detail-photo')];if(!photos.length)return;window.detailIndex=(n+photos.length)%photos.length;photos.forEach((im,i)=>im.classList.toggle('active',i===window.detailIndex));document.querySelectorAll('.detail-dots .pimg-dot').forEach((d,i)=>d.classList.toggle('active',i===window.detailIndex));}
 
-// ===== CART =====
-function saveCart(){updateCartCount();renderCart();}
-function updateCartCount(){document.getElementById('cartCount').textContent=cart.reduce((a,x)=>a+x.qty,0);}
-function addToCart(i){const p=products[i];const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const sz=selectedSizes[i]||sizes[0];const color=selectedColors[i]||colors[0];const ex=cart.find(x=>x.name===p.name&&x.size===sz&&x.color===color);if(ex)ex.qty++;else cart.push({name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',pimgs:Array.isArray(p.pimgs)?p.pimgs:[],size:sz,color,qty:1});saveCart();}
-function renderCart(){const box=document.getElementById('cartItems');if(!cart.length){box.innerHTML='<div class="empty">Cart khaali hai</div>';}else{box.innerHTML=cart.map((x,i)=>`
-  <div class="citem"><div class="cimg">${x.pimg?`<img src="${x.pimg}">`:(x.icon||'👕')}</div>
-    <div class="cinfo"><b>${x.name}</b><br><small>₹${x.price} — Size: ${x.size} — Colour: ${x.color||'Black'}</small><br>
-    <div class="qty"><button onclick="chg(${i},-1)">−</button> ${x.qty} <button onclick="chg(${i},1)">+</button></div></div>
-    <button class="rm" onclick="rmItem(${i})">✕</button></div>`).join('');}
-  document.getElementById('cartTotal').textContent='₹'+cart.reduce((a,x)=>a+x.price*x.qty,0);}
-function chg(i,d){cart[i].qty+=d;if(cart[i].qty<1)cart[i].qty=1;saveCart();}
-function rmItem(i){cart.splice(i,1);saveCart();}
-function openCart(){document.getElementById('cartDrawer').classList.add('open');document.getElementById('cartOverlay').classList.add('show');}
-function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('cartOverlay').classList.remove('show');}
-
-// ===== CHECKOUT =====
-function openCheckout(){
-  if(!cart.length){alert('Cart khaali hai');return;}
-  closeCart();
-  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
-  const codEnabled=!!pay.codEnabled;
-  const codCharge=Number(pay.codCharge)||40;
-  document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
-  const methods=document.getElementById('paymentMethods');
-  methods.innerHTML=(pay.upiId?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="UPI" checked onchange="selectPaymentMethod('UPI')"> 📲 UPI / Online</label>`:'')+(codEnabled?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="COD" ${pay.upiId?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
-  if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
-  selectPaymentMethod(pay.upiId?'UPI':(codEnabled?'COD':''));
-  document.getElementById('checkoutModal').classList.add('show');
-  openCheckoutHistory();
-}
 function selectPaymentMethod(method){
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codCharge=Number(pay.codCharge)||40;
@@ -1559,7 +1547,7 @@ function loadAdminData(){
   document.getElementById('sName').value=settings.siteName||'';
   document.getElementById('sLogo').value=settings.logo||'';
   document.getElementById('sHero').value=settings.hero||'';
-  document.getElementById('sTag').value=settings.tag||'';document.getElementById('sMarquee').value=settings.marqueeText||'FREE DELIVERY • COD AVAILABLE • PREMIUM QUALITY';
+  document.getElementById('sTag').value=settings.tag||'';
   document.getElementById('sColor').value=settings.color||'#ffc107';
   document.getElementById('sAddress').value=(settings.address||'').replace(/^📍\s*/,'');
   document.getElementById('sPhone').value=(settings.phone||'').replace(/^📞\s*/,'');
@@ -1703,7 +1691,7 @@ async function readHeroImg(input){const file=input.files&&input.files[0];if(!fil
 function renderHeroPreviews(){const prev=document.getElementById('heroPrev');if(!prev)return;prev.innerHTML=heroImages.map((src,i)=>`<div class=\"upload-thumb\"><img src=\"${src}\"><button type=\"button\" onclick=\"removeHeroImage(${i})\">×</button></div>`).join('');}
 function removeHeroImage(i){heroImages.splice(i,1);renderHeroPreviews();}
 
-async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,marqueeText:document.getElementById('sMarquee').value.trim(),color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value,mapUrl:document.getElementById('sMap').value.trim(),heroImages:heroImages.length?heroImages:(Array.isArray(settings.heroImages)?settings.heroImages:DEFAULT_HERO_IMAGES)};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};try{localStorage.setItem('ibm_marquee_text',d.marqueeText||'FREE DELIVERY • COD AVAILABLE • PREMIUM QUALITY')}catch(e){}applyTheme();renderHeader();renderSocial();loadAdminData();flash();}
+async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value,mapUrl:document.getElementById('sMap').value.trim(),heroImages:heroImages.length?heroImages:(Array.isArray(settings.heroImages)?settings.heroImages:DEFAULT_HERO_IMAGES)};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();renderHeader();renderSocial();loadAdminData();flash();}
 async function saveSocial(){const d={instagram:document.getElementById('soInsta').value.trim(),facebook:document.getElementById('soFb').value.trim(),whatsapp:document.getElementById('soWa').value.trim(),youtube:document.getElementById('soYt').value.trim(),twitter:document.getElementById('soTw').value.trim(),telegram:document.getElementById('soTelegram').value.trim(),linkedin:document.getElementById('soLinkedin').value.trim()};await api('/api/admin/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});social={...social,...d};renderSocial();loadAdminData();flash();alert('✅ Social links saved');}
 async function savePayment(){const upiId=document.getElementById('upId').value.trim();const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim()};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});pay={...pay,...d};loadAdminData();flash();alert('✅ Payment/COD settings saved');}
 function readQrFile(i){const f=i.files[0];const r=new FileReader();r.onload=async e=>{pay.qrCode=e.target.result;const pv=document.getElementById('qrPrevImg');pv.src=pay.qrCode;pv.style.display='inline-block';document.getElementById('upQrUrl').value='';await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upiId:pay.upiId,upiName:pay.upiName,qrCode:pay.qrCode})});};r.readAsDataURL(f);}
@@ -1721,7 +1709,7 @@ loadStore();
     if($('#v14-marquee')) return;
     const h=$('.header'); if(!h){setTimeout(addMarquee,300);return;}
     const m=document.createElement('div');m.id='v14-marquee';
-    const saved=(window.settings&&settings.marqueeText)||localStorage.getItem('ibm_marquee_text')||'FREE DELIVERY • COD AVAILABLE • PREMIUM QUALITY'; const items=saved.split(/\s*•\s*/).map(x=>x.trim()).filter(Boolean);
+    const items=['IBM COLLECTION','PREMIUM QUALITY','STYLE • COMFORT • CONFIDENCE','NEW ARRIVALS','BLACK & GOLD','FREE DELIVERY','COD AVAILABLE'];
     const one=items.map(x=>`<span class="item"><b>${x}</b><i></i></span>`).join('');
     m.innerHTML=`<div class="track">${one}${one}</div>`;h.insertAdjacentElement('afterend',m);
   }
@@ -1761,5 +1749,20 @@ loadStore();
   document.addEventListener('click',function(e){const b=e.target.closest('.modal .close-m');if(!b)return;e.preventDefault();e.stopPropagation();const m=b.closest('.modal');if(!m)return;if(m.id==='checkoutModal'&&typeof window.closeCheckout==='function')window.closeCheckout();else if(m.id==='productDetailModal'&&typeof window.closeProductDetail==='function')window.closeProductDetail();else if(m.id==='tryonModal'&&typeof window.closeTry==='function')window.closeTry();else m.classList.remove('show');},true);
 })();
 </script>
+
+<script id="ibm-v14-final-clean-js">
+(function(){
+ const $=(s,r=document)=>r.querySelector(s);
+ function cleanMarquees(){document.querySelectorAll('#v14-marquee').forEach((el,i)=>{if(i>0)el.remove()});}
+ function refreshMarquee(){const m=$('#v14-marquee');if(!m)return;const text=(window.settings&&settings.marqueeText)||localStorage.getItem('ibm_marquee_text')||'FREE DELIVERY • COD AVAILABLE • PREMIUM QUALITY';const items=text.split(/\s*•\s*/).map(x=>x.trim()).filter(Boolean);const one=items.map(x=>`<span class="item"><b>${String(x).replace(/[<>]/g,'')}</b><i></i></span>`).join('');m.innerHTML=`<div class="track">${one}${one}</div>`;}
+ function addEditor(){if($('#v14MarqueeEditor'))return true;const tab=$('#tab-settings');if(!tab)return false;const box=document.createElement('div');box.id='v14MarqueeEditor';box.innerHTML='<label>Moving Text (editable)</label><input id="v14MarqueeText" type="text" placeholder="FREE DELIVERY • COD AVAILABLE • PREMIUM QUALITY"><small style="display:block;color:#aaa;margin-top:6px">Use • between messages. This is the single moving line.</small>';const target=tab.querySelector('.card')||tab;target.appendChild(box);$('#v14MarqueeText').value=(window.settings&&settings.marqueeText)||localStorage.getItem('ibm_marquee_text')||'FREE DELIVERY • COD AVAILABLE • PREMIUM QUALITY';return true;}
+ function patchSettings(){if(typeof window.saveSettings!=='function'||window.__V14_FINAL_SETTINGS__)return;if(!window.__V14_ORIG_SAVE_SETTINGS__)window.__V14_ORIG_SAVE_SETTINGS__=window.saveSettings;window.saveSettings=async function(){const input=$('#v14MarqueeText');const v=input?input.value.trim():'';if(v){localStorage.setItem('ibm_marquee_text',v);window.settings=window.settings||{};window.settings.marqueeText=v;}const r=await window.__V14_ORIG_SAVE_SETTINGS__.apply(this,arguments);try{if(v)await fetch('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...window.settings,marqueeText:v})});}catch(e){}refreshMarquee();return r;};window.__V14_FINAL_SETTINGS__=true;}
+ function patchRender(){if(typeof window.renderProducts!=='function'||window.__V14_RENDER_PATCH__)return;const old=window.renderProducts;window.renderProducts=function(){const r=old.apply(this,arguments);setTimeout(()=>document.querySelectorAll('.product .size-row').forEach(x=>x.style.display='none'),0);return r;};window.__V14_RENDER_PATCH__=true;window.renderProducts();}
+ function init(){cleanMarquees();refreshMarquee();addEditor();patchSettings();patchRender();setTimeout(()=>{cleanMarquees();refreshMarquee();addEditor();patchSettings();patchRender();},700);setTimeout(()=>{cleanMarquees();refreshMarquee();addEditor();patchSettings();patchRender();},1800);}
+ const mo=new MutationObserver(()=>{if(!$('#v14MarqueeEditor'))addEditor();patchSettings();document.querySelectorAll('.product .size-row').forEach(x=>x.style.display='none');});mo.observe(document.documentElement,{subtree:true,childList:true});
+ window.addEventListener('load',init);setTimeout(init,350);
+})();
+</script>
+
 </body>
 </html>
