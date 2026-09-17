@@ -446,6 +446,155 @@ app.post('/api/admin/orders', async (req, res) => {
   res.json({ ok: true });
 });
 
+
+// ---------- DELHIVERY ADMIN AUTOMATION ----------
+function delhiveryConfig(){
+  return {
+    token: process.env.DELHIVERY_API_TOKEN || '',
+    client: process.env.DELHIVERY_CLIENT_NAME || '',
+    pickup: process.env.DELHIVERY_PICKUP_LOCATION || '',
+    pickupPin: process.env.DELHIVERY_PICKUP_PIN || '',
+    pickupCity: process.env.DELHIVERY_PICKUP_CITY || '',
+    pickupState: process.env.DELHIVERY_PICKUP_STATE || '',
+    pickupAddress: process.env.DELHIVERY_PICKUP_ADDRESS || '',
+    pickupPhone: process.env.DELHIVERY_PICKUP_PHONE || '',
+    weight: Number(process.env.DELHIVERY_DEFAULT_WEIGHT || 500),
+    length: Number(process.env.DELHIVERY_LENGTH || 20),
+    width: Number(process.env.DELHIVERY_WIDTH || 15),
+    height: Number(process.env.DELHIVERY_HEIGHT || 5),
+    mode: process.env.DELHIVERY_MODE || 'Surface'
+  };
+}
+
+function delhiveryReady(cfg){
+  return !!(cfg.token && cfg.client && cfg.pickup && cfg.pickupPin && cfg.pickupCity && cfg.pickupState && cfg.pickupAddress && cfg.pickupPhone);
+}
+
+function parseOrderItemsForDelhivery(o){
+  const raw=String(o.items||'').trim();
+  return [{
+    name: raw ? raw.slice(0,240) : 'IBM COLLECTION Order',
+    sku: String(o.id||('IBM-'+Date.now())),
+    qty: 1,
+    price: Number(o.total||0)
+  }];
+}
+
+app.get('/api/admin/delhivery/status', async (req,res)=>{
+  const cfg=delhiveryConfig();
+  res.json({ok:true,configured:delhiveryReady(cfg),missing:[
+    ['DELHIVERY_CLIENT_NAME',cfg.client],['DELHIVERY_PICKUP_LOCATION',cfg.pickup],['DELHIVERY_PICKUP_PIN',cfg.pickupPin],
+    ['DELHIVERY_PICKUP_CITY',cfg.pickupCity],['DELHIVERY_PICKUP_STATE',cfg.pickupState],['DELHIVERY_PICKUP_ADDRESS',cfg.pickupAddress],['DELHIVERY_PICKUP_PHONE',cfg.pickupPhone]
+  ].filter(x=>!x[1]).map(x=>x[0])});
+});
+
+app.post('/api/admin/delhivery/create-shipment', async (req,res)=>{
+  try{
+    const cfg=delhiveryConfig();
+    if(!delhiveryReady(cfg)) return res.status(503).json({ok:false,msg:'Delhivery setup incomplete. Render Environment me DELHIVERY_CLIENT_NAME aur pickup details add karo.'});
+    const orderId=String(req.body?.orderId||'');
+    if(!orderId) return res.status(400).json({ok:false,msg:'Order ID missing.'});
+    const orders=await getData('orders')||[];
+    const idx=orders.findIndex(x=>String(x.id)===orderId);
+    if(idx<0) return res.status(404).json({ok:false,msg:'Order nahi mila.'});
+    const o=orders[idx];
+    if(o.delhivery?.awb) return res.json({ok:true,already:true,awb:o.delhivery.awb,order:o});
+
+    const cod = String(o.paymentMethod||'').toUpperCase().includes('COD');
+    const customerAddress=String(o.address||'').trim();
+    const phone=String(o.phone||'').replace(/\D/g,'');
+    const items=parseOrderItemsForDelhivery(o);
+    const total=Number(o.total||0);
+    const data={
+      pickup_location:{name:cfg.pickup},
+      shipments:[{
+        name:String(o.name||'Customer'),
+        add:customerAddress,
+        pin:String((customerAddress.match(/\b\d{6}\b/)||[''])[0]),
+        city:'',state:'',country:'India',phone,
+        order:orderId,
+        payment_mode:cod?'COD':'Prepaid',
+        products_desc:items[0].name,
+        cod_amount:cod?Number(total.toFixed(2)):0,
+        order_date:new Date().toISOString().slice(0,19).replace('T',' '),
+        total_amount:Number(total.toFixed(2)),
+        seller_name:'IBM COLLECTION',
+        seller_add:cfg.pickupAddress,
+        seller_pin:cfg.pickupPin,
+        seller_city:cfg.pickupCity,
+        seller_state:cfg.pickupState,
+        seller_country:'India',
+        seller_phone:cfg.pickupPhone,
+        quantity:1,
+        weight:cfg.weight,
+        shipment_width:cfg.width,
+        shipment_height:cfg.height,
+        shipment_length:cfg.length,
+        shipping_mode:cfg.mode
+      }]
+    };
+
+    const body=new URLSearchParams({format:'json',data:JSON.stringify(data)});
+    const r=await fetch('https://track.delhivery.com/api/cmu/create.json',{
+      method:'POST',
+      headers:{Authorization:`Token ${cfg.token}`,'Content-Type':'application/x-www-form-urlencoded'},
+      body
+    });
+    const out=await r.json().catch(async()=>({raw:await r.text().catch(()=> '')}));
+    if(!r.ok || (out.success===false) || (out.packages && out.packages[0] && out.packages[0].status==='Fail')){
+      console.error('Delhivery create error',JSON.stringify(out));
+      return res.status(502).json({ok:false,msg:out.error||out.message||'Delhivery shipment create failed',data:out});
+    }
+    const pkg=Array.isArray(out.packages)?out.packages[0]:out;
+    const awb=String(pkg.waybill||pkg.awb||out.waybill||'');
+    orders[idx]={...o,status:'confirmed',delhivery:{...(o.delhivery||{}),awb,createdAt:new Date().toISOString(),raw:out}};
+    await setData('orders',orders);
+    res.json({ok:true,awb,order:orders[idx],data:out});
+  }catch(err){console.error('Delhivery create error:',err.message);res.status(500).json({ok:false,msg:'Delhivery shipment service error'});}
+});
+
+app.get('/api/admin/delhivery/track/:awb', async (req,res)=>{
+  try{
+    const cfg=delhiveryConfig();
+    if(!cfg.token) return res.status(503).json({ok:false,msg:'DELHIVERY_API_TOKEN missing'});
+    const awb=encodeURIComponent(String(req.params.awb||''));
+    const r=await fetch(`https://track.delhivery.com/api/v1/packages/json/?waybill=${awb}`,{headers:{Authorization:`Token ${cfg.token}`}});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) return res.status(502).json({ok:false,msg:'Delhivery tracking failed',data});
+    res.json({ok:true,data});
+  }catch(err){res.status(500).json({ok:false,msg:'Tracking service error'});}
+});
+
+app.get('/api/admin/delhivery/label/:awb', async (req,res)=>{
+  try{
+    const cfg=delhiveryConfig();
+    if(!cfg.token) return res.status(503).send('DELHIVERY_API_TOKEN missing');
+    const awb=encodeURIComponent(String(req.params.awb||''));
+    const r=await fetch(`https://track.delhivery.com/api/p/packing_slip?wbns=${awb}&pdf=true`,{headers:{Authorization:`Token ${cfg.token}`}});
+    const buf=Buffer.from(await r.arrayBuffer());
+    if(!r.ok) return res.status(502).send('Delhivery label failed');
+    res.setHeader('Content-Type',r.headers.get('content-type')||'application/pdf');
+    res.setHeader('Content-Disposition',`inline; filename="IBM-COLLECTION-${req.params.awb}.pdf"`);
+    res.send(buf);
+  }catch(err){res.status(500).send('Label service error');}
+});
+
+app.post('/api/admin/delhivery/pickup', async (req,res)=>{
+  try{
+    const cfg=delhiveryConfig();
+    if(!delhiveryReady(cfg)) return res.status(503).json({ok:false,msg:'Delhivery setup incomplete.'});
+    const count=Math.max(1,Number(req.body?.count||1));
+    const d=new Date();
+    const pickupDate=d.toISOString().slice(0,10);
+    const pickupData={pickup_time:'10:00:00',pickup_date:pickupDate,pickup_location:cfg.pickup,expected_package_count:count};
+    const body=new URLSearchParams({format:'json',data:JSON.stringify(pickupData)});
+    const r=await fetch('https://track.delhivery.com/fm/request/new/',{method:'POST',headers:{Authorization:`Token ${cfg.token}`,'Content-Type':'application/x-www-form-urlencoded'},body});
+    const out=await r.json().catch(()=>({}));
+    if(!r.ok) return res.status(502).json({ok:false,msg:out.error||'Pickup request failed',data:out});
+    res.json({ok:true,data:out});
+  }catch(err){res.status(500).json({ok:false,msg:'Pickup service error'});}
+});
+
 // ---------- START ----------
 const PORT = process.env.PORT || 3000;
 initDB()
