@@ -971,6 +971,48 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
 #paymentMethods label{color:#f7f4ec!important}
 #paymentMethods label input{accent-color:var(--lux-gold)}
 </style>
+
+<style id="ibm-color-scope-fix">
+/* Color picker scope: brand identity stays permanently IBM gold.
+   The selected admin color is used only for secondary/accent text and controls. */
+:root{
+  --ibm-brand-gold:#d4af37;
+  --ibm-brand-gold-light:#f3d889;
+  --ibm-extra-color:var(--primary,#ffc107);
+}
+/* Never recolor IBM COLLECTION brand text or logo border. */
+.header .logo span,
+#headerSiteName,
+#footerName,
+.luxury-top-right span:first-child{
+  color:var(--ibm-brand-gold-light)!important;
+}
+.header .logo img{
+  border-color:var(--ibm-brand-gold)!important;
+  box-shadow:0 0 14px rgba(212,175,55,.55),0 0 35px rgba(212,175,55,.18)!important;
+}
+/* Brand/footer title stays gold even when admin changes Color. */
+.footer h3{color:var(--ibm-brand-gold-light)!important;}
+/* Selected color is reserved for secondary/extra text accents. */
+.hero-content h1 span,
+.section-title,
+#current-category,
+.stat b,
+.sidebar h3 span,
+.sidebar button:hover,
+.sidebar button.active,
+.nav a:hover,
+.product .price,
+.detail-price,
+.v14-copy .kicker,
+.v14-copy h2 em,
+.v14-copy .sub strong{
+  color:var(--ibm-extra-color)!important;
+}
+/* Keep the moving IBM COLLECTION brand phrase gold; other marquee text can use selected color. */
+#v14-marquee .marquee-item:first-child,
+#v14-marquee .marquee-item:first-child *{color:var(--ibm-brand-gold-light)!important;}
+</style>
 </head>
 <body>
 
@@ -1295,7 +1337,7 @@ async function loadAdmin(){
 }
 
 // ===== RENDER =====
-function applyTheme(){const c=settings.color||'#ffc107';document.documentElement.style.setProperty('--primary',c);document.documentElement.style.setProperty('--lux-gold',c);document.documentElement.style.setProperty('--lux-gold2',c);}
+function applyTheme(){const c=settings.color||'#ffc107';document.documentElement.style.setProperty('--primary',c);document.documentElement.style.setProperty('--ibm-extra-color',c);document.documentElement.style.setProperty('--lux-gold','#d4af37');document.documentElement.style.setProperty('--lux-gold2','#f3d889');}
 function socLinks(){const l=[];if(social.instagram)l.push({t:'IG',u:social.instagram});if(social.facebook)l.push({t:'FB',u:social.facebook});if(social.whatsapp)l.push({t:'WA',u:'https://wa.me/'+social.whatsapp});if(social.youtube)l.push({t:'▶',u:social.youtube});if(social.twitter)l.push({t:'X',u:social.twitter});return l;}
 function renderSocial(){const l=socLinks();let h='';l.forEach(x=>{h+=`<a href="${x.u}" target="_blank">${x.t}</a>`;});document.getElementById('headerSocials').innerHTML=h;document.getElementById('footerSocials').innerHTML=h;}
 function renderHeader(){
@@ -1350,7 +1392,7 @@ async function loadAdmin(){
 }
 
 // ===== RENDER =====
-function applyTheme(){const c=settings.color||'#ffc107';document.documentElement.style.setProperty('--primary',c);document.documentElement.style.setProperty('--lux-gold',c);document.documentElement.style.setProperty('--lux-gold2',c);}
+function applyTheme(){const c=settings.color||'#ffc107';document.documentElement.style.setProperty('--primary',c);document.documentElement.style.setProperty('--ibm-extra-color',c);document.documentElement.style.setProperty('--lux-gold','#d4af37');document.documentElement.style.setProperty('--lux-gold2','#f3d889');}
 function iconSvg(type){const p={
 instagram:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>',
 facebook:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3.3 0-5 1.9-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.7.3-1 1-1z" fill="currentColor"/></svg>',
