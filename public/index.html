@@ -971,9 +971,41 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
 #paymentMethods label{color:#f7f4ec!important}
 #paymentMethods label input{accent-color:var(--lux-gold)}
 </style>
-<style id="cashfree-cod-only">
-.manual-upi-disabled-note{margin-top:8px;padding:8px 10px;border:1px solid #d4af37;border-radius:8px;color:#d4af37;background:#0b0b0b;font-size:12px}
-</style></head>
+
+<style id="ibm-brand-gold-lock">
+/* IBM COLLECTION core branding is always gold; Admin Color controls secondary accents only. */
+.headerSiteName,
+#headerSiteName,
+#footerName,
+.footer-name,
+.header .brand-name,
+.brand-name,
+.logo-name,
+#headerLogoImg + *,
+.topbar .brand-name,
+.topbar strong,
+#siteName,
+.site-name{
+  color:#d6af45 !important;
+  text-shadow:0 0 14px rgba(214,175,69,.22) !important;
+}
+#headerLogoImg,
+.logo img,
+.header-logo img{
+  filter: drop-shadow(0 0 10px rgba(214,175,69,.35));
+}
+.logo,
+.brand-logo,
+.header .logo{
+  border-color:#d6af45 !important;
+}
+#footerName{color:#d6af45 !important;}
+/* Keep the luxury palette on payment choices. */
+#paymentMethods label{background:#0b0b0b !important;color:#f7f4ec !important;}
+#paymentMethods input{accent-color:#d6af45;}
+</style>
+
+</head>
 <body>
 
 <!-- STORE -->
@@ -1179,7 +1211,7 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
       <div class="notice" id="paymentNoticePreview">Customer kisi bhi UPI app se paisa bhejega — seedha aapke account me.</div>
       <div class="card">
         <h3 style="margin:0 0 10px;color:var(--lux-gold2,#f3d889)!important;">📲 BharatPe / UPI Backup</h3>
-        <label>UPI ID (Manual UPI disabled — Cashfree use hoga)</label><input type="text" id="upId">
+        <label>UPI ID</label><input type="text" id="upId">
         <label>Account Name</label><input type="text" id="upName">
         <label>QR Code Upload</label><input type="file" id="upQrFile" accept="image/*" onchange="readQrFile(this)">
         <label>Ya QR URL</label><input type="text" id="upQrUrl">
@@ -1559,9 +1591,9 @@ async function openCheckout(){
   document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
   const methods=document.getElementById('paymentMethods');
   const cfEnabled=window.cashfreeEnabled===true;
-  methods.innerHTML=(cfEnabled?`<label style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
-  if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
-  selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
+  methods.innerHTML=`<label style="flex:1;min-width:180px;border:2px solid #d6af45;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b;color:#f7f4ec;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`+(codEnabled?`<label style="flex:1;min-width:180px;border:2px solid #ddd;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b;color:#f7f4ec;"><input type="radio" name="paymentMethod" value="COD" onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
+   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
+  selectPaymentMethod('CASHFREE');
   document.getElementById('checkoutModal').classList.add('show');
   openCheckoutHistory();
 }
@@ -1580,6 +1612,12 @@ function selectPaymentMethod(method){
     if(totalEl)totalEl.textContent='₹'+(subtotal+codCharge);
     document.getElementById('payBox').innerHTML=`<div style="padding:14px;border:2px dashed #198754;border-radius:10px;background:#f4fff6;color:#146c2e;font-weight:700;">💵 Cash on Delivery selected<br><small style="font-weight:500;color:#555;">₹${codCharge} COD charge included in total.</small>${pay.courierPartner?`<br><small style="font-weight:500;color:#555;">Courier: ${pay.courierPartner}</small>`:''}</div>`;
     document.getElementById('waNote').innerHTML='<b>✅ COD order — delivery ke time cash payment karein.</b>';
+  }else if(method==='UPI'){
+    if(row)row.style.display='none';
+    if(totalEl)totalEl.textContent='₹'+subtotal;
+    const upi=`upi://pay?pa=${encodeURIComponent(pay.upiId||'')}&pn=${encodeURIComponent(pay.upiName||'Store')}&am=${subtotal}&cu=INR&tn=Order`;
+    document.getElementById('payBox').innerHTML=pay.upiId?((pay.qrCode?`<img src="${pay.qrCode}">`:'<p style="color:#888;">QR abhi nahi hua</p>')+`<div class="upi-id">${pay.upiId}</div><br><a class="pay-link" href="${upi}">📲 Pay Karein</a><p style="font-size:12px;color:#555;">${pay.paymentNote||'Customer kisi bhi UPI app se paisa bhejega — seedha aapke account me.'}</p>`):'<p style="color:red;">UPI Payment set nahi hua.</p>';
+    document.getElementById('waNote').innerHTML=pay.upiId?'<b>✅ Payment ke baad UTR/Transaction ID niche likho</b>':'';
   }
 }
 let checkoutHistoryActive=false;
@@ -1609,25 +1647,20 @@ async function placeOrder(){
   if(!name||!phone||!addr||!pin){alert('Saari details bharein');return;}
   const method=document.querySelector('input[name="paymentMethod"]:checked')?.value||'';
   if(!method){alert('Payment method select karo');return;}
-  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   if(method==='CASHFREE'){return startCashfreePayment();}
+  if(method==='UPI'){alert('Manual UPI payment ab available nahi hai. Cashfree se online payment karein.');return;}
+  const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codCharge=method==='COD'?(Number(pay.codCharge)||40):0;
   const total=subtotal+codCharge;
-  let utr='COD';
-  if(method==='UPI'){ alert('Manual UPI payment ab available nahi hai. Cashfree se online payment karein.'); return; }
   const items=cart.map(x=>`${x.name} (Size: ${x.size}, Colour: ${x.color||'Black'} ×${x.qty}) ₹${x.price*x.qty}`).join(', ');
-  const order={name,phone,address:addr+', '+city+' - '+pin,items,total:Number(total),paymentMethod:method,codCharge:Number(codCharge),courierPartner:pay.courierPartner||'',utr};
+  const order={name,phone,address:addr+', '+city+' - '+pin,items,total:Number(total),paymentMethod:'COD',codCharge:Number(codCharge),courierPartner:pay.courierPartner||'',utr:'COD'};
   const r=await api('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(order)});
-  if(!r.ok){
-    alert(r.msg||'Order save nahi hua. Please dobara try karein.');
-    return;
+  if(r.ok){
+    cart=[];saveCart();closeCheckout();
+    alert('✅ Order confirm! Order ID: '+r.id);
+  }else{
+    alert(r.msg||'Order place nahi hua.');
   }
-  cart=[];
-  saveCart();
-  closeCheckout();
-  alert(`✅ Order successfully placed!
-
-Order ID: ${r.id}`);
 }
 
 // ===== CASHFREE ONLINE PAYMENT =====
@@ -1660,14 +1693,21 @@ async function startCashfreePayment(){
   const pin=document.getElementById('cPin').value.trim();
   if(!name||!phone||!addr||!pin){alert('Saari details bharein');return;}
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
-  const payload={amount:subtotal,name,phone,email};
-  const r=await api('/api/cashfree/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-  if(!r.ok){alert(r.msg||'Cashfree payment start nahi hua.');return;}
-  sessionStorage.setItem('ibm_pending_cashfree',JSON.stringify({name,phone,email,address:addr+', '+city+' - '+pin,total:subtotal,items:cart.map(x=>`${x.name} (Size: ${x.size}, Colour: ${x.color||'Black'} ×${x.qty}) ₹${x.price*x.qty}`).join(', ')}));
-  const mode=(await checkCashfreeStatus()).environment==='production'?'production':'sandbox';
+  if(!subtotal||subtotal<=0){alert('Cart khaali hai.');return;}
+  const r=await api('/api/cashfree/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:subtotal,name,phone,email})});
+  if(!r.ok){alert(r.msg||'Cashfree payment start nahi hua. Render backend/API keys check karein.');return;}
+  const pending={name,phone,email,address:addr+', '+city+' - '+pin,total:subtotal,items:cart.map(x=>`${x.name} (Size: ${x.size}, Colour: ${x.color||'Black'} ×${x.qty}) ₹${x.price*x.qty}`).join(', ')};
+  sessionStorage.setItem('ibm_pending_cashfree',JSON.stringify(pending));
+  const st=await checkCashfreeStatus();
+  const mode=(r.environment||st.environment)==='production'?'production':'sandbox';
   if(!window.Cashfree){alert('Cashfree checkout SDK load nahi hua. Page refresh karke try karo.');return;}
-  const cashfree=Cashfree({mode});
-  await cashfree.checkout({paymentSessionId:r.paymentSessionId,redirectTarget:'_self'});
+  try{
+    const cashfree=Cashfree({mode});
+    await cashfree.checkout({paymentSessionId:r.paymentSessionId,redirectTarget:'_self'});
+  }catch(e){
+    console.error('Cashfree checkout error',e);
+    alert('Cashfree checkout open nahi hua. Browser refresh karke dobara try karo.');
+  }
 }
 async function handleCashfreeReturn(){
   const params=new URLSearchParams(location.search);
@@ -1892,7 +1932,7 @@ function removeHeroImage(i){heroImages.splice(i,1);renderHeroPreviews();}
 
 async function saveSettings(){const d={siteName:document.getElementById('sName').value,logo:document.getElementById('sLogo').value,hero:document.getElementById('sHero').value,tag:document.getElementById('sTag').value,marqueeText:document.getElementById('sMarquee').value.trim(),color:document.getElementById('sColor').value,address:'📍 '+document.getElementById('sAddress').value,phone:'📞 '+document.getElementById('sPhone').value,email:document.getElementById('sEmail').value,domain:document.getElementById('sDomain').value,mapUrl:document.getElementById('sMap').value.trim(),heroImages:heroImages.length?heroImages:(Array.isArray(settings.heroImages)?settings.heroImages:DEFAULT_HERO_IMAGES)};await api('/api/admin/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});settings={...settings,...d};applyTheme();renderHeader();renderSocial();if(window.refreshV14Marquee)refreshV14Marquee();loadAdminData();flash();}
 async function saveSocial(){const d={instagram:document.getElementById('soInsta').value.trim(),facebook:document.getElementById('soFb').value.trim(),whatsapp:document.getElementById('soWa').value.trim(),youtube:document.getElementById('soYt').value.trim(),twitter:document.getElementById('soTw').value.trim(),telegram:document.getElementById('soTelegram').value.trim(),linkedin:document.getElementById('soLinkedin').value.trim()};await api('/api/admin/social',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});social={...social,...d};renderSocial();loadAdminData();flash();alert('✅ Social links saved');}
-async function savePayment(){const upiId=document.getElementById('upId').value.trim();const note=document.getElementById('paymentNote').value.trim()||'Cashfree se secure online payment karein.';const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim(),paymentNote:note};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}const r=await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});if(!r.ok){alert('Payment settings save nahi hua');return;}pay={...pay,...d};const pn=document.getElementById('paymentNoticePreview');if(pn)pn.textContent=note;loadAdminData();flash();alert('✅ Payment/COD settings saved');}
+async function savePayment(){const upiId=document.getElementById('upId').value.trim();const note=document.getElementById('paymentNote').value.trim()||'Customer kisi bhi UPI app se paisa bhejega — seedha aapke account me.';const d={upiId,upiName:document.getElementById('upName').value,codEnabled:document.getElementById('codEnabled').checked,codCharge:Number(document.getElementById('codCharge').value)||40,courierPartner:document.getElementById('courierPartner').value.trim(),paymentNote:note};const url=document.getElementById('upQrUrl').value.trim();if(url)d.qrCode=url;else if(pay.qrCode&&!d.qrCode)d.qrCode=pay.qrCode;if(!d.upiId&&!d.codEnabled){alert('UPI ID bharo ya COD enable karo');return;}const r=await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});if(!r.ok){alert('Payment settings save nahi hua');return;}pay={...pay,...d};const pn=document.getElementById('paymentNoticePreview');if(pn)pn.textContent=note;loadAdminData();flash();alert('✅ Payment/COD settings saved');}
 function readQrFile(i){const f=i.files[0];const r=new FileReader();r.onload=async e=>{pay.qrCode=e.target.result;const pv=document.getElementById('qrPrevImg');pv.src=pay.qrCode;pv.style.display='inline-block';document.getElementById('upQrUrl').value='';await api('/api/admin/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({upiId:pay.upiId,upiName:pay.upiName,qrCode:pay.qrCode})});};r.readAsDataURL(f);}
 async function saveSecurity(){const u=document.getElementById('adUser').value.trim();const p=document.getElementById('adPass').value.trim();if(!u||!p){alert('Bharo');return;}await api('/api/admin/security',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});alert('✅ Login details update ho gayi! Yaad rakhein.');flash();}
 
