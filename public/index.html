@@ -1041,6 +1041,14 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
 /* Never show legacy BharatPe/manual UPI UI. */
 #tab-payment #upId,#tab-payment #upName,#tab-payment #upQrFile,#tab-payment #upQrUrl,#tab-payment #qrPrevImg{display:none!important;}
 </style>
+<style id="ibm-checkout-exact-fix">
+/* ONLY checkout layering/flow fix. Existing design and other features unchanged. */
+#checkoutModal{z-index:100000!important;display:none!important;pointer-events:none!important;}
+#checkoutModal.show{display:flex!important;pointer-events:auto!important;z-index:100000!important;}
+#checkoutModal .checkout-box{position:relative!important;z-index:100001!important;max-height:92vh!important;overflow-y:auto!important;overflow-x:hidden!important;}
+#cartDrawer{z-index:601!important;}
+#cartOverlay{z-index:600!important;}
+</style>
 </head>
 <body>
 
@@ -1569,7 +1577,7 @@ function clearSearch(){
 
 function filterProducts(c){currentCat=c;renderProducts();}
 
-function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const sz=selectedSizes[i]||sizes[0];const color=selectedColors[i]||colors[0];cart=[{name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',pimgs:Array.isArray(p.pimgs)?p.pimgs:[],size:sz,color,qty:1}];saveCart();closeProductDetail();setTimeout(()=>openCheckout(),80);}
+function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const sz=selectedSizes[i]||sizes[0];const color=selectedColors[i]||colors[0];cart=[{name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',pimgs:Array.isArray(p.pimgs)?p.pimgs:[],size:sz,color,qty:1}];saveCart();closeProductDetail(true);openCheckout();}
 function reviewKey(i){return 'ibm_reviews_'+i;} function getReviews(i){try{return JSON.parse(localStorage.getItem(reviewKey(i))||'[]')}catch(e){return []}}
 function renderReviews(i){const rs=getReviews(i);if(!rs.length)return '<p style="color:#888;font-size:13px;">No reviews yet. Be the first to review.</p>';return rs.slice().reverse().map(r=>`<div style="border-top:1px solid #eee;padding:10px 0;"><b>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</b> <strong>${r.name}</strong><div style="font-size:13px;color:#555;margin-top:4px;">${r.text}</div></div>`).join('');}
 function submitReview(i){const name=document.getElementById('reviewName').value.trim()||'Customer';const text=document.getElementById('reviewText').value.trim();const rating=Number(document.getElementById('reviewRating').value||5);if(!text){alert('Review likho');return;}const rs=getReviews(i);rs.push({name,text,rating,date:Date.now()});localStorage.setItem(reviewKey(i),JSON.stringify(rs));openProductDetail(i);}
@@ -1612,9 +1620,10 @@ function closeCart(){document.getElementById('cartDrawer').classList.remove('ope
 
 // ===== CHECKOUT =====
 async function openCheckout(){
-  if(!cart.length){alert('Cart khaali hai');return;}
-  // Close the cart immediately so checkout never gets blocked by Cashfree/API status loading.
+  if(!Array.isArray(cart)||!cart.length){alert('Cart khaali hai');return;}
   closeCart();
+  const checkout=document.getElementById('checkoutModal');
+  if(checkout){checkout.classList.remove('show');checkout.scrollTop=0;}
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codEnabled=!!pay.codEnabled;
   const codCharge=Number(pay.codCharge)||40;
@@ -1624,7 +1633,8 @@ async function openCheckout(){
   methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
   selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
-  document.getElementById('checkoutModal').classList.add('show');
+  const checkoutModal=document.getElementById('checkoutModal');
+  if(checkoutModal){checkoutModal.classList.add('show');checkoutModal.scrollTop=0;const box=checkoutModal.querySelector('.checkout-box');if(box)box.scrollTop=0;}
   openCheckoutHistory();
 }
 function selectPaymentMethod(method){
@@ -2084,53 +2094,5 @@ loadStore().then(()=>handleCashfreeReturn());
 })();
 </script>
 
-
-<style id="ibm-checkout-one-time-fix">
-/* CHECKOUT ONLY: keep the working site unchanged; make the checkout modal stable and reset its scroll. */
-#checkoutModal{position:fixed!important;inset:0!important;display:none!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;z-index:2147483000!important;padding:12px!important;box-sizing:border-box!important;}
-#checkoutModal.show{display:flex!important;}
-#checkoutModal>.checkout-box{position:relative!important;width:680px!important;max-width:calc(100vw - 24px)!important;max-height:calc(100vh - 24px)!important;margin:0!important;overflow-y:auto!important;overflow-x:hidden!important;box-sizing:border-box!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;}
-#checkoutModal .close-m{position:sticky!important;float:right!important;top:0!important;right:0!important;z-index:20!important;width:42px!important;height:42px!important;min-width:42px!important;margin:-2px -2px 4px 8px!important;}
-#checkoutModal #paymentMethods{display:flex!important;flex-wrap:wrap!important;gap:10px!important;}
-#checkoutModal #paymentMethods label{display:flex!important;align-items:center!important;gap:7px!important;flex:1 1 220px!important;min-height:48px!important;box-sizing:border-box!important;}
-@media(max-width:700px){
-  #checkoutModal{padding:6px!important;align-items:flex-start!important;}
-  #checkoutModal>.checkout-box{width:100%!important;max-width:100%!important;max-height:calc(100vh - 12px)!important;margin:6px 0!important;border-radius:16px!important;padding:14px!important;}
-}
-</style>
-<script id="ibm-checkout-one-time-js">
-(function(){
-  /* Checkout-only repair. The existing server.js and all other site features stay untouched. */
-  window.cashfreeEnabled = true;
-  const originalOpenCheckout = window.openCheckout;
-  window.openCheckout = async function(){
-    if(typeof originalOpenCheckout==='function') await originalOpenCheckout();
-    const modal=document.getElementById('checkoutModal');
-    const box=modal&&modal.querySelector('.checkout-box');
-    if(modal){ modal.classList.add('show'); modal.scrollTop=0; }
-    if(box){ box.scrollTop=0; box.scrollLeft=0; }
-    document.documentElement.style.overflow='hidden';
-    document.body.style.overflow='hidden';
-    /* Cashfree stays available even if the status request is slow/temporarily false. */
-    const methods=document.getElementById('paymentMethods');
-    if(methods && !methods.querySelector('input[value="CASHFREE"]')){
-      const label=document.createElement('label');
-      label.className='payment-option';
-      label.innerHTML='<input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod(\'CASHFREE\')"> 💳 Pay Online (Cashfree)';
-      methods.prepend(label);
-      if(typeof window.selectPaymentMethod==='function') window.selectPaymentMethod('CASHFREE');
-    }
-    return true;
-  };
-  const originalCloseCheckout=window.closeCheckout;
-  window.closeCheckout=function(fromPop){
-    if(typeof originalCloseCheckout==='function') originalCloseCheckout(fromPop);
-    const modal=document.getElementById('checkoutModal');
-    if(modal) modal.classList.remove('show');
-    document.documentElement.style.overflow='';
-    document.body.style.overflow='';
-  };
-})();
-</script>
 </body>
 </html>
