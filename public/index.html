@@ -1611,25 +1611,35 @@ function openCart(){document.getElementById('cartDrawer').classList.add('open');
 function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('cartOverlay').classList.remove('show');}
 
 // ===== CHECKOUT =====
-function openCheckout(){
+async function openCheckout(){
   if(!cart.length){alert('Cart khaali hai');return;}
-  // Show checkout immediately. Cashfree status check must not block the modal.
+
+  // CHECKOUT-ONLY FIX: close cart first, then force the checkout modal above every layer.
   closeCart();
+
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codEnabled=!!pay.codEnabled;
   const codCharge=Number(pay.codCharge)||40;
   document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
+
   const methods=document.getElementById('paymentMethods');
   const cfEnabled=window.cashfreeEnabled===true;
   methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
   if(methods.innerHTML) selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
-  document.getElementById('checkoutModal').classList.add('show');
+
+  const modal=document.getElementById('checkoutModal');
+  modal.classList.add('show');
+  modal.style.display='flex';
+  modal.style.visibility='visible';
+  modal.style.opacity='1';
+  modal.style.pointerEvents='auto';
+  modal.style.zIndex='2147483000';
   openCheckoutHistory();
 
-  // Refresh Cashfree availability in the background without delaying checkout.
+  // Refresh Cashfree availability in background; never block checkout opening.
   checkCashfreeStatus().then(r=>{
-    if(!document.getElementById('checkoutModal').classList.contains('show')) return;
+    if(!modal.classList.contains('show')) return;
     const enabled=!!(r&&r.enabled);
     if(enabled===cfEnabled) return;
     const m=document.getElementById('paymentMethods');
