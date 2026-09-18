@@ -1049,6 +1049,45 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
 #cartDrawer{z-index:601!important;}
 #cartOverlay{z-index:600!important;}
 </style>
+<style id="ibm-checkout-box-only-final">
+/* CHECKOUT BOX ONLY: keep the entire checkout panel inside the viewport. */
+#checkoutModal{
+  display:none!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483000!important;
+  padding:12px!important;
+  box-sizing:border-box!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+#checkoutModal.show{display:flex!important;}
+#checkoutModal>.checkout-box{
+  width:680px!important;
+  max-width:100%!important;
+  max-height:calc(100vh - 24px)!important;
+  height:auto!important;
+  margin:0 auto!important;
+  box-sizing:border-box!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  flex:0 1 auto!important;
+}
+#checkoutModal .close-m{z-index:2147483002!important;}
+#cartOverlay{z-index:1000!important;}
+#cartDrawer{z-index:1001!important;}
+@media(max-width:700px){
+  #checkoutModal{padding:6px!important;}
+  #checkoutModal>.checkout-box{
+    width:100%!important;
+    max-width:100%!important;
+    max-height:calc(100vh - 12px)!important;
+    border-radius:14px!important;
+  }
+}
+</style>
 </head>
 <body>
 
