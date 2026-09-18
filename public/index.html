@@ -1611,9 +1611,9 @@ function openCart(){document.getElementById('cartDrawer').classList.add('open');
 function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('cartOverlay').classList.remove('show');}
 
 // ===== CHECKOUT =====
-async function openCheckout(){
+function openCheckout(){
   if(!cart.length){alert('Cart khaali hai');return;}
-  await checkCashfreeStatus();
+  // Show checkout immediately. Cashfree status check must not block the modal.
   closeCart();
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codEnabled=!!pay.codEnabled;
@@ -1623,9 +1623,22 @@ async function openCheckout(){
   const cfEnabled=window.cashfreeEnabled===true;
   methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
-  selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
+  if(methods.innerHTML) selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
   document.getElementById('checkoutModal').classList.add('show');
   openCheckoutHistory();
+
+  // Refresh Cashfree availability in the background without delaying checkout.
+  checkCashfreeStatus().then(r=>{
+    if(!document.getElementById('checkoutModal').classList.contains('show')) return;
+    const enabled=!!(r&&r.enabled);
+    if(enabled===cfEnabled) return;
+    const m=document.getElementById('paymentMethods');
+    const current=document.querySelector('input[name="paymentMethod"]:checked')?.value||'';
+    m.innerHTML=(enabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" ${current==='CASHFREE'?'checked':''} onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${current==='COD'||(!enabled&&current!=='CASHFREE')?'checked':''} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
+    if(!m.innerHTML){m.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';return;}
+    const chosen=document.querySelector('input[name="paymentMethod"]:checked')?.value||(enabled?'CASHFREE':(codEnabled?'COD':''));
+    selectPaymentMethod(chosen);
+  }).catch(()=>{});
 }
 function selectPaymentMethod(method){
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
