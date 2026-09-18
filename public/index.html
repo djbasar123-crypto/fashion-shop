@@ -1613,42 +1613,19 @@ function closeCart(){document.getElementById('cartDrawer').classList.remove('ope
 // ===== CHECKOUT =====
 async function openCheckout(){
   if(!cart.length){alert('Cart khaali hai');return;}
-
-  // CHECKOUT-ONLY FIX: close cart first, then force the checkout modal above every layer.
+  // Close the cart immediately so checkout never gets blocked by Cashfree/API status loading.
   closeCart();
-
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codEnabled=!!pay.codEnabled;
   const codCharge=Number(pay.codCharge)||40;
   document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
-
   const methods=document.getElementById('paymentMethods');
   const cfEnabled=window.cashfreeEnabled===true;
   methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
-  if(methods.innerHTML) selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
-
-  const modal=document.getElementById('checkoutModal');
-  modal.classList.add('show');
-  modal.style.display='flex';
-  modal.style.visibility='visible';
-  modal.style.opacity='1';
-  modal.style.pointerEvents='auto';
-  modal.style.zIndex='2147483000';
+  selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
+  document.getElementById('checkoutModal').classList.add('show');
   openCheckoutHistory();
-
-  // Refresh Cashfree availability in background; never block checkout opening.
-  checkCashfreeStatus().then(r=>{
-    if(!modal.classList.contains('show')) return;
-    const enabled=!!(r&&r.enabled);
-    if(enabled===cfEnabled) return;
-    const m=document.getElementById('paymentMethods');
-    const current=document.querySelector('input[name="paymentMethod"]:checked')?.value||'';
-    m.innerHTML=(enabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" ${current==='CASHFREE'?'checked':''} onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${current==='COD'||(!enabled&&current!=='CASHFREE')?'checked':''} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
-    if(!m.innerHTML){m.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';return;}
-    const chosen=document.querySelector('input[name="paymentMethod"]:checked')?.value||(enabled?'CASHFREE':(codEnabled?'COD':''));
-    selectPaymentMethod(chosen);
-  }).catch(()=>{});
 }
 function selectPaymentMethod(method){
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
@@ -2107,5 +2084,63 @@ loadStore().then(()=>handleCashfreeReturn());
 })();
 </script>
 
+<!-- IBM COLLECTION: CHECKOUT-ONLY FINAL OVERRIDE -->
+<style id="checkout-only-final-fix">
+  #checkoutModal{z-index:2147483000!important;display:none!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  #checkoutModal.show{display:flex!important}
+  #checkoutModal .checkout-box{position:relative!important;z-index:2147483001!important;max-height:92vh!important;overflow-y:auto!important}
+  #cartDrawer{z-index:601!important}
+  #cartOverlay{z-index:600!important}
+</style>
+<script id="checkout-only-final-fix-js">
+(function(){
+  function safePay(){ return (window.pay && typeof window.pay==='object') ? window.pay : {codEnabled:true,codCharge:40,courierPartner:''}; }
+  window.openCheckout=function(){
+    const modal=document.getElementById('checkoutModal');
+    if(!modal) return;
+    if(!Array.isArray(window.cart) || !window.cart.length){ alert('Cart khaali hai'); return; }
+
+    // FIRST: make checkout visible. Nothing async or history-related can block it.
+    try{ if(typeof window.closeCart==='function') window.closeCart(); }catch(e){}
+    modal.classList.add('show');
+    modal.style.setProperty('display','flex','important');
+    modal.style.setProperty('visibility','visible','important');
+    modal.style.setProperty('opacity','1','important');
+    modal.style.setProperty('pointer-events','auto','important');
+    modal.style.setProperty('z-index','2147483000','important');
+
+    try{
+      const cfg=safePay();
+      const subtotal=cart.reduce((a,x)=>a+(Number(x.price)||0)*(Number(x.qty)||0),0);
+      const codEnabled=!!cfg.codEnabled;
+      const codCharge=Number(cfg.codCharge)||40;
+      const summary=document.getElementById('checkoutSummary');
+      if(summary) summary.innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name||''} (${x.size||''})×${x.qty||1}</span><b>₹${(Number(x.price)||0)*(Number(x.qty)||0)}</b></p>`).join('')+
+        `<p><span>Subtotal</span><b>₹${subtotal}</b></p><p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p><p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
+
+      const methods=document.getElementById('paymentMethods');
+      const cfEnabled=window.cashfreeEnabled===true;
+      if(methods){
+        methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+
+          (codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
+        if(!methods.innerHTML) methods.innerHTML='<div style="color:#f7d66a;font-weight:700;">Payment abhi set nahi hua.</div>';
+        const chosen=methods.querySelector('input[name="paymentMethod"]:checked')?.value || (codEnabled?'COD':'');
+        if(chosen && typeof window.selectPaymentMethod==='function') window.selectPaymentMethod(chosen);
+      }
+
+      // Cashfree availability refresh happens AFTER checkout is visible.
+      if(typeof window.checkCashfreeStatus==='function'){
+        Promise.resolve(window.checkCashfreeStatus()).then(function(r){
+          if(!modal.classList.contains('show')) return;
+          if(r && r.enabled===true && typeof window.cashfreeEnabled!=='undefined') window.cashfreeEnabled=true;
+        }).catch(function(){});
+      }
+    }catch(e){
+      // Even if a non-critical checkout field fails, the checkout modal stays open.
+      console.error('Checkout UI error:',e);
+    }
+  };
+})();
+</script>
 </body>
 </html>
