@@ -2098,7 +2098,7 @@ loadStore().then(()=>handleCashfreeReturn());
   window.openCheckout=function(){
     const modal=document.getElementById('checkoutModal');
     if(!modal) return;
-    if(!Array.isArray(window.cart) || !window.cart.length){ alert('Cart khaali hai'); return; }
+    if(!Array.isArray(cart) || !cart.length){ alert('Cart khaali hai'); return; }
 
     // FIRST: make checkout visible. Nothing async or history-related can block it.
     try{ if(typeof window.closeCart==='function') window.closeCart(); }catch(e){}
