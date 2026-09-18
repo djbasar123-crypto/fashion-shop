@@ -2084,61 +2084,51 @@ loadStore().then(()=>handleCashfreeReturn());
 })();
 </script>
 
-<!-- IBM COLLECTION: CHECKOUT-ONLY FINAL OVERRIDE -->
-<style id="checkout-only-final-fix">
-  #checkoutModal{z-index:2147483000!important;display:none!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
-  #checkoutModal.show{display:flex!important}
-  #checkoutModal .checkout-box{position:relative!important;z-index:2147483001!important;max-height:92vh!important;overflow-y:auto!important}
-  #cartDrawer{z-index:601!important}
-  #cartOverlay{z-index:600!important}
+
+<style id="ibm-checkout-one-time-fix">
+/* CHECKOUT ONLY: keep the working site unchanged; make the checkout modal stable and reset its scroll. */
+#checkoutModal{position:fixed!important;inset:0!important;display:none!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;z-index:2147483000!important;padding:12px!important;box-sizing:border-box!important;}
+#checkoutModal.show{display:flex!important;}
+#checkoutModal>.checkout-box{position:relative!important;width:680px!important;max-width:calc(100vw - 24px)!important;max-height:calc(100vh - 24px)!important;margin:0!important;overflow-y:auto!important;overflow-x:hidden!important;box-sizing:border-box!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;}
+#checkoutModal .close-m{position:sticky!important;float:right!important;top:0!important;right:0!important;z-index:20!important;width:42px!important;height:42px!important;min-width:42px!important;margin:-2px -2px 4px 8px!important;}
+#checkoutModal #paymentMethods{display:flex!important;flex-wrap:wrap!important;gap:10px!important;}
+#checkoutModal #paymentMethods label{display:flex!important;align-items:center!important;gap:7px!important;flex:1 1 220px!important;min-height:48px!important;box-sizing:border-box!important;}
+@media(max-width:700px){
+  #checkoutModal{padding:6px!important;align-items:flex-start!important;}
+  #checkoutModal>.checkout-box{width:100%!important;max-width:100%!important;max-height:calc(100vh - 12px)!important;margin:6px 0!important;border-radius:16px!important;padding:14px!important;}
+}
 </style>
-<script id="checkout-only-final-fix-js">
+<script id="ibm-checkout-one-time-js">
 (function(){
-  function safePay(){ return (window.pay && typeof window.pay==='object') ? window.pay : {codEnabled:true,codCharge:40,courierPartner:''}; }
-  window.openCheckout=function(){
+  /* Checkout-only repair. The existing server.js and all other site features stay untouched. */
+  window.cashfreeEnabled = true;
+  const originalOpenCheckout = window.openCheckout;
+  window.openCheckout = async function(){
+    if(typeof originalOpenCheckout==='function') await originalOpenCheckout();
     const modal=document.getElementById('checkoutModal');
-    if(!modal) return;
-    if(!Array.isArray(cart) || !cart.length){ alert('Cart khaali hai'); return; }
-
-    // FIRST: make checkout visible. Nothing async or history-related can block it.
-    try{ if(typeof window.closeCart==='function') window.closeCart(); }catch(e){}
-    modal.classList.add('show');
-    modal.style.setProperty('display','flex','important');
-    modal.style.setProperty('visibility','visible','important');
-    modal.style.setProperty('opacity','1','important');
-    modal.style.setProperty('pointer-events','auto','important');
-    modal.style.setProperty('z-index','2147483000','important');
-
-    try{
-      const cfg=safePay();
-      const subtotal=cart.reduce((a,x)=>a+(Number(x.price)||0)*(Number(x.qty)||0),0);
-      const codEnabled=!!cfg.codEnabled;
-      const codCharge=Number(cfg.codCharge)||40;
-      const summary=document.getElementById('checkoutSummary');
-      if(summary) summary.innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name||''} (${x.size||''})×${x.qty||1}</span><b>₹${(Number(x.price)||0)*(Number(x.qty)||0)}</b></p>`).join('')+
-        `<p><span>Subtotal</span><b>₹${subtotal}</b></p><p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p><p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
-
-      const methods=document.getElementById('paymentMethods');
-      const cfEnabled=window.cashfreeEnabled===true;
-      if(methods){
-        methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+
-          (codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
-        if(!methods.innerHTML) methods.innerHTML='<div style="color:#f7d66a;font-weight:700;">Payment abhi set nahi hua.</div>';
-        const chosen=methods.querySelector('input[name="paymentMethod"]:checked')?.value || (codEnabled?'COD':'');
-        if(chosen && typeof window.selectPaymentMethod==='function') window.selectPaymentMethod(chosen);
-      }
-
-      // Cashfree availability refresh happens AFTER checkout is visible.
-      if(typeof window.checkCashfreeStatus==='function'){
-        Promise.resolve(window.checkCashfreeStatus()).then(function(r){
-          if(!modal.classList.contains('show')) return;
-          if(r && r.enabled===true && typeof window.cashfreeEnabled!=='undefined') window.cashfreeEnabled=true;
-        }).catch(function(){});
-      }
-    }catch(e){
-      // Even if a non-critical checkout field fails, the checkout modal stays open.
-      console.error('Checkout UI error:',e);
+    const box=modal&&modal.querySelector('.checkout-box');
+    if(modal){ modal.classList.add('show'); modal.scrollTop=0; }
+    if(box){ box.scrollTop=0; box.scrollLeft=0; }
+    document.documentElement.style.overflow='hidden';
+    document.body.style.overflow='hidden';
+    /* Cashfree stays available even if the status request is slow/temporarily false. */
+    const methods=document.getElementById('paymentMethods');
+    if(methods && !methods.querySelector('input[value="CASHFREE"]')){
+      const label=document.createElement('label');
+      label.className='payment-option';
+      label.innerHTML='<input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod(\'CASHFREE\')"> 💳 Pay Online (Cashfree)';
+      methods.prepend(label);
+      if(typeof window.selectPaymentMethod==='function') window.selectPaymentMethod('CASHFREE');
     }
+    return true;
+  };
+  const originalCloseCheckout=window.closeCheckout;
+  window.closeCheckout=function(fromPop){
+    if(typeof originalCloseCheckout==='function') originalCloseCheckout(fromPop);
+    const modal=document.getElementById('checkoutModal');
+    if(modal) modal.classList.remove('show');
+    document.documentElement.style.overflow='';
+    document.body.style.overflow='';
   };
 })();
 </script>
