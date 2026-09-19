@@ -1063,7 +1063,7 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
   overflow-y:auto!important;
   overflow-x:hidden!important;
 }
-#checkoutModal.show{display:flex!important;}
+#checkoutModal.show{display:flex!important;z-index:2147483000!important;}
 #checkoutModal>.checkout-box{
   width:680px!important;
   max-width:100%!important;
@@ -1076,8 +1076,8 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
   flex:0 1 auto!important;
 }
 #checkoutModal .close-m{z-index:2147483002!important;}
-#cartOverlay{z-index:1000!important;}
-#cartDrawer{z-index:1001!important;}
+#cartOverlay{z-index:900!important;}
+#cartDrawer{z-index:901!important;}
 @media(max-width:700px){
   #checkoutModal{padding:6px!important;}
   #checkoutModal>.checkout-box{
@@ -1668,7 +1668,7 @@ async function openCheckout(){
   const codCharge=Number(pay.codCharge)||40;
   document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
   const methods=document.getElementById('paymentMethods');
-  const cfEnabled=window.cashfreeEnabled===true;
+  const cfEnabled=true;
   methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
   selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
