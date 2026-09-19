@@ -1088,6 +1088,77 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
   }
 }
 </style>
+  <style id="ibm-cart-layer-final-fix">
+#cartOverlay{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:2147482000 !important;
+}
+
+#cartDrawer{
+  position:fixed !important;
+  top:0 !important;
+  right:-420px !important;
+  bottom:0 !important;
+  width:390px !important;
+  max-width:94vw !important;
+  height:100vh !important;
+  max-height:100vh !important;
+  box-sizing:border-box !important;
+  z-index:2147482001 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  overflow:hidden !important;
+}
+
+#cartDrawer.open{
+  right:0 !important;
+}
+
+#cartDrawer .cart-head{
+  position:relative !important;
+  z-index:20 !important;
+  flex:0 0 auto !important;
+}
+
+#cartDrawer .close-cart{
+  position:relative !important;
+  z-index:30 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:44px !important;
+  height:44px !important;
+  min-width:44px !important;
+  min-height:44px !important;
+  cursor:pointer !important;
+}
+
+#cartDrawer .cart-items{
+  position:relative !important;
+  z-index:5 !important;
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+}
+
+#cartDrawer .cart-foot{
+  position:relative !important;
+  z-index:20 !important;
+  flex:0 0 auto !important;
+}
+
+#checkoutModal{
+  z-index:2147483000 !important;
+}
+
+@media(max-width:700px){
+  #cartDrawer{
+    width:94vw !important;
+    max-width:94vw !important;
+  }
+}
+</style>
 </head>
 <body>
 
