@@ -1274,7 +1274,7 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
 <!-- CART -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
-  <div class="cart-head"><h3>🛒 Cart</h3><button class="close-cart" onclick="closeCart()">✕</button></div>
+  <div class="cart-head"><h3>🛒 Cart</h3><button type="button" class="close-cart" onclick="closeCart()" aria-label="Close cart">✕</button></div>
   <div class="cart-items" id="cartItems"></div>
   <div class="cart-foot">
     <div class="cart-total"><span>Total:</span><span id="cartTotal">₹0</span></div>
@@ -1825,7 +1825,8 @@ function openCheckoutHistory(){
   }
 }
 function closeCheckout(fromPop=false){
-  document.getElementById('checkoutModal').classList.remove('show');
+  const modal=document.getElementById('checkoutModal');
+  if(modal){modal.classList.remove('show');modal.style.setProperty('display','none','important');}
   if(checkoutHistoryActive){
     checkoutHistoryActive=false;
     if(!fromPop) history.back();
@@ -2262,13 +2263,26 @@ loadStore().then(()=>handleCashfreeReturn());
   #checkoutModal{z-index:2147483000!important;display:none!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
   #checkoutModal.show{display:flex!important}
   #checkoutModal .checkout-box{position:relative!important;z-index:2147483001!important;max-height:92vh!important;overflow-y:auto!important}
-  #cartDrawer{z-index:601!important}
-  #cartOverlay{z-index:600!important}
+  #cartDrawer{z-index:2147482000!important;top:0!important;right:-420px!important;height:100dvh!important}
+  #cartDrawer.open{right:0!important}
+  #cartOverlay{z-index:2147481999!important}
+  #cartDrawer .cart-head{position:sticky!important;top:0!important;z-index:5!important}
+  #cartDrawer .close-cart{display:flex!important;align-items:center!important;justify-content:center!important;width:42px!important;height:42px!important;font-size:28px!important;line-height:1!important;cursor:pointer!important}
+
+  /* Checkout close button: always visible at the top while the form scrolls. */
+  #checkoutModal .checkout-box{position:relative!important}
+  #checkoutModal .checkout-box .close-m{position:sticky!important;top:8px!important;float:right!important;margin:-2px -2px 4px auto!important;width:52px!important;height:52px!important;min-width:52px!important;z-index:2147483005!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;cursor:pointer!important;pointer-events:auto!important}
+  #checkoutModal .checkout-box h2{clear:both!important}
+  #checkoutModal .pay-box{clear:both!important}
+  #paymentMethods .payment-option{min-height:58px!important;display:flex!important;align-items:center!important;gap:8px!important}
+  #paymentMethods .payment-option input{flex:0 0 auto!important}
+  #paymentMethods .payment-option:hover{border-color:#f3d889!important}
+
 </style>
 <script id="checkout-only-final-fix-js">
 (function(){
   function safePay(){ return (window.pay && typeof window.pay==='object') ? window.pay : {codEnabled:true,codCharge:40,courierPartner:''}; }
-  window.openCheckout=function(){
+  window.openCheckout=async function(){
     const modal=document.getElementById('checkoutModal');
     if(!modal) return;
     if(!Array.isArray(cart) || !cart.length){ alert('Cart khaali hai'); return; }
@@ -2292,21 +2306,21 @@ loadStore().then(()=>handleCashfreeReturn());
         `<p><span>Subtotal</span><b>₹${subtotal}</b></p><p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p><p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
 
       const methods=document.getElementById('paymentMethods');
-      const cfEnabled=window.cashfreeEnabled===true;
+      // Check Cashfree BEFORE rendering payment choices. Previously the UI read the
+      // default false value and never rebuilt the payment buttons after the API check.
+      let cfEnabled=window.cashfreeEnabled===true;
+      try{
+        if(typeof window.checkCashfreeStatus==='function'){
+          const cf=await window.checkCashfreeStatus();
+          cfEnabled=!!(cf && cf.enabled===true);
+        }
+      }catch(e){ cfEnabled=false; }
       if(methods){
         methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+
           (codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
         if(!methods.innerHTML) methods.innerHTML='<div style="color:#f7d66a;font-weight:700;">Payment abhi set nahi hua.</div>';
         const chosen=methods.querySelector('input[name="paymentMethod"]:checked')?.value || (codEnabled?'COD':'');
         if(chosen && typeof window.selectPaymentMethod==='function') window.selectPaymentMethod(chosen);
-      }
-
-      // Cashfree availability refresh happens AFTER checkout is visible.
-      if(typeof window.checkCashfreeStatus==='function'){
-        Promise.resolve(window.checkCashfreeStatus()).then(function(r){
-          if(!modal.classList.contains('show')) return;
-          if(r && r.enabled===true && typeof window.cashfreeEnabled!=='undefined') window.cashfreeEnabled=true;
-        }).catch(function(){});
       }
     }catch(e){
       // Even if a non-critical checkout field fails, the checkout modal stays open.
