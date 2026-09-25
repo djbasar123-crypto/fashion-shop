@@ -2278,6 +2278,58 @@ loadStore().then(()=>handleCashfreeReturn());
   #paymentMethods .payment-option input{flex:0 0 auto!important}
   #paymentMethods .payment-option:hover{border-color:#f3d889!important}
 
+
+  /* Payment method layout/text fix */
+  #checkoutModal .checkout-box{overflow-x:hidden!important;}
+  #checkoutModal #paymentMethods{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:12px!important;
+    width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    overflow:visible!important;
+  }
+  #checkoutModal #paymentMethods .payment-option{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:10px!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:58px!important;
+    box-sizing:border-box!important;
+    padding:13px 14px!important;
+    margin:0!important;
+    font-size:14px!important;
+    line-height:1.4!important;
+    text-align:left!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    overflow-wrap:break-word!important;
+  }
+  #checkoutModal #paymentMethods .payment-option input{
+    flex:0 0 18px!important;
+    width:18px!important;
+    height:18px!important;
+    margin:0!important;
+  }
+  #checkoutModal #paymentMethods .payment-option small{
+    display:inline!important;
+    font-size:12px!important;
+    line-height:1.3!important;
+    white-space:normal!important;
+  }
+  #checkoutModal #payBox{
+    width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+  }
+  @media(max-width:600px){
+    #checkoutModal #paymentMethods{grid-template-columns:1fr!important;}
+  }
 </style>
 <script id="checkout-only-final-fix-js">
 (function(){
