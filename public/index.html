@@ -445,7 +445,7 @@ body{
   .hero-content{min-height:520px!important;padding:55px 5%!important}
 }
 @media(max-width:600px){
-  .luxury-topbar{font-size:8px;letter-spacing:.5px}
+  .luxury-topbar{font-size:12px;letter-spacing:.4px}
   .luxury-top-left{justify-content:center;gap:9px}
   .header{min-height:78px!important}
   .hero{min-height:500px!important}
@@ -624,6 +624,165 @@ body{background:#030303!important;color:#eee!important;}
 .login-box{background:linear-gradient(145deg,#080808,#12100c)!important;}
 /* Gold accent for controls */
 .save-btn,.edit-btn{background:linear-gradient(135deg,#b88a18,#f4d76b)!important;color:#111!important;}
+
+
+/* IBM COLLECTION — UX consistency pass */
+:root{
+  --ux-text:16px;
+  --ux-small:13px;
+  --ux-body-line:1.55;
+  --ux-radius-sm:8px;
+  --ux-radius-md:12px;
+  --ux-radius-lg:16px;
+  --ux-radius-pill:999px;
+  --ux-gold:#d4af37;
+  --ux-gold2:#f4d76b;
+}
+
+/* 1. Consistent typography: keep common UI text within a compact scale */
+body{font-size:var(--ux-text);line-height:var(--ux-body-line);}
+.header-search input,.header-search button,.nav a{font-size:14px!important;}
+.hero p,.footer p{font-size:14px;}
+.section-title{font-size:30px!important;}
+.pinfo h3,.pinfo h4{font-size:16px!important;line-height:1.35;}
+.price{font-size:17px!important;}
+.old{font-size:13px!important;}
+.tag,.size-row label,.size-select,.try-btn,.add-btn{font-size:13px!important;}
+
+/* 2. Compact, consistent corner-radius system */
+.header-search input,.header-search button,.btn,.cart-btn,.tag,
+.size-select,.try-btn,.add-btn,.pay-link,.login-box,.checkout-box,
+.tryon-box,.cat-card,.product,.detail-main,.detail-thumbs img,
+.order-summary,.pay-box,.whatsapp-note,.try-upload,.try-stage,
+.try-controls,.admin-wrap .card,.admin-wrap .admin-card{border-radius:var(--ux-radius-md)!important;}
+.cart-btn,.header-search button,.btn,.pay-link{border-radius:var(--ux-radius-pill)!important;}
+.login-box input,.checkout-box input,.checkout-box textarea,.checkout-box select,
+.login-box button,.detail-info select{border-radius:var(--ux-radius-sm)!important;}
+
+/* 3. Reduce button variants to one primary + one secondary visual family */
+.btn{
+  background:linear-gradient(135deg,#b88a18,#f4d76b)!important;
+  color:#111!important;border:none!important;font-weight:800!important;
+  min-height:42px;padding:10px 20px!important;
+}
+.btn:hover{transform:translateY(-1px) scale(1.01);}
+.add-btn,.try-btn{
+  background:#171717!important;color:#fff!important;
+  border:1px solid rgba(212,175,55,.55)!important;
+  min-height:42px;padding:10px 14px!important;
+}
+.add-btn:hover,.try-btn:hover{background:#242424!important;}
+.login-box button,.save-btn,.edit-btn{min-height:42px!important;}
+
+/* 4. Topbar body text: never use 10px for the slogan */
+.luxury-top-right span{font-size:12px!important;line-height:1.4!important;}
+.luxury-top-left span{font-size:12px!important;line-height:1.4!important;}
+
+/* 5 & 10. Hero: readable sentence case, stronger tagline */
+#heroTitle{
+  font-size:clamp(32px,5vw,44px)!important;
+  line-height:1.08!important;
+  letter-spacing:.2px!important;
+  text-transform:none!important;
+}
+#heroTagline{
+  font-size:clamp(15px,2vw,18px)!important;
+  line-height:1.6!important;
+  font-weight:500!important;
+  color:#f1f1f1!important;
+  text-shadow:0 1px 8px rgba(0,0,0,.65);
+  max-width:760px;margin:12px auto 0!important;
+}
+
+/* 6. Section headings: readable title case rather than forced all-caps */
+#categories>.section-title,#products>.section-title{text-transform:none!important;}
+
+/* 7 & 8. Product titles wrap and use the correct heading level */
+.pinfo h3,.pinfo h4{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  display:block!important;
+  min-height:2.7em;
+}
+.pinfo h4{margin-bottom:6px;}
+
+/* 9. Latest collection: explicit, accessible carousel controls */
+.collection-head{
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  margin-bottom:8px;
+}
+.collection-nav{display:flex;gap:8px;}
+.collection-nav button{
+  width:40px;height:40px;border:1px solid rgba(212,175,55,.6);
+  border-radius:50%;background:#111;color:#f4d76b;
+  font-size:20px;line-height:1;cursor:pointer;
+}
+.collection-nav button:hover,.collection-nav button:focus-visible{
+  background:#1d1d1d;outline:3px solid rgba(212,175,55,.25);
+  outline-offset:2px;
+}
+.products{
+  display:flex!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  gap:22px!important;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  scrollbar-width:thin;
+  padding:4px 2px 14px!important;
+}
+.products .product{
+  flex:0 0 calc((100% - 66px)/4);
+  min-width:240px;
+  scroll-snap-align:start;
+}
+@media(max-width:1000px){
+  .products .product{flex-basis:calc((100% - 22px)/2);}
+}
+@media(max-width:650px){
+  .collection-head{justify-content:space-between;}
+  .collection-head .section-title{text-align:left!important;margin:0;}
+  .products .product{flex-basis:min(82vw,300px);}
+}
+
+/* 11. Footer contact/social spacing */
+.footer .fs{margin:18px 0 20px!important;gap:12px;}
+.footer #contactInfo,.footer>p{line-height:1.7!important;}
+.footer>p:not(.cp){margin-top:10px!important;}
+
+/* 12. Cart stays at the right side of the header */
+.header>div:last-child{margin-left:auto!important;justify-content:flex-end!important;}
+.cart-btn{order:2!important;margin-left:auto!important;flex:0 0 auto;}
+.header .nav{order:3;}
+.social-icons{order:1;}
+
+/* 13. Category icons: add contrast without changing the source image */
+.cat-card .ci img{
+  background:#111!important;
+  border:1px solid rgba(212,175,55,.45)!important;
+  box-shadow:0 0 0 4px rgba(212,175,55,.06),0 8px 20px rgba(0,0,0,.22)!important;
+  filter:brightness(1.25) contrast(1.08)!important;
+}
+.cat-card .ci{
+  background:radial-gradient(circle,rgba(212,175,55,.12),transparent 68%);
+  border-radius:var(--ux-radius-md);
+}
+
+/* 14. Breathing room between product actions */
+.pinfo .btn{margin-top:12px!important;}
+.pinfo .add-btn{margin-top:10px!important;}
+
+/* 15. Search: readable width without taking the whole header */
+.header-search{width:min(100%,420px)!important;max-width:420px!important;}
+@media(max-width:900px){.header-search{width:100%!important;max-width:100%!important;}}
+@media(max-width:600px){
+  .header-search input{font-size:14px!important;}
+  .hero-content h1{font-size:clamp(32px,10vw,42px)!important;}
+}
+
+/* Keep the carousel usable with keyboard focus and touch */
+.products:focus{outline:3px solid rgba(212,175,55,.35);outline-offset:3px;}
 
 </style>
 
@@ -1041,124 +1200,6 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
 /* Never show legacy BharatPe/manual UPI UI. */
 #tab-payment #upId,#tab-payment #upName,#tab-payment #upQrFile,#tab-payment #upQrUrl,#tab-payment #qrPrevImg{display:none!important;}
 </style>
-<style id="ibm-checkout-exact-fix">
-/* ONLY checkout layering/flow fix. Existing design and other features unchanged. */
-#checkoutModal{z-index:100000!important;display:none!important;pointer-events:none!important;}
-#checkoutModal.show{display:flex!important;pointer-events:auto!important;z-index:100000!important;}
-#checkoutModal .checkout-box{position:relative!important;z-index:100001!important;max-height:92vh!important;overflow-y:auto!important;overflow-x:hidden!important;}
-#cartDrawer{z-index:601!important;}
-#cartOverlay{z-index:600!important;}
-</style>
-<style id="ibm-checkout-box-only-final">
-/* CHECKOUT BOX ONLY: keep the entire checkout panel inside the viewport. */
-#checkoutModal{
-  display:none!important;
-  position:fixed!important;
-  inset:0!important;
-  z-index:2147483000!important;
-  padding:12px!important;
-  box-sizing:border-box!important;
-  align-items:flex-start!important;
-  justify-content:center!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-}
-#checkoutModal.show{display:flex!important;z-index:2147483000!important;}
-#checkoutModal>.checkout-box{
-  width:680px!important;
-  max-width:100%!important;
-  max-height:calc(100vh - 24px)!important;
-  height:auto!important;
-  margin:0 auto!important;
-  box-sizing:border-box!important;
-  overflow-y:auto!important;
-  overflow-x:hidden!important;
-  flex:0 1 auto!important;
-}
-#checkoutModal .close-m{z-index:2147483002!important;}
-#cartOverlay{z-index:900!important;}
-#cartDrawer{z-index:901!important;}
-@media(max-width:700px){
-  #checkoutModal{padding:6px!important;}
-  #checkoutModal>.checkout-box{
-    width:100%!important;
-    max-width:100%!important;
-    max-height:calc(100vh - 12px)!important;
-    border-radius:14px!important;
-  }
-}
-</style>
-  <style id="ibm-cart-layer-final-fix">
-#cartOverlay{
-  position:fixed !important;
-  inset:0 !important;
-  z-index:2147482000 !important;
-}
-
-#cartDrawer{
-  position:fixed !important;
-  top:0 !important;
-  right:-420px !important;
-  bottom:0 !important;
-  width:390px !important;
-  max-width:94vw !important;
-  height:100vh !important;
-  max-height:100vh !important;
-  box-sizing:border-box !important;
-  z-index:2147482001 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  overflow:hidden !important;
-}
-
-#cartDrawer.open{
-  right:0 !important;
-}
-
-#cartDrawer .cart-head{
-  position:relative !important;
-  z-index:20 !important;
-  flex:0 0 auto !important;
-}
-
-#cartDrawer .close-cart{
-  position:relative !important;
-  z-index:30 !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  width:44px !important;
-  height:44px !important;
-  min-width:44px !important;
-  min-height:44px !important;
-  cursor:pointer !important;
-}
-
-#cartDrawer .cart-items{
-  position:relative !important;
-  z-index:5 !important;
-  flex:1 1 auto !important;
-  min-height:0 !important;
-  overflow-y:auto !important;
-}
-
-#cartDrawer .cart-foot{
-  position:relative !important;
-  z-index:20 !important;
-  flex:0 0 auto !important;
-}
-
-#checkoutModal{
-  z-index:2147483000 !important;
-}
-
-@media(max-width:700px){
-  #cartDrawer{
-    width:94vw !important;
-    max-width:94vw !important;
-  }
-}
-</style>
 </head>
 <body>
 
@@ -1195,18 +1236,24 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
     <div class="hero-dots" id="heroDots"></div>
   </div>
   <div class="section" id="categories">
-    <h2 class="section-title">SHOP BY CATEGORY</h2>
+    <h2 class="section-title">Shop by Category</h2>
     <div class="categories" id="catGrid"></div>
   </div>
   <div class="section" id="products">
-    <h2 class="section-title">LATEST COLLECTION</h2>
+    <div class="collection-head">
+      <h2 class="section-title">Latest Collection</h2>
+      <div class="collection-nav" aria-label="Latest collection navigation">
+        <button type="button" aria-label="Previous products" onclick="scrollLatestCollection(-1)">‹</button>
+        <button type="button" aria-label="Next products" onclick="scrollLatestCollection(1)">›</button>
+      </div>
+    </div>
     <p id="current-category" style="text-align:center;color:#777;margin-bottom:10px;">Sabhi products dikhaye ja rahe hain</p>
     <div class="products" id="productGrid"></div>
   </div>
   <div class="footer" id="contact">
     <h3 id="footerName">IBM COLLECTION</h3>
     <div class="fs" id="footerSocials"></div>
-    <p style="font-size:12px;color:#aaa;margin-top:8px;">Follow us • Visit our store on Maps</p>
+    <p id="footerSlogan">Follow us • Visit our store on Maps</p>
     <p id="footerAddress"></p>
     <p id="footerPhone"></p>
     <p class="cp" id="footerDomain"></p>
@@ -1613,7 +1660,7 @@ function renderProducts(){
     return `<div class="product" onclick="openProductDetail(${idx})">
       <div class="pimg">${pImgHtml(p,idx)}</div>
       <div class="pinfo">
-        <h4>${p.name}</h4>
+        <h3>${p.name}</h3>
         <div><span class="price">₹${p.price}</span>${p.oldPrice?` <span class="old">₹${p.oldPrice}</span>`:''}${off?` <span style="color:#f5d76e;font-weight:800;font-size:11px;margin-left:5px;">${off}% OFF</span>`:''}</div>
         <span class="tag">${catName(p.cat)}</span>
         <button class="btn" style="width:100%;margin-top:7px;" onclick="event.stopPropagation();openProductDetail(${idx})">🛒 Buy Now</button>
@@ -1672,6 +1719,14 @@ function sliderTouchEnd(e,id){
   sliderStarts[id]=null;
 }
 
+function scrollLatestCollection(direction){
+  const grid=document.getElementById('productGrid');
+  if(!grid)return;
+  const card=grid.querySelector('.product');
+  const amount=card ? card.getBoundingClientRect().width + 22 : Math.max(grid.clientWidth*0.8,260);
+  grid.scrollBy({left:direction*amount,behavior:'smooth'});
+}
+
 function searchProducts(){
   window.searchQuery=document.getElementById('searchInput').value||'';
   renderProducts();
@@ -1687,7 +1742,7 @@ function clearSearch(){
 
 function filterProducts(c){currentCat=c;renderProducts();}
 
-function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const sz=selectedSizes[i]||sizes[0];const color=selectedColors[i]||colors[0];cart=[{name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',pimgs:Array.isArray(p.pimgs)?p.pimgs:[],size:sz,color,qty:1}];saveCart();closeProductDetail(true);openCheckout();}
+function buyNow(i){const p=products[i];if(!p)return;const sizes=p.sizes&&p.sizes.length?p.sizes:['S','M','L','XL','XXL'];const colors=p.colors&&p.colors.length?p.colors:['Black'];const sz=selectedSizes[i]||sizes[0];const color=selectedColors[i]||colors[0];cart=[{name:p.name,price:p.price,icon:p.icon,pimg:p.pimg||'',pimgs:Array.isArray(p.pimgs)?p.pimgs:[],size:sz,color,qty:1}];saveCart();closeProductDetail();setTimeout(()=>openCheckout(),80);}
 function reviewKey(i){return 'ibm_reviews_'+i;} function getReviews(i){try{return JSON.parse(localStorage.getItem(reviewKey(i))||'[]')}catch(e){return []}}
 function renderReviews(i){const rs=getReviews(i);if(!rs.length)return '<p style="color:#888;font-size:13px;">No reviews yet. Be the first to review.</p>';return rs.slice().reverse().map(r=>`<div style="border-top:1px solid #eee;padding:10px 0;"><b>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</b> <strong>${r.name}</strong><div style="font-size:13px;color:#555;margin-top:4px;">${r.text}</div></div>`).join('');}
 function submitReview(i){const name=document.getElementById('reviewName').value.trim()||'Customer';const text=document.getElementById('reviewText').value.trim();const rating=Number(document.getElementById('reviewRating').value||5);if(!text){alert('Review likho');return;}const rs=getReviews(i);rs.push({name,text,rating,date:Date.now()});localStorage.setItem(reviewKey(i),JSON.stringify(rs));openProductDetail(i);}
@@ -1730,21 +1785,19 @@ function closeCart(){document.getElementById('cartDrawer').classList.remove('ope
 
 // ===== CHECKOUT =====
 async function openCheckout(){
-  if(!Array.isArray(cart)||!cart.length){alert('Cart khaali hai');return;}
+  if(!cart.length){alert('Cart khaali hai');return;}
+  // Close the cart immediately so checkout never gets blocked by Cashfree/API status loading.
   closeCart();
-  const checkout=document.getElementById('checkoutModal');
-  if(checkout){checkout.classList.remove('show');checkout.scrollTop=0;}
   const subtotal=cart.reduce((a,x)=>a+x.price*x.qty,0);
   const codEnabled=!!pay.codEnabled;
   const codCharge=Number(pay.codCharge)||40;
   document.getElementById('checkoutSummary').innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name} (${x.size})×${x.qty}</span><b>₹${x.price*x.qty}</b></p>`).join('')+`<p><span>Subtotal</span><b>₹${subtotal}</b></p>`+`<p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p>`+`<p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
   const methods=document.getElementById('paymentMethods');
-  const cfEnabled=true;
+  const cfEnabled=window.cashfreeEnabled===true;
   methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+(codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
   if(!methods.innerHTML) methods.innerHTML='<div style="color:#c00;font-weight:700;">Payment abhi set nahi hua.</div>';
   selectPaymentMethod(cfEnabled?'CASHFREE':(codEnabled?'COD':''));
-  const checkoutModal=document.getElementById('checkoutModal');
-  if(checkoutModal){checkoutModal.classList.add('show');checkoutModal.scrollTop=0;const box=checkoutModal.querySelector('.checkout-box');if(box)box.scrollTop=0;}
+  document.getElementById('checkoutModal').classList.add('show');
   openCheckoutHistory();
 }
 function selectPaymentMethod(method){
@@ -2204,5 +2257,63 @@ loadStore().then(()=>handleCashfreeReturn());
 })();
 </script>
 
+<!-- IBM COLLECTION: CHECKOUT-ONLY FINAL OVERRIDE -->
+<style id="checkout-only-final-fix">
+  #checkoutModal{z-index:2147483000!important;display:none!important;align-items:center!important;justify-content:center!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+  #checkoutModal.show{display:flex!important}
+  #checkoutModal .checkout-box{position:relative!important;z-index:2147483001!important;max-height:92vh!important;overflow-y:auto!important}
+  #cartDrawer{z-index:601!important}
+  #cartOverlay{z-index:600!important}
+</style>
+<script id="checkout-only-final-fix-js">
+(function(){
+  function safePay(){ return (window.pay && typeof window.pay==='object') ? window.pay : {codEnabled:true,codCharge:40,courierPartner:''}; }
+  window.openCheckout=function(){
+    const modal=document.getElementById('checkoutModal');
+    if(!modal) return;
+    if(!Array.isArray(cart) || !cart.length){ alert('Cart khaali hai'); return; }
+
+    // FIRST: make checkout visible. Nothing async or history-related can block it.
+    try{ if(typeof window.closeCart==='function') window.closeCart(); }catch(e){}
+    modal.classList.add('show');
+    modal.style.setProperty('display','flex','important');
+    modal.style.setProperty('visibility','visible','important');
+    modal.style.setProperty('opacity','1','important');
+    modal.style.setProperty('pointer-events','auto','important');
+    modal.style.setProperty('z-index','2147483000','important');
+
+    try{
+      const cfg=safePay();
+      const subtotal=cart.reduce((a,x)=>a+(Number(x.price)||0)*(Number(x.qty)||0),0);
+      const codEnabled=!!cfg.codEnabled;
+      const codCharge=Number(cfg.codCharge)||40;
+      const summary=document.getElementById('checkoutSummary');
+      if(summary) summary.innerHTML=cart.map(x=>`<p><span>${x.icon||''} ${x.name||''} (${x.size||''})×${x.qty||1}</span><b>₹${(Number(x.price)||0)*(Number(x.qty)||0)}</b></p>`).join('')+
+        `<p><span>Subtotal</span><b>₹${subtotal}</b></p><p id="codChargeRow" style="display:none;"><span>COD Charge</span><b>₹${codCharge}</b></p><p style="border-top:1px solid #ddd;"><b>Total</b><b id="checkoutTotal">₹${subtotal}</b></p>`;
+
+      const methods=document.getElementById('paymentMethods');
+      const cfEnabled=window.cashfreeEnabled===true;
+      if(methods){
+        methods.innerHTML=(cfEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="CASHFREE" checked onchange="selectPaymentMethod('CASHFREE')"> 💳 Pay Online (Cashfree)</label>`:'')+
+          (codEnabled?`<label class="payment-option" style="flex:1;min-width:180px;border:2px solid #d4af37;border-radius:10px;padding:11px;cursor:pointer;background:#0b0b0b!important;color:#f7f4ec!important;"><input type="radio" name="paymentMethod" value="COD" ${cfEnabled?'':'checked'} onchange="selectPaymentMethod('COD')"> 💵 Cash on Delivery <small>(+₹${codCharge})</small></label>`:'');
+        if(!methods.innerHTML) methods.innerHTML='<div style="color:#f7d66a;font-weight:700;">Payment abhi set nahi hua.</div>';
+        const chosen=methods.querySelector('input[name="paymentMethod"]:checked')?.value || (codEnabled?'COD':'');
+        if(chosen && typeof window.selectPaymentMethod==='function') window.selectPaymentMethod(chosen);
+      }
+
+      // Cashfree availability refresh happens AFTER checkout is visible.
+      if(typeof window.checkCashfreeStatus==='function'){
+        Promise.resolve(window.checkCashfreeStatus()).then(function(r){
+          if(!modal.classList.contains('show')) return;
+          if(r && r.enabled===true && typeof window.cashfreeEnabled!=='undefined') window.cashfreeEnabled=true;
+        }).catch(function(){});
+      }
+    }catch(e){
+      // Even if a non-critical checkout field fails, the checkout modal stays open.
+      console.error('Checkout UI error:',e);
+    }
+  };
+})();
+</script>
 </body>
 </html>
