@@ -1201,89 +1201,104 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
 #tab-payment #upId,#tab-payment #upName,#tab-payment #upQrFile,#tab-payment #upQrUrl,#tab-payment #qrPrevImg{display:none!important;}
 </style>
 
-<style id="ibm-latest-mobile-final-fix">
-/* FINAL: Latest Collection responsive carousel fix */
+<style id="ibm-products-mobile-final-fix">
+/* FINAL PRODUCT VISIBILITY + MOBILE CAROUSEL FIX */
+#products #productGrid{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  width:100%!important;
+  min-height:80px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  visibility:visible!important;
+  opacity:1!important;
+  content-visibility:visible!important;
+  contain:none!important;
+  transform:none!important;
+  scroll-behavior:smooth!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+#products #productGrid > .product{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  content-visibility:visible!important;
+  contain:none!important;
+  flex:0 0 260px!important;
+  width:260px!important;
+  min-width:260px!important;
+  max-width:260px!important;
+  height:auto!important;
+  position:relative!important;
+}
+#products #productGrid > .product .pimg{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+#products #productGrid > .product .pinfo{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
 #products .collection-head{
+  position:relative!important;
+  z-index:5!important;
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
   gap:14px!important;
-  flex-wrap:wrap!important;
-}
-#products .collection-head .section-title{
-  margin:0!important;
-  text-align:center!important;
 }
 #products .collection-nav{
   display:flex!important;
-  align-items:center!important;
   gap:8px!important;
+  flex:0 0 auto!important;
 }
 #products .collection-nav button{
-  width:42px!important;
-  height:42px!important;
-  min-width:42px!important;
-  padding:0!important;
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  border-radius:50%!important;
-  cursor:pointer!important;
-  touch-action:manipulation!important;
-}
-/* Use a real horizontal carousel; previous CSS blocks were overriding it with grid. */
-#productGrid.products{
-  display:flex!important;
-  flex-wrap:nowrap!important;
-  width:100%!important;
-  max-width:100%!important;
-  box-sizing:border-box!important;
-  overflow-x:auto!important;
-  overflow-y:hidden!important;
-  gap:16px!important;
-  scroll-snap-type:x mandatory!important;
-  scroll-behavior:smooth!important;
-  -webkit-overflow-scrolling:touch!important;
-  padding:4px 4px 16px!important;
-  margin-left:0!important;
-  margin-right:0!important;
-}
-#productGrid.products .product{
-  flex:0 0 calc((100% - 48px)/4)!important;
-  width:auto!important;
-  min-width:0!important;
-  max-width:none!important;
-  scroll-snap-align:start!important;
-  box-sizing:border-box!important;
-}
-#productGrid.products .pinfo h3,
-#productGrid.products .pinfo h4{
-  white-space:normal!important;
-  overflow:visible!important;
-  text-overflow:clip!important;
-  display:block!important;
-  height:auto!important;
-  min-height:2.5em!important;
-  line-height:1.3!important;
-  word-break:normal!important;
-  overflow-wrap:anywhere!important;
-}
-@media(max-width:1100px){
-  #productGrid.products .product{flex-basis:calc((100% - 16px)/2)!important;}
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 40px!important;
 }
 @media(max-width:650px){
-  #products .collection-head{justify-content:space-between!important;align-items:center!important;gap:8px!important;}
-  #products .collection-head .section-title{font-size:24px!important;text-align:left!important;}
-  #products .collection-nav button{width:38px!important;height:38px!important;min-width:38px!important;font-size:19px!important;}
-  #productGrid.products{gap:12px!important;padding-left:2px!important;padding-right:2px!important;}
-  #productGrid.products .product{
-    flex:0 0 min(84vw,320px)!important;
-    width:min(84vw,320px)!important;
+  #products .collection-head{
+    justify-content:center!important;
+    flex-wrap:wrap!important;
+  }
+  #products .collection-head .section-title{
+    width:100%!important;
+    text-align:center!important;
+  }
+  #products .collection-nav{
+    width:100%!important;
+    justify-content:center!important;
+    margin-top:2px!important;
+  }
+  #products #productGrid{
+    min-height:360px!important;
+    padding:4px 18px 18px!important;
+    gap:12px!important;
+  }
+  #products #productGrid > .product{
+    flex:0 0 min(82vw,300px)!important;
+    width:min(82vw,300px)!important;
+    min-width:min(82vw,300px)!important;
+    max-width:min(82vw,300px)!important;
   }
 }
 @media(max-width:430px){
-  #productGrid.products .product{flex-basis:84vw!important;width:84vw!important;}
-  #productGrid.products .product .pimg{height:210px!important;}
+  #products #productGrid{
+    min-height:340px!important;
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  #products #productGrid > .product{
+    flex-basis:82vw!important;
+    width:82vw!important;
+    min-width:82vw!important;
+    max-width:82vw!important;
+  }
 }
 </style>
 
@@ -1330,8 +1345,8 @@ html{scroll-behavior:smooth}body{overflow-x:hidden!important;background:#050505!
     <div class="collection-head">
       <h2 class="section-title">Latest Collection</h2>
       <div class="collection-nav" aria-label="Latest collection navigation">
-        <button type="button" aria-label="Previous products" title="Previous products" onclick="scrollLatestCollection(-1)">‹</button>
-        <button type="button" aria-label="Next products" title="Next products" onclick="scrollLatestCollection(1)">›</button>
+        <button type="button" aria-label="Previous products" onclick="scrollLatestCollection(-1)">‹</button>
+        <button type="button" aria-label="Next products" onclick="scrollLatestCollection(1)">›</button>
       </div>
     </div>
     <p id="current-category" style="text-align:center;color:#777;margin-bottom:10px;">Sabhi products dikhaye ja rahe hain</p>
@@ -1741,7 +1756,7 @@ function renderProducts(){
   const q=(window.searchQuery||'').trim().toLowerCase();
   if(q)list=list.filter(p=>String(p.name||'').toLowerCase().includes(q)||String(p.cat||'').toLowerCase().includes(q)||String(catName(p.cat)||'').toLowerCase().includes(q));
   document.getElementById('current-category').textContent=q?`Search results for "${q}"`:(currentCat==='all'?'Sabhi products':catName(currentCat));
-  if(!list.length){g.innerHTML='<p style="text-align:center;color:#aaa;width:100%;padding:30px;">Koi product nahi mila.</p>'; updateLatestCollectionNav(); return;}
+  if(!list.length){g.innerHTML='<p style="text-align:center;color:#aaa;grid-column:1/-1;padding:30px;">Koi product nahi mila.</p>';return;}
   g.innerHTML=list.map(p=>{
     const idx=products.indexOf(p), off=discountPct(p);
     return `<div class="product" onclick="openProductDetail(${idx})">
@@ -1755,7 +1770,6 @@ function renderProducts(){
       </div>
     </div>`;
   }).join('');
-  updateLatestCollectionNav();
   list.forEach(p=>{const idx=products.indexOf(p);const imgs=Array.isArray(p.pimgs)?p.pimgs.filter(Boolean):(p.pimg?[p.pimg]:[]);startAutoSlider(idx,imgs.length);});
 }
 
@@ -1805,14 +1819,6 @@ function sliderTouchEnd(e,id){
     startAutoSlider(id,total);
   }
   sliderStarts[id]=null;
-}
-
-function updateLatestCollectionNav(){
-  const grid=document.getElementById('productGrid');
-  const nav=document.querySelector('#products .collection-nav');
-  if(!grid||!nav)return;
-  const count=grid.querySelectorAll('.product').length;
-  nav.style.display=count>1?'flex':'none';
 }
 
 function scrollLatestCollection(direction){
